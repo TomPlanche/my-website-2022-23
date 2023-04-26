@@ -1,0 +1,21 @@
+/**
+ * @file src/index.scss
+ * @description Base style for the whole app.
+ * @author Tom Planche
+ */
+
+@import "styles/reset";
+@import "styles/base";
+@import "styles/variables";
+
+body {
+  background: $gh-bg;
+
+  &.light {
+      background: $white;
+  }
+}
+
+/**
+ * End of file src/index.scss
+ */

@@ -1,0 +1,30 @@
+{
+  "name": "mon-site-2023",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "deploy": "gh-pages -d build"
+  },
+  "dependencies": {
+    "gsap": "npm:@gsap/shockingly@^3.11.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.10.0",
+    "styled-components": "^5.3.10"
+  },
+  "devDependencies": {
+    "@types/greensock": "^1.15.32",
+    "@types/gsap": "^3.0.0",
+    "@types/react": "^18.0.27",
+    "@types/react-dom": "^18.0.10",
+    "@types/styled-components": "^5.1.26",
+    "@vitejs/plugin-react": "^3.1.0",
+    "sass": "^1.58.1",
+    "typescript": "^4.9.3",
+    "vite": "^4.1.0"
+  }
+}

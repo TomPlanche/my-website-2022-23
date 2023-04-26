@@ -1,0 +1,43 @@
+/**
+* @file src/components/Header/Header.module.scss
+* @description Header component style.
+* @author Tom Planche
+*/
+
+.toggleThemeButton {
+  height: 2rem;
+  width: 2rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  border-radius: 4px;
+
+  background: $gold-dimmed;
+
+  padding: 4px;
+
+
+
+  &:hover {
+    svg {
+      transform: rotate(55deg);
+    }
+  }
+
+  svg {
+    height: 100%;
+    width: 100%;
+
+    transition: transform 0.5s ease-in-out;
+
+    * {
+      fill: $gold;
+    }
+  }
+}
+
+/**
+ * End of file src/components/Header/Header.module.scss
+ */
