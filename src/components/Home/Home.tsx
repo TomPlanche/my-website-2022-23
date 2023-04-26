@@ -16,6 +16,7 @@ import {
 } from '../../App';
 
 import MyButton from "../MyButton";
+import Menu from "../Menu/Menu";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -44,6 +45,8 @@ const Home = () => {
   // Render
   return (
     <StyledHome>
+      <Menu />
+
       <h1>Home</h1>
 
     </StyledHome>

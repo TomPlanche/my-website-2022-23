@@ -26,6 +26,8 @@ const themeValues = {
 
   headerHeight: '5rem',
 
+  mainPadding: '2rem',
+
   // Colors
   black: '#02040a',
   white: '#e8e4d9',
@@ -48,6 +50,13 @@ export const blurryBackground = {
   '-webkit-backdrop-filter': `blur(${themeValues.blurryBackgroundBlur})`,
 }
 
+export const noUserSelection = {
+  '-webkit-user-select': 'none',
+  '-moz-user-select': 'none',
+  '-ms-user-select': 'none',
+  'user-select': 'none',
+}
+
 // Dynamic values
 
 export const commonTheme = {
@@ -58,12 +67,16 @@ export const commonTheme = {
   fontFamilyNeueBit: 'Neue Bit, sans-serif',
   fontFamilyFraktionMono: 'Fraktion Mono, sans-serif',
 
-  'linkColor': "#58a6ff",
-  'blueFontColor': '#679fc5',
-  // min-height: 100svh - header-height value
-  'minHeight': `calc(100svh - ${themeValues.headerHeight})`,
+  'minHeight': `calc(100svh - ${themeValues.headerHeight} - ${themeValues.mainPadding})`,
+  'sidePadding': themeValues.mainPadding,
 
-  'sidePadding': '2rem',
+
+  // Colors
+  'blueFontColor': '#679fc5',
+  'linkColor': "#58a6ff",
+  'gold': '#D0D066',
+  'goldDimmed': '#D0D06650',
+
 }
 
 const AppDivStyled = styled.div(props => ({

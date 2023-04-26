@@ -94,6 +94,28 @@ const lineEq = (
 };
 
 /**
+ * @function lineEq0to100
+ * @description Returns the equation of a line (y = ax + b) between 0 and 100 for percentage.
+ *
+ * @param y2 {number} The y coordinate of the second point.
+ * @param y1 {number} The y coordinate of the first point.
+ * @param x2 {number} The x coordinate of the second point.
+ * @param x1 {number} The x coordinate of the first point.
+ * @param currentVal {number} The current value.
+ *
+ * @returns {number} The value of the line equation between 0 and 100.
+ */
+const lineEq0to100 = (
+	y2: number,
+	y1: number,
+	x2: number,
+	x1: number,
+	currentVal: number
+): number => {
+	return lineEq(y2, y1, x2, x1, currentVal) < 0 ? 0 : lineEq(y2, y1, x2, x1, currentVal) > 100 ? 100 : lineEq(y2, y1, x2, x1, currentVal);
+};
+
+/**
  * @function lerp
  * @description Returns the linear interpolation of two values.
  *
@@ -165,6 +187,7 @@ export {
 	distanceBetweenPoints,
 	getMousePos,
 	lineEq,
+	lineEq0to100,
 	lerp,
   random,
 	verifyIsInBounds
