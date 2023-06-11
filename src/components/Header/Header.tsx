@@ -10,10 +10,9 @@ import {
   useLayoutEffect,
   useRef
 } from "react";
+
 import styled from "styled-components";
-
-import { gsap} from "gsap";
-
+import { gsap } from "gsap";
 import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
 import {
@@ -99,7 +98,7 @@ const StyledHeaderThemeBtn = styled(MyButton)(props => ({
 
   padding: '4px',
 
-  '&:hover': {
+  '&:hover, &:focus ': {
     svg: {
       transform: 'rotate(55deg)',
     }
@@ -143,6 +142,10 @@ const Header = () => {
 
   // Variable(s)
   // Method(s)
+  const toggleThemeHandler = (e: any) => {
+    e.target?.blur();
+    toggleTheme();
+  }
 
   // Effect(s)
   useLayoutEffect(() => {
@@ -159,6 +162,8 @@ const Header = () => {
         },
       })
 
+
+
     if (timeRef.current) {
       timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
     }
@@ -166,11 +171,11 @@ const Header = () => {
 	  // Each second, update the time
 	  if (timeIntervalRef) {
       timeIntervalRef.current = setInterval(() => {
-			// French time format like 18h30:14
-      if (timeRef.current) {
-			  timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
-      }
-	  }, 1000);
+        // French time format like 18h30:14
+        if (timeRef.current) {
+          timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
+        }
+      }, 1000);
     }
 
     // Clean up
@@ -197,7 +202,7 @@ const Header = () => {
           >
           </StyledHeaderTime>
           <StyledHeaderThemeBtn
-            onClick={toggleTheme}
+            onClick={toggleThemeHandler}
           >
             {
               theme === 'light' ? moonSVG : sunSVG

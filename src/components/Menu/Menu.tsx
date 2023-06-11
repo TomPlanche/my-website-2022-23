@@ -10,9 +10,6 @@ import {useEffect, useRef} from "react";
 import gsap from "gsap";
 import styled from "styled-components";
 
-import {
-  blurryBackground
-} from "../../App";
 import ProxySensor from "../../assets/proxySensor";
 import {lineEq0to100} from "../../assets/utils";
 
@@ -26,6 +23,24 @@ const menuConstants = {
   height: window.innerHeight,
 }
 
+const StyledMenuContainer = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  
+  height: 40vh;
+  width: ${menuConstants.width}px;
+  
+    border-radius: 8px 0 0 8px;
+  
+    transform: translate(100%, -50%);
+  
+    background-color: ${props => props.theme['blurryBackground']};
+  
+    ...blurryBackground,
+`;
+
+
 const StyledRightMenuTrigger = styled.div`
   position: absolute;
   top: 0;
@@ -38,24 +53,11 @@ const StyledRightMenuTrigger = styled.div`
   
 `;
 
-const StyledRightMenu = styled.div`
-  position: absolute;
-  top: 50%;
-  right: 0;
-  
-  height: 40vh;
-  width: ${menuConstants.width}px;
-  
-  border-radius: 8px 0 0 8px;
-  
-  transform: translate(100%, -50%);
-  
-  background-color: ${props => props.theme['blurryBackground']};
-  
-  ...blurryBackground,
-`;
-
 const MenuSVG = <svg viewBox="0 0 14 37" width="100%" height="100%"><path d="M13.95.94v36.01h-3.858V.94zM3.919.94v36.01H.06V.94z"></path></svg>
+const menuIconConstants = {
+  width: '1rem',
+  height: '1rem',
+}
 
 const StyledMenuIcon = styled.div(props => ({
   position: 'absolute',
@@ -77,6 +79,25 @@ const StyledMenuIcon = styled.div(props => ({
     },
   },
 }))
+
+const StyledRightMenu = styled.div`
+  position: absolute;
+  top: 50%;
+  right: 0;
+  
+  height: 40vh;
+  width: ${menuConstants.width}px;
+  
+  border-radius: 8px 0 0 8px;
+  
+  transform: translate(100%, -50%);
+  
+  padding: ${menuIconConstants.width};
+  
+   background-color: ${props => props.theme['blurryBackground']};
+  
+  ...blurryBackground,
+`;
 
 // DATA
 const translationInterval: {from: number, to: number} = {

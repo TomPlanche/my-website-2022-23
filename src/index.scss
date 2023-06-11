@@ -11,6 +11,8 @@
 body {
   background: $gh-bg;
 
+  overflow-x: hidden;
+
   &.light {
       background: $white;
   }

@@ -9,11 +9,36 @@
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
-const artists_file = 'src/assets/artists.json';
+type TCalcCssVarCallback = (variableWithoutUnit: number) => number;
+
+
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // FUNCTIONS ================================================================================================ FUNCTIONS
-// FUNCTIONS ======================================================   FUNCTIONS
+/**
+ * @function calcCssVar
+ * @description Allows to make calculations with css variables.
+ * @example
+ * const padding = '5rem';
+ * const paddingCalc = calcCssVar(padding, (variableWithoutUnit) => variableWithoutUnit * 2);
+ * console.log(paddingCalc); // 10rem
+ *
+ * @param variable
+ * @param func
+ */
+const calcCssVar = (variable: string, func: TCalcCssVarCallback): string => {
+	// if the variable starts with a point, add a zero before it.
+	variable = variable.startsWith('.') ? `0${variable}` : variable;
+
+	// get the variable without the unit, e.g. '5rem' => '5'.
+	// I don't want to list all the units, so I use a regex.
+	const variableWithoutUnit = variable.replace(/[^0-9.]/g, '');
+	// get the unit, e.g. '5rem' => 'rem'.
+	const unit = variable.replace(variableWithoutUnit, '');
+
+	return `${func(+variableWithoutUnit)}${unit}`;
+}
+
 /**
  * @function calcWinSize
  * @description Calculates the window size
@@ -183,6 +208,7 @@ const verifyIsInBounds = (
 // END FUNCTIONS ================================================ END FUNCTIONS
 
 export {
+	calcCssVar,
 	calcWinSize,
 	distanceBetweenPoints,
 	getMousePos,
