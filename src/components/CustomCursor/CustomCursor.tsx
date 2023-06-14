@@ -152,7 +152,6 @@ const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
       cursorRef.current.style.transform = `translate3d(${lerpableOptionsRef.current.translateX.previous}px, ${lerpableOptionsRef.current.translateY.previous}px, 0) scale(${lerpableOptionsRef.current.scale.previous})`;
       cursorRef.current.style.opacity = `${lerpableOptionsRef.current.opacity.previous}`;
     } else {
-      console.log(`[CustomCursor] cursorRef.current is null!`);
     }
 
     requestAnimationFrame(render);

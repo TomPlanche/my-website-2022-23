@@ -8,9 +8,17 @@ import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 // END IMPORTS ==========================================================================================   END IMPORTS
 
+// VARIABLES ================================================================================================ VARIABLES
+// Types
+type FetchedData = {
+  data: object,
+  isLoading: boolean,
+  error: boolean
+}
+// END VARIABLES =======================================================================================  END VARIABLES
 const useFetch = (url: string) => {
   // States
-  const [fetchedData, setFetchedData] = useState<object>({
+  const [fetchedData, setFetchedData] = useState<FetchedData>({
     data: [],
     isLoading: true,
     error: false,
@@ -43,7 +51,7 @@ const useFetch = (url: string) => {
   }, [url]);
 
   useEffect(() => {
-    fetchData();
+    fetchData().then(r => r);
 
     return () => {
       cancelToken.cancel();

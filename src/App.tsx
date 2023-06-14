@@ -11,7 +11,7 @@ import styled, {ThemeProvider} from "styled-components";
 import Home from "./components/Home/Home";
 import Header from "./components/Header/Header";
 import Musictracker from "./components/Musictracker/Musictracker";
-import LastFM_handler from "./LastFM_Handler/LasfFM_handler";
+import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
 // END IMPORTS ==========================================================================================   END IMPORTS
 

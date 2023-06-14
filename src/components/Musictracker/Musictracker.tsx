@@ -11,7 +11,7 @@ import styled from "styled-components";
 import {AppContext, blurryBackground, commonTheme} from "../../App";
 import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 
-import {NoSongCurrentlyPlaying} from "../../assets/LastFM_Handler";
+import {NoSongCurrentlyPlaying, T_Track} from "../../assets/LastFM_Handler/LasfFM_handler";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -30,20 +30,20 @@ const StyledMusicTrackerContainer = styled.div(props => ({
   height: '100%',
 
   'display': 'flex',
-  'flexDirection': 'row',
+  'flexDirection': 'column',
   'alignItems': 'flex-start',
   'justifyContent': 'center',
-  'flexWrap': 'wrap',
   'gap': '1rem',
 
 }));
 
 const StyledSong = styled.div(props => ({
-  maxWidth: '40vw',
   borderRadius: '1rem',
 
   backgroundColor: props.theme['blurryBackground'],
   ...blurryBackground,
+
+  width: '100%',
 
   display: 'flex',
   flexDirection: 'row',
@@ -57,12 +57,6 @@ const StyledSong = styled.div(props => ({
 
   position: 'relative',
 
-  transition: 'all .2s ease-in-out',
-
-  '&:hover': {
-    transform: `translate(-${props.theme.boxShadowSize}, -${props.theme.boxShadowSize})`,
-  },
-
   img: {
     height: '5rem',
     width: 'auto',
@@ -74,6 +68,8 @@ const StyledSong = styled.div(props => ({
   }
 
 }));
+
+const NoImageUrl: string = "https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png";
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -88,8 +84,8 @@ const Musictracker = () => {
 
   // State(s)
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTrack, setCurrentTrack] = useState<any>({});
-  const [recentTracks, setRecentTracks] = useState<object[]>([]);
+  const [currentTrack, setCurrentTrack] = useState<T_Track>({} as T_Track);
+  const [recentTracks, setRecentTracks] = useState<T_Track[]>([]);
   // Ref(s)
 
   // Method(s)
@@ -122,17 +118,17 @@ const Musictracker = () => {
 
   // Others
   const lookForChanges = () => {
-    const lastTrack = LastFM_HandlerInstance.getRecentTracks(null, 1)
+    LastFM_HandlerInstance.getRecentTracks(null, 1)
         .then((response: any) => {
-            return response;
+          const lastTrack = response[0];
+
+          if (lastTrack?.name !== recentTracks[0].name) {
+            getRecentTracks();
+          }
         })
         .catch((error: any) => {
             console.log(error);
         });
-
-    if (lastTrack !== recentTracks[0]) {
-      getRecentTracks();
-    }
   }
 
   // Effect(s)
@@ -144,6 +140,9 @@ const Musictracker = () => {
       lookForChanges();
     }, 5000);
 
+    return () => {
+      clearInterval(interval);
+    }
   }, []);
 
   // Render
@@ -156,7 +155,10 @@ const Musictracker = () => {
           recentTracks.map((track: any, index: number) => {
             return (
               <StyledSong key={index}>
-                <img src={track.image[track.image.length - 1]['#text']} alt={track.name} />
+                <img
+                  src={track.image[track.image.length - 1]['#text'] !== "" ? track.image[track.image.length - 1]['#text'] : NoImageUrl}
+                  alt={track.name}
+                />
                 <p className="song-info">
                   {track.name} - {track.artist['#text']}
                 </p>
@@ -167,10 +169,10 @@ const Musictracker = () => {
       </StyledMusicTrackerContainer>
 
 
-      {
-        isPlaying &&
-          <IsPlayingDisplay {...currentTrack} />
-      }
+      {/*{*/}
+      {/*  isPlaying &&*/}
+      {/*    <IsPlayingDisplay track={currentTrack} />*/}
+      {/*}*/}
     </StyledMusicTracker>
   )
 }

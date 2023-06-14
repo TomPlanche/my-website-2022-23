@@ -3,6 +3,7 @@
  * @date Functions that I often need.
  * @author Tom Planche
  */
+import {T_RecentTracksTrackAll} from "./LastFM_Handler/LasfFM_handler";
 
 // IMPORTS ===================================================================================================  IMPORTS
 
@@ -92,7 +93,20 @@ const distanceBetweenPoints = (
 	return +Math.floor(Math.hypot(a, b)).toFixed(2);
 };
 
+const compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => {
+	if (!track2) {
+		console.log("track2 is null");
+		return false;
+	}
 
+	if (track1.mbid !== "" && track2.mbid !== "") {
+		return track1.mbid === track2.mbid;
+	}
+
+	console.log(`track1: ${track1.name} - ${track1.artist["#text"]}`);
+
+	return track1.name === track2.name && track1.artist["#text"] === track2.artist["#text"];
+}
 /**
  * @function lineEq
  * @description Returns the equation of a line (y = ax + b).
@@ -210,6 +224,7 @@ const verifyIsInBounds = (
 export {
 	calcCssVar,
 	calcWinSize,
+	compareTracks,
 	distanceBetweenPoints,
 	getMousePos,
 	lineEq,

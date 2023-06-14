@@ -22,6 +22,7 @@ import styled from 'styled-components'
 import {useContext, useEffect} from "react";
 import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 import {AppContext} from "../../App";
+import {Link} from "react-router-dom";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(SplitText);
@@ -103,7 +104,6 @@ const Home = () => {
 
     // Loading animation
     const loadingAnimation = gsap.timeline();
-
   }, []);
 
   // Render
@@ -120,6 +120,8 @@ const Home = () => {
         >
           <h1>Tom Planche</h1>
           <h2>Full Stack Developer</h2>
+
+          <Link to={'/what-i-listen-to'}> Test Rediraction </Link>
         </StyledHomeHalf>
         <StyledHomeHalf
           style={{

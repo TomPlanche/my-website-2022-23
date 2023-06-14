@@ -1,6 +1,9 @@
 /**
  * @file src/components/IsPlayingDisplay/IsPlayingDisplay.tsx
  * @description IsPlayingDisplay component.
+ *
+ * TODO: Add scenario where we go from a track to no track playing.
+ *
  * @author Tom Planche
  */
 
@@ -16,175 +19,72 @@ import {
   blurryBackground, AppContext
 } from "../../App";
 
-import {NoSongCurrentlyPlaying} from "../../assets/LastFM_Handler";
-import {calcCssVar} from "../../assets/utils";
+import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
+import {compareTracks} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
-interface IIsPlayingDisplayVariables {
-  padding: string,
-  borderRadius: string,
-  albumBorderRadius: string,
-}
+// Styled component(s)
+const playingDisplayVars = {
+  height: '6rem',
+  width: '6rem',
 
-const closeBtnSize = '1rem';
+  maxWidth: '22rem',
 
-const IsPlayingDisplayVariablesBig: IIsPlayingDisplayVariables & {
-  closeBtnSize: string,
-  closeBtnPosition: string,
-  textInfoRightPadding: string,
-  maxWidth: string,
-} = {
-  padding: '0.5rem',
-  borderRadius: '1rem',
-  albumBorderRadius: '10px',
-  maxWidth: '40vw',
-
-  closeBtnSize: closeBtnSize,
-  textInfoRightPadding: calcCssVar(closeBtnSize, (v) => v * 1.5),
-  closeBtnPosition: calcCssVar(closeBtnSize, (v) => v / 4),
-}
-
-const IsPlayingDisplayVariablesSmall: IIsPlayingDisplayVariables = {
-  padding: '0.25rem',
-  borderRadius: '8px',
-  albumBorderRadius: '6px',
+  marginFromBottom: '2rem',
+  marginFromRight: '2rem',
 }
 
 const StyledIsPlayingDisplay = styled.div(props => ({
-  background: props.theme.background,
-  color: props.theme.color,
-
-  height: '6rem',
-  maxWidth: IsPlayingDisplayVariablesBig.maxWidth,
-  width: 'auto',
-
-  position: 'fixed',
-  bottom: commonTheme.sidePadding,
-  right: commonTheme.sidePadding,
-  zIndex: '1000',
-
-  backgroundColor: props.theme['blurryBackground'],
   ...blurryBackground,
+
+  position: 'absolute',
+  bottom: playingDisplayVars.marginFromBottom,
+  right: playingDisplayVars.marginFromRight,
+
+  height: playingDisplayVars.height,
+  width: playingDisplayVars.width,
 
   display: 'flex',
   flexDirection: 'row',
   alignItems: 'center',
   justifyContent: 'flex-start',
+  gap: '1rem',
 
-  borderRadius: IsPlayingDisplayVariablesBig.borderRadius,
-  padding: IsPlayingDisplayVariablesBig.padding,
+  padding: '4px',
+
+  borderRadius: '8px',
+  border: `1px solid ${props.theme.color}`,
+
+  opacity: 0,
 }));
 
-const StyledAlbumCoverContainer = styled.div(props => ({
+const StyledAlbumCover = styled.img`
+  height: 100%;
+  width: auto;
+
+  border-radius: 4px;
+`;
+
+const StyledTrackInfo = styled.div(props => ({
   height: '100%',
-  width: 'auto',
-
-  position: 'relative',
-}));
-
-
-const StyledCloseBtn = styled.svg(props => ({
-  position: 'absolute',
-  top: IsPlayingDisplayVariablesBig.closeBtnPosition,
-  right:  IsPlayingDisplayVariablesBig.closeBtnPosition,
-
-  height: IsPlayingDisplayVariablesBig.closeBtnSize,
-  width: IsPlayingDisplayVariablesBig.closeBtnSize,
-
-  opacity: '.1',
-
-  cursor: 'pointer',
-
-  transition: 'all .2s ease-in-out',
-
-  zIndex: '1001',
-
-  'path': {
-    fill: props.theme.blueFontColor,
-  },
-
-  '&:hover': {
-    transform: 'scale(1.1)',
-    opacity: '1',
-  }
-}));
-
-const StyledAlbumCover = styled.img(props => ({
-  height: '100%',
-  width: 'auto',
-
-  borderRadius: IsPlayingDisplayVariablesBig.albumBorderRadius,
-}));
-
-const StyledInfo = styled.div(props => ({
-  color: props.theme.blueFontColor,
-
-  width: 'auto',
-  height: '100%',
+  width: '100%',
 
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'flex-start',
   justifyContent: 'center',
+  gap: '.25rem',
 
-  fontSize: '1.25rem',
+  color: props.theme.color,
+  fontFamily: 'Radikal, sans-serif !important',
 
-  padding: IsPlayingDisplayVariablesBig.padding,
-  paddingRight: calcCssVar(closeBtnSize, (v) => v * 1.25),
+  opacity: 0,
 
-  'p': {
-    maxWidth: calcCssVar(IsPlayingDisplayVariablesBig.maxWidth, (v) => v / 2),
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
+  'span': {
+    textAlign: 'left',
   }
 }));
-
-
-interface ITrackInfo {
-    "artist": {
-        "mbid": string
-        "#text": string
-    },
-    "streamable": number,
-    "image": [{
-      "size": "small" | "medium" | "large" | "extralarge"
-      "#text": string
-    }],
-    "mbid": string
-    "album": {
-        "mbid": string
-        "#text": string
-    },
-    "name": string
-    "@attr": {
-        "nowplaying": boolean
-    },
-    "url": string
-}
-
-const emptyTrackInfo: ITrackInfo = {
-  "artist": {
-      "mbid": "",
-      "#text": ""
-  },
-  "streamable": -1,
-  "image": [{
-    "size": "small",
-    "#text": "",
-  }],
-  "mbid": "",
-  "album": {
-      "mbid": "",
-      "#text": "",
-  },
-  "name": "",
-  "@attr": {
-      "nowplaying": false
-  },
-  "url": "",
-}
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -198,141 +98,154 @@ const IsPlayingDisplay = () => {
   const {LastFM_HandlerInstance} = useContext(AppContext);
 
   // State(s)
-  const [small, setSmall] = useState<boolean>(false);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [currentTrack, setCurrentTrack] = useState<any>(emptyTrackInfo);
+  const [finalTrack, setFinalTrack] = useState<T_RecentTracksTrackAll | undefined>(undefined);
 
   // Ref(s)
-  let currentTrackRef = useRef<ITrackInfo>(emptyTrackInfo);
+  // HTML
   const isPlayingDisplayRef = useRef<HTMLDivElement>(null);
   const albumCoverRef = useRef<HTMLImageElement>(null);
   const trackInfoRef = useRef<HTMLDivElement>(null);
-
+  // Current track
+  const currentTrackRef = useRef<T_RecentTracksTrackAll | undefined>(undefined);
   // Variable(s)
   const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 
   // Method(s)
   // Getters
   const getCurrentlyPlaying = () => {
-    LastFM_HandlerInstance.isCurrentlyPlaying()
-      .then((response: any) => {
-        if (
-          response.name !== currentTrackRef.current.name ||
-          response.mbid !== currentTrackRef.current.mbid
-        ) {
-          setIsPlaying(true);
-          setCurrentTrack(response);
-          currentTrackRef.current = response;
+    LastFM_HandlerInstance.ifNowPlaying()
+      .then((track: T_RecentTracksTrackAll) => {
+        if (!currentTrackRef.current) {
+          currentTrackRef.current = track;
+          setFinalTrack(track)
+        } else {
+          if (compareTracks(currentTrackRef.current, track)) {
+          } else {
+            setFinalTrack(track);
+          }
         }
+
       })
-      .catch((error: NoSongCurrentlyPlaying) => {
-        console.log(`[IsPlayingDisplay] ${error.message}`);
-        setIsPlaying(false);
-      })
-      .catch((error: any) => {
-        console.log(error);
+      .catch((err: NoCurrentlyPlayingTrackError) => {
+        console.log(`[IsPlayingDisplay] ifNowPlaying error: ${err.message}`);
+
+        currentTrackRef.current = undefined;
       })
   }
 
   // Others
-  const toogleSmall = () => {
-    const animation_tl = gsap.timeline();
-
-    if (!small) {
-      animation_tl
-        .to(trackInfoRef.current, {
-          opacity: "0",
-          scale: 0,
-          duration: .2,
-        })
-        .to(isPlayingDisplayRef.current, {
-          padding: IsPlayingDisplayVariablesSmall.padding,
-          borderRadius: IsPlayingDisplayVariablesSmall.borderRadius,
-        }, '<')
-        .to(albumCoverRef.current, {
-          borderRadius: IsPlayingDisplayVariablesSmall.albumBorderRadius,
-        }, '<')
-        .to(trackInfoRef.current, {
-          width: '0',
-          duration: .2,
-        })
-        .to(trackInfoRef.current, {
-          padding: '0',
-          duration: .1,
-        }, '<')
-    } else {
-      animation_tl
-        .to(trackInfoRef.current, {
-          display: 'flex',
-          width: 'auto',
-        })
-        .to(trackInfoRef.current, {
-          padding: calcCssVar(closeBtnSize, (v) => v * 1.25),
-          duration: .2,
-        })
-        // .to(trackInfoRef.current, {
-        //   opacity: 1,
-        //   scale: 1,
-        // })
-    }
-
-    setSmall(!small);
-  }
-
-  const handleAlbumCoverOnClick = () => {
-    window.open(currentTrack.url, '_blank');
-  }
 
   // UseEffect(s)
   useEffect(() => {
     getCurrentlyPlaying();
 
-    setTimeout(() => {
-      toogleSmall();
-    }, 1000)
-
     const interval = setInterval(() => {
       getCurrentlyPlaying();
     }, 5000);
 
-    return () => clearInterval(interval);
-  }, [])
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
+
+
+  useEffect(() => {
+    if (finalTrack) {
+      if (!isPlaying) {
+        setIsPlaying(true);
+      } else {
+        const tl = gsap.timeline();
+        tl
+          .to(trackInfoRef.current, {
+            opacity: 0,
+          })
+          .fromTo(isPlayingDisplayRef.current, {
+            opacity: 0,
+            scale: 0,
+            width: playingDisplayVars.width
+          }, {
+            opacity: 1,
+            scale: 1,
+            duration: .75,
+            ease: 'power3.out'
+          })
+          .to(isPlayingDisplayRef.current, {
+            width: playingDisplayVars.maxWidth,
+            duration: .75,
+            ease: 'power3.out'
+          })
+          .to(trackInfoRef.current, {
+            opacity: 1,
+            duration: .75,
+            ease: 'power3.out'
+          })
+
+        currentTrackRef.current = finalTrack;
+      }
+    } else {
+      setIsPlaying(false);
+    }
+  }, [finalTrack]);
+
+
+  useEffect(() => {
+    if (isPlaying) {
+      const tl = gsap.timeline();
+      tl
+        .fromTo(isPlayingDisplayRef.current, {
+          opacity: 0,
+          scale: 0
+        }, {
+          opacity: 1,
+          scale: 1,
+          duration: .75,
+          ease: 'power3.out'
+        })
+        .to(isPlayingDisplayRef.current, {
+          width: playingDisplayVars.maxWidth,
+          duration: .75,
+          ease: 'power3.out'
+        })
+        .to(trackInfoRef.current, {
+          opacity: 1,
+          duration: .75,
+          ease: 'power3.out'
+        })
+    }
+  }, [isPlaying]);
 
   // Render
   return (
-      <StyledIsPlayingDisplay
-        ref={isPlayingDisplayRef}
-        style={{
-          display: isPlaying ? 'flex' : 'none',
-        }}
-        title={`${currentTrack.artist['#text']} - ${currentTrack.name}`}
-      >
-        {
-          !small &&
-            <StyledCloseBtn
-              width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-              onClick={toogleSmall}
-            >
-              <path d="M16.3394 9.32245C16.7434 8.94589 16.7657 8.31312 16.3891 7.90911C16.0126 7.50509 15.3798 7.48283 14.9758 7.85938L12.0497 10.5866L9.32245 7.66048C8.94589 7.25647 8.31312 7.23421 7.90911 7.61076C7.50509 7.98731 7.48283 8.62008 7.85938 9.0241L10.5866 11.9502L7.66048 14.6775C7.25647 15.054 7.23421 15.6868 7.61076 16.0908C7.98731 16.4948 8.62008 16.5171 9.0241 16.1405L11.9502 13.4133L14.6775 16.3394C15.054 16.7434 15.6868 16.7657 16.0908 16.3891C16.4948 16.0126 16.5171 15.3798 16.1405 14.9758L13.4133 12.0497L16.3394 9.32245Z" fill="currentColor" /><path fillRule="evenodd" clipRule="evenodd" d="M1 12C1 5.92487 5.92487 1 12 1C18.0751 1 23 5.92487 23 12C23 18.0751 18.0751 23 12 23C5.92487 23 1 18.0751 1 12ZM12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21Z" fill="currentColor" />
-            </StyledCloseBtn>
-        }
+    <StyledIsPlayingDisplay
+      style={{
+        // display: isPlaying ? 'flex' : 'none',
+      }}
+      ref={isPlayingDisplayRef}
+    >
 
-        <StyledAlbumCoverContainer
-          onClick={small ? toogleSmall : handleAlbumCoverOnClick}
-        >
-          <StyledAlbumCover
-            ref={albumCoverRef}
-            src={currentTrack.image[currentTrack.image.length - 1]['#text'] || emptyAlbumCover}
-            alt={currentTrack.album['#text']}
-          />
-        </StyledAlbumCoverContainer>
-        <StyledInfo
-          ref={trackInfoRef}
-        >
-          <p>{currentTrack.artist['#text']}</p>
-          <p>{currentTrack.name}</p>
-        </StyledInfo>
-      </StyledIsPlayingDisplay>
+      {
+        isPlaying && finalTrack &&
+          <>
+            <StyledAlbumCover
+              ref={albumCoverRef}
+              src={finalTrack.image ? finalTrack.image[2]['#text'] : emptyAlbumCover}
+              alt={finalTrack.name}
+              // onLoad={handleAlbumCoverOnLoad}
+            />
+
+            <StyledTrackInfo
+              ref={trackInfoRef}
+            >
+              <span>{finalTrack.name}</span>
+              <span>{finalTrack.artist['#text']}</span>
+            </StyledTrackInfo>
+
+          </>
+      }
+
+
+    </StyledIsPlayingDisplay>
   );
 }
 // END COMPONENT =======================================================================================  END COMPONENT

@@ -138,7 +138,7 @@ const Header = () => {
 	const titleRef = useRef<HTMLHeadingElement>(null);
   const timeRef = useRef<HTMLHeadingElement>(null);
 
-  let timeIntervalRef = useRef<number>(0);
+  let timeIntervalRef = useRef<NodeJS.Timer>();
 
   // Variable(s)
   // Method(s)
