@@ -10,7 +10,6 @@ import styled, {ThemeProvider} from "styled-components";
 
 import Home from "./components/Home/Home";
 import Header from "./components/Header/Header";
-import Musictracker from "./components/Musictracker/Musictracker";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
 // END IMPORTS ==========================================================================================   END IMPORTS
@@ -167,9 +166,6 @@ const App = (): ReactElement => {
             <Header />
             <Routes>
                 <Route index element={<Home />} />
-                <Route path="/what-i-listen-to" element={
-                  <Musictracker />
-                } />
 
                 <Route path="*" element={<h1>Route: '{location.pathname}' not found</h1>} />
               </Routes>

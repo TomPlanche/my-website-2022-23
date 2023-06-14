@@ -121,7 +121,6 @@ const Home = () => {
           <h1>Tom Planche</h1>
           <h2>Full Stack Developer</h2>
 
-          <Link to={'/what-i-listen-to'}> Test Rediraction </Link>
         </StyledHomeHalf>
         <StyledHomeHalf
           style={{
