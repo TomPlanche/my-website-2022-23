@@ -103,8 +103,6 @@ const compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTra
 		return track1.mbid === track2.mbid;
 	}
 
-	console.log(`track1: ${track1.name} - ${track1.artist["#text"]}`);
-
 	return track1.name === track2.name && track1.artist["#text"] === track2.artist["#text"];
 }
 /**

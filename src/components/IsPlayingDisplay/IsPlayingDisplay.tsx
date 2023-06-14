@@ -20,7 +20,7 @@ import {
 } from "../../App";
 
 import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
-import {compareTracks} from "../../assets/utils";
+import {calcCssVar, compareTracks} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -44,6 +44,7 @@ const StyledIsPlayingDisplay = styled.div(props => ({
 
   height: playingDisplayVars.height,
   width: playingDisplayVars.width,
+  maxWidth: playingDisplayVars.maxWidth,
 
   display: 'flex',
   flexDirection: 'row',
@@ -52,6 +53,7 @@ const StyledIsPlayingDisplay = styled.div(props => ({
   gap: '1rem',
 
   padding: '4px',
+  paddingRight: '1rem',
 
   borderRadius: '8px',
   border: `1px solid ${props.theme.color}`,
@@ -95,11 +97,13 @@ const StyledTrackInfo = styled.div(props => ({
  **/
 const IsPlayingDisplay = () => {
   // Context(s)
-  const {LastFM_HandlerInstance} = useContext(AppContext);
+  const {LastFM_HandlerInstance, cursorRef} = useContext(AppContext);
 
   // State(s)
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [finalTrack, setFinalTrack] = useState<T_RecentTracksTrackAll | undefined>(undefined);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const [isSmall, setIsSmall] = useState<boolean>(false);
 
   // Ref(s)
   // HTML
@@ -128,13 +132,73 @@ const IsPlayingDisplay = () => {
 
       })
       .catch((err: NoCurrentlyPlayingTrackError) => {
-        console.log(`[IsPlayingDisplay] ifNowPlaying error: ${err.message}`);
-
-        currentTrackRef.current = undefined;
+        setIsPlaying(false);
+      })
+      .catch((err: Error) => {
+        console.error(err);
       })
   }
 
   // Others
+  const handleMouseEnter = () => {
+    if (cursorRef.current) {
+      cursorRef.current.onCursorEnter({
+        backgroundColor: 'red',
+      }, true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (cursorRef.current) {
+      cursorRef.current.onCursorLeave({}, true)
+    }
+  }
+
+  const handleClicked = () => {
+    if (isAnimating) {
+      return;
+    }
+
+    const animationTl = gsap.timeline({
+      duration: .75,
+      ease: 'power3.out',
+
+      onStart: () => {
+        setIsAnimating(true);
+      },
+      onComplete: () => {
+        setIsAnimating(false);
+        setIsSmall(!isSmall);
+      }
+    });
+
+    if (!isSmall) {
+      animationTl
+        .to(trackInfoRef.current, {
+          opacity: 0,
+        })
+        .to(isPlayingDisplayRef.current, {
+          width: playingDisplayVars.width,
+        })
+        .to(isPlayingDisplayRef.current, {
+          height: calcCssVar(playingDisplayVars.height, (variable) => variable * 0.5),
+          width: calcCssVar(playingDisplayVars.width, (variable) => variable * 0.5),
+        })
+
+    } else {
+      animationTl
+        .to(isPlayingDisplayRef.current, {
+          height: playingDisplayVars.height,
+          width: playingDisplayVars.width,
+        })
+        .to(isPlayingDisplayRef.current, {
+          width: 'auto',
+        })
+        .to(trackInfoRef.current, {
+          opacity: 1,
+        })
+    }
+  }
 
   // UseEffect(s)
   useEffect(() => {
@@ -152,33 +216,46 @@ const IsPlayingDisplay = () => {
 
   useEffect(() => {
     if (finalTrack) {
+
+      if (isSmall || isAnimating) {
+        currentTrackRef.current = finalTrack;
+        return;
+      }
+
       if (!isPlaying) {
         setIsPlaying(true);
       } else {
-        const tl = gsap.timeline();
+        const tl = gsap.timeline({
+          duration: .75,
+          ease: 'power3.out',
+
+          onStart: () => {
+            setIsAnimating(true);
+          },
+          onComplete: () => {
+            setIsAnimating(false);
+          }
+        });
         tl
           .to(trackInfoRef.current, {
             opacity: 0,
+            duration: 0
           })
           .fromTo(isPlayingDisplayRef.current, {
             opacity: 0,
             scale: 0,
+            duration: 0,
             width: playingDisplayVars.width
           }, {
             opacity: 1,
             scale: 1,
-            duration: .75,
-            ease: 'power3.out'
           })
           .to(isPlayingDisplayRef.current, {
-            width: playingDisplayVars.maxWidth,
-            duration: .75,
-            ease: 'power3.out'
+            width: 'auto',
           })
           .to(trackInfoRef.current, {
             opacity: 1,
-            duration: .75,
-            ease: 'power3.out'
+
           })
 
         currentTrackRef.current = finalTrack;
@@ -191,47 +268,79 @@ const IsPlayingDisplay = () => {
 
   useEffect(() => {
     if (isPlaying) {
-      const tl = gsap.timeline();
+      const tl = gsap.timeline({
+          duration: .75,
+          ease: 'power3.out',
+
+          onStart: () => {
+            setIsAnimating(true);
+          },
+          onComplete: () => {
+            setIsAnimating(false);
+          }
+        });
       tl
         .fromTo(isPlayingDisplayRef.current, {
           opacity: 0,
-          scale: 0
+          scale: 0,
+          duration: 0,
         }, {
           opacity: 1,
           scale: 1,
-          duration: .75,
-          ease: 'power3.out'
         })
         .to(isPlayingDisplayRef.current, {
-          width: playingDisplayVars.maxWidth,
-          duration: .75,
-          ease: 'power3.out'
+          width: 'auto',
         })
         .to(trackInfoRef.current, {
           opacity: 1,
-          duration: .75,
-          ease: 'power3.out'
         })
+    } else {
+      if (currentTrackRef.current) {
+        const closeTl = gsap.timeline({
+          duration: .75,
+          ease: 'power3.out',
+
+          onStart: () => {
+            setIsAnimating(true);
+          },
+          onComplete: () => {
+            setIsAnimating(false);
+          }
+        });
+        closeTl
+          .to(trackInfoRef.current, {
+            opacity: 0,
+          })
+          .to(isPlayingDisplayRef.current, {
+            width: playingDisplayVars.width,
+          })
+          .to(isPlayingDisplayRef.current, {
+            opacity: 0,
+            scale: 0,
+          })
+
+        currentTrackRef.current = undefined;
+      }
     }
   }, [isPlaying]);
 
   // Render
   return (
     <StyledIsPlayingDisplay
-      style={{
-        // display: isPlaying ? 'flex' : 'none',
-      }}
       ref={isPlayingDisplayRef}
+
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      onClick={handleClicked}
     >
 
       {
-        isPlaying && finalTrack &&
+        finalTrack &&
           <>
             <StyledAlbumCover
               ref={albumCoverRef}
               src={finalTrack.image ? finalTrack.image[2]['#text'] : emptyAlbumCover}
               alt={finalTrack.name}
-              // onLoad={handleAlbumCoverOnLoad}
             />
 
             <StyledTrackInfo

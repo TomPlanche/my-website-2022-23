@@ -6,10 +6,8 @@
   "scripts": {
     "dev": "vite",
     "test": "jest",
-    "preview": "vite preview",
 
-    "build": "tsc && vite build",
-    "deploy": "gh-pages -d build"
+    "build": "tsc && vite build"
   },
   "dependencies": {
     "gsap": "npm:@gsap/shockingly@^3.11.5",
@@ -33,6 +31,6 @@
     "sass": "^1.58.1",
     "ts-jest": "^29.1.0",
     "typescript": "^4.9.3",
-    "vite": "^4.1.0"
+    "vite": "4.3.9"
   }
 }

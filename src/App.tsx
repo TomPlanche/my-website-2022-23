@@ -4,7 +4,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {Context, createContext, ReactElement, RefObject, useRef, useState} from 'react'
+import {Context, createContext, ReactElement, RefObject, useEffect, useRef, useState} from 'react'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
@@ -16,15 +16,16 @@ import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCurs
 
 // VARIABLES ================================================================================================ VARIABLES
 // Interfaces
-interface ITheme {
+interface I_Theme {
   background: string;
   blurryBackground: string;
   color: string;
 }
 
-export interface IAppContext {
+export interface I_AppContext {
   theme: 'light' | 'dark';
   LastFM_HandlerInstance: LastFM_handler;
+  cursorRef: T_CursorRef;
   toggleTheme: () => void;
 }
 
@@ -45,17 +46,17 @@ const themeValues = {
   mainPadding: '2rem',
 
   // Colors
-  dark: '#060811',
+  dark: '#080a13',
   light: '#e8e4d9',
 }
 
-const blackTheme: ITheme = {
+const blackTheme: I_Theme = {
   background: themeValues.dark,
   blurryBackground: `${themeValues.light}${themeValues.blurryBackgroundAlpha}`,
   color: themeValues.light,
 }
 
-const whiteTheme: ITheme = {
+const whiteTheme: I_Theme = {
   background: themeValues.light,
   blurryBackground: `${themeValues.dark}90`,
   color: themeValues.dark,
@@ -115,11 +116,11 @@ const AppDivStyled = styled.div(props => ({
   }
 }));
 
-export const AppContext: Context<IAppContext> = createContext<IAppContext>({
+export const AppContext: Context<I_AppContext> = createContext<I_AppContext>({
   theme: 'dark',
   LastFM_HandlerInstance: LastFM_handler.getInstance('Tom_planche')
 
-} as IAppContext);
+} as I_AppContext);
 // END VARIABLES ======================================================================================= END VARIABLES
 
 
@@ -150,11 +151,34 @@ const App = (): ReactElement => {
     return newTheme;
   }
 
+  // Effect(s)
+  useEffect(() => {
+    let finalTitle = "Tom Planche's website - "
+
+    const changeTitle = () => {
+      document.title = finalTitle
+
+      // Shift the title
+      finalTitle = finalTitle.substring(1) + finalTitle.substring(0, 1)
+
+      if (finalTitle[0] === ' ') {
+        finalTitle = finalTitle.substring(1) + finalTitle.substring(0, 1)
+      }
+    }
+
+    const titleInterval = setInterval(changeTitle, 250);
+
+    return () => {
+      clearInterval(titleInterval);
+    }
+  });
+
   return (
     <BrowserRouter>
       <AppContext.Provider value={{
         theme: theme,
         toggleTheme: toggleTheme,
+        cursorRef: cursorRef,
         LastFM_HandlerInstance: LastFM_handler.getInstance()
       }}>
         <ThemeProvider theme={
@@ -163,7 +187,6 @@ const App = (): ReactElement => {
           <AppDivStyled>
             <CustomCursor ref={cursorRef} />
 
-            <Header />
             <Routes>
                 <Route index element={<Home />} />
 
