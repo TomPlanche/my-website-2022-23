@@ -110,8 +110,10 @@ const IsPlayingDisplay = () => {
   const isPlayingDisplayRef = useRef<HTMLDivElement>(null);
   const albumCoverRef = useRef<HTMLImageElement>(null);
   const trackInfoRef = useRef<HTMLDivElement>(null);
+
   // Current track
   const currentTrackRef = useRef<T_RecentTracksTrackAll | undefined>(undefined);
+
   // Variable(s)
   const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 
@@ -181,8 +183,8 @@ const IsPlayingDisplay = () => {
           width: playingDisplayVars.width,
         })
         .to(isPlayingDisplayRef.current, {
-          height: calcCssVar(playingDisplayVars.height, (variable) => variable * 0.5),
-          width: calcCssVar(playingDisplayVars.width, (variable) => variable * 0.5),
+          height: calcCssVar(playingDisplayVars.height, (variable) => variable * 0.75),
+          width: calcCssVar(playingDisplayVars.width, (variable) => variable * 0.75),
         })
 
     } else {
@@ -216,7 +218,6 @@ const IsPlayingDisplay = () => {
 
   useEffect(() => {
     if (finalTrack) {
-
       if (isSmall || isAnimating) {
         currentTrackRef.current = finalTrack;
         return;

@@ -21,7 +21,7 @@ import styled from 'styled-components'
 // import Menu from "../Menu/Menu";
 import {RefObject, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
-import {AppContext} from "../../App";
+import {AppContext, noUserSelection} from "../../App";
 import {Link} from "react-router-dom";
 import Header from "../Header/Header";
 // END IMPORTS ==========================================================================================   END IMPORTS
@@ -47,12 +47,14 @@ const StyledHome = styled.div(props => ({
   'justifyContent': 'center',
 
   'h2': {
-    fontSize: '5rem',
+    fontSize: '6rem',
   },
 
   'h3': {
-    fontSize: '3rem',
+    fontSize: '4rem',
   },
+
+  ...noUserSelection,
 }));
 
 const StyledHomeLanding = styled.div(props => ({
@@ -101,6 +103,8 @@ const Home = () => {
 
   // State(s)
   const [isPlayingLoadingAnimation, setIsPlayingLoadingAnimation] = useState<boolean>(true);
+  const [reverseMyUglyFace, setReverseMyUglyFace] = useState<boolean>(false);
+  const [myUglyFaceIsAnimating, setMyUglyFaceIsAnimating] = useState<boolean>(false);
 
   // Ref(s)
   const headerRef: T_headerRef = useRef(null);
@@ -108,7 +112,15 @@ const Home = () => {
   const leftHalfRef = useRef(null);
   const rightHalfRef = useRef(null);
   const myUglyFaceRef = useRef(null);
+
   // Method(s)
+  const handleMyUglyFaceMouseEnter = () => {
+    setReverseMyUglyFace(true);
+  }
+
+  const handleMyUglyFaceMouseLeave = () => {
+    setReverseMyUglyFace(false);
+  }
 
   // Effect(s)
   useLayoutEffect(() => {
@@ -166,10 +178,30 @@ const Home = () => {
       }, '<')
   }, []);
 
+  useEffect(() => {
+    if (myUglyFaceIsAnimating) {
+      setTimeout(() => {
+        setReverseMyUglyFace(reverseMyUglyFace);
+      }, 1000)
+      return;
+    }
+
+    gsap.to(myUglyFaceRef.current, {
+      rotateY: reverseMyUglyFace ? 180 : 0,
+      duration: .5,
+      ease: 'power2.out',
+      onStart: () => {
+        setMyUglyFaceIsAnimating(true);
+      },
+      onComplete: () => {
+        setMyUglyFaceIsAnimating(false);
+      }
+    })
+
+  }, [reverseMyUglyFace])
   // Render
   return (
     <StyledHome>
-      {/*<Menu />*/}
       {!isPlayingLoadingAnimation && <IsPlayingDisplay/>}
 
       <Header key="header" ref={headerRef} />
@@ -197,6 +229,9 @@ const Home = () => {
             src="/imgs/imageCV.png"
             alt="My ugly face"
             ref={myUglyFaceRef}
+
+            onMouseEnter={handleMyUglyFaceMouseEnter}
+            onMouseLeave={handleMyUglyFaceMouseLeave}
           />
         </StyledHomeHalf>
       </StyledHomeLanding>

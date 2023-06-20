@@ -53,6 +53,7 @@ const StyledHeader = styled.div(props => ({
 
   backgroundColor: props.theme['blurryBackground'],
 
+
   ...noUserSelection,
   ...blurryBackground,
 }));
@@ -132,7 +133,7 @@ type T_Header = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
  **/
 const Header: T_Header = forwardRef((_, ref) => {
   // Context(s)
-  const { theme, toggleTheme } = useContext(AppContext);
+  const { theme, toggleTheme, cursorRef } = useContext(AppContext);
 
   // State(s)
 
@@ -150,6 +151,14 @@ const Header: T_Header = forwardRef((_, ref) => {
     toggleTheme();
   }
 
+  const handleButtonMouseEnter = () => {
+    cursorRef.current?.onCursorEnter(null, true);
+  }
+
+  const handleButtonMouseLeave = () => {
+    cursorRef.current?.onCursorLeave(null, true);
+  }
+
   // Effect(s)
   useLayoutEffect(() => {
     // Infinite gsap animation - random duration, speed, reverse, repeat, revealDelay
@@ -164,8 +173,6 @@ const Header: T_Header = forwardRef((_, ref) => {
           // ease: "power3.inOut",
         },
       })
-
-
 
     if (timeRef.current) {
       timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
@@ -206,6 +213,8 @@ const Header: T_Header = forwardRef((_, ref) => {
           </StyledHeaderTime>
           <StyledHeaderThemeBtn
             onClick={toggleThemeHandler}
+            onMouseEnter={handleButtonMouseEnter}
+            onMouseLeave={handleButtonMouseLeave}
           >
             {
               theme === 'light' ? moonSVG : sunSVG
