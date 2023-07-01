@@ -72,6 +72,11 @@ const getMousePos = (e: any) => {
 		return { x : mouseX, y : mouseY }
 };
 
+
+const calcImageAspectRatio = (img: HTMLImageElement) => {
+	return img.naturalWidth / img.naturalHeight;
+}
+
 /**
  * @function distanceBetweenPoints
  * @description Returns the distance between two points.
@@ -197,6 +202,18 @@ const random = (
     return +rnd.toFixed(round);
 }
 
+
+const stripCssVar = (cssVar: string): number => {
+	const regex = new RegExp(/(\d+)/);
+	const match = regex.exec(cssVar);
+
+	if (match) {
+		return parseInt(match[0]);
+	} else {
+		return 0;
+	}
+}
+
 /**
  * @function verifyIsInBounds
  * @description Verify if the mouse is in the bounds.
@@ -222,6 +239,7 @@ const verifyIsInBounds = (
 export {
 	calcCssVar,
 	calcWinSize,
+	calcImageAspectRatio,
 	compareTracks,
 	distanceBetweenPoints,
 	getMousePos,
@@ -229,6 +247,7 @@ export {
 	lineEq0to100,
 	lerp,
   random,
+	stripCssVar,
 	verifyIsInBounds
 }
 

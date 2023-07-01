@@ -15,7 +15,6 @@ import {gsap} from "gsap";
 import styled from "styled-components";
 
 import {
-  commonTheme,
   blurryBackground, AppContext
 } from "../../App";
 
@@ -38,7 +37,7 @@ const playingDisplayVars = {
 const StyledIsPlayingDisplay = styled.div(props => ({
   ...blurryBackground,
 
-  position: 'absolute',
+  position: 'fixed',
   bottom: playingDisplayVars.marginFromBottom,
   right: playingDisplayVars.marginFromRight,
 
@@ -56,7 +55,7 @@ const StyledIsPlayingDisplay = styled.div(props => ({
   paddingRight: '1rem',
 
   borderRadius: '8px',
-  border: `1px solid ${props.theme.color}`,
+  border: `1px solid ${props.theme['blurryBackground']}`,
 
   opacity: 0,
 }));
@@ -87,6 +86,9 @@ const StyledTrackInfo = styled.div(props => ({
     textAlign: 'left',
   }
 }));
+
+// Normal variable(s)
+const emptyAlbumCover: string = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -101,7 +103,7 @@ const IsPlayingDisplay = () => {
 
   // State(s)
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
-  const [finalTrack, setFinalTrack] = useState<T_RecentTracksTrackAll | undefined>(undefined);
+  const [finalTrack, setFinalTrack] = useState<T_RecentTracksTrackAll>();
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
   const [isSmall, setIsSmall] = useState<boolean>(false);
 
@@ -113,9 +115,6 @@ const IsPlayingDisplay = () => {
 
   // Current track
   const currentTrackRef = useRef<T_RecentTracksTrackAll | undefined>(undefined);
-
-  // Variable(s)
-  const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 
   // Method(s)
   // Getters
@@ -200,6 +199,14 @@ const IsPlayingDisplay = () => {
           opacity: 1,
         })
     }
+  }
+
+  const handleTrackImage = () => {
+    if (finalTrack?.image) {
+      return finalTrack.image[finalTrack.image.length - 1]['#text'] || emptyAlbumCover;
+    }
+
+    return emptyAlbumCover;
   }
 
   // UseEffect(s)
@@ -340,7 +347,7 @@ const IsPlayingDisplay = () => {
           <>
             <StyledAlbumCover
               ref={albumCoverRef}
-              src={finalTrack.image ? finalTrack.image[2]['#text'] : emptyAlbumCover}
+              src={handleTrackImage()}
               alt={finalTrack.name}
             />
 

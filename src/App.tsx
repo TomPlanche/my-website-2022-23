@@ -12,6 +12,7 @@ import Home from "./components/Home/Home";
 import Header from "./components/Header/Header";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
+import {calcCssVar, stripCssVar} from "./assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -36,12 +37,12 @@ type T_CursorRef = RefObject<{
 }>
 
 // Objects
-const themeValues = {
+export const themeValues = {
   // Values
   blurryBackgroundAlpha: 25,
   blurryBackgroundBlur: '12px',
 
-  headerHeight: '5rem',
+  headerHeight: '6vh',
 
   mainPadding: '2rem',
 
@@ -82,14 +83,17 @@ export const commonTheme = {
   fontFamilyNeueBit: 'Neue Bit, sans-serif',
   fontFamilyFraktionMono: 'Fraktion Mono, sans-serif',
 
-  minHeight: `calc(100svh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
+
+  minHeight: `calc(100vh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
   sidePadding: themeValues.mainPadding,
+  minTopPadding: `calc((${themeValues.mainPadding} * 2) + ${themeValues.headerHeight})`,
 
   // Sizes
   'header-font-size': '2rem',
-  'header-height': themeValues.headerHeight,
+  headerHeight: themeValues.headerHeight,
 
   mainBorderRadius: '8px',
+  firstPageHeight: `calc(100vh - (${themeValues.mainPadding} * 2))`,
 
   boxShadowSize: '.5rem',
 
@@ -103,13 +107,13 @@ export const commonTheme = {
 }
 
 const AppDivStyled = styled.div(props => ({
-  height: '100svh',
+  height: '100%',
 
   background: props.theme.background,
   color: props.theme.color,
 
-  padding: `0 ${props.theme.sidePadding}`,
-  paddingTop: `calc(${props.theme['header-height']} + ${props.theme.sidePadding})`,
+  padding: `${props.theme.sidePadding}`,
+  // paddingTop: `calc(${props.theme['header-height']} + ${props.theme.sidePadding})`,
 
   '*:focus': {
     outline: `2px solid ${props.theme['accent']}`,

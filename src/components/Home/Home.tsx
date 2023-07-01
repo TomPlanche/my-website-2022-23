@@ -5,36 +5,32 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-// import {
-//   useContext,
-// } from "react";
+import {RefObject, useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import { gsap } from "gsap";
 import SplitText from "gsap/SplitText";
+import ScrollTrigger from "gsap/ScrollTrigger";
 
 import styled from 'styled-components'
 
-// import {
-//   AppContext,
-// } from '../../App';
-
-// import Menu from "../Menu/Menu";
-import {RefObject, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
-import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
-import {AppContext, noUserSelection} from "../../App";
-import {Link} from "react-router-dom";
 import Header from "../Header/Header";
+import MyUglyFace from "../MyUglyFace/MyUglyFace";
+import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
+
+import {noUserSelection, commonTheme} from "../../App";
+import {calcCssVar} from "../../assets/utils";
+
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(SplitText);
+gsap.registerPlugin(ScrollTrigger);
 
 // VARIABLES ================================================================================================ VARIABLES
+// Styles
 const StyledHome = styled.div(props => ({
-  height: '100%',
+  height: props.theme.firstPageHeight,
 
   'background': props.theme.background,
-
-  'padding': `${props.theme.sidePadding} 0`,
 
   'color': props.theme.color,
 
@@ -58,13 +54,14 @@ const StyledHome = styled.div(props => ({
 }));
 
 const StyledHomeLanding = styled.div(props => ({
-  height: '100%',
+  height: `${commonTheme.firstPageHeight}`,
   width: '100%',
 
   display: 'flex',
   flexDirection: "row",
   alignItems: 'center',
   justifyContent: 'center',
+
 }));
 
 const StyledHomeHalf = styled.div(props => ({
@@ -82,13 +79,8 @@ const StyledHomeHalf = styled.div(props => ({
   }
 }));
 
-const MyUglyFace = styled.img`
-  height: 25rem;
-  width: auto;
-  
-  border-radius: 5rem;
-`
-type T_headerRef = RefObject<HTMLDivElement>;
+// Types
+export type T_toPassRef = RefObject<HTMLDivElement>;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -99,28 +91,20 @@ type T_headerRef = RefObject<HTMLDivElement>;
  **/
 const Home = () => {
   // Context(s)
-  const {LastFM_HandlerInstance} = useContext(AppContext);
 
   // State(s)
   const [isPlayingLoadingAnimation, setIsPlayingLoadingAnimation] = useState<boolean>(true);
-  const [reverseMyUglyFace, setReverseMyUglyFace] = useState<boolean>(false);
-  const [myUglyFaceIsAnimating, setMyUglyFaceIsAnimating] = useState<boolean>(false);
 
   // Ref(s)
-  const headerRef: T_headerRef = useRef(null);
-  const homeLandingRef = useRef(null);
-  const leftHalfRef = useRef(null);
-  const rightHalfRef = useRef(null);
-  const myUglyFaceRef = useRef(null);
+  const headerRef: T_toPassRef = useRef<HTMLDivElement>(null);
+  const homeRef = useRef<HTMLDivElement>(null);
+  const homeLandingRef = useRef<HTMLDivElement>(null);
+  const leftHalfRef = useRef<HTMLDivElement>(null);
+  const rightHalfRef = useRef<HTMLDivElement>(null);
+  const myUglyFaceRef: T_toPassRef = useRef<HTMLDivElement>(null);
 
   // Method(s)
-  const handleMyUglyFaceMouseEnter = () => {
-    setReverseMyUglyFace(true);
-  }
 
-  const handleMyUglyFaceMouseLeave = () => {
-    setReverseMyUglyFace(false);
-  }
 
   // Effect(s)
   useLayoutEffect(() => {
@@ -178,30 +162,11 @@ const Home = () => {
       }, '<')
   }, []);
 
-  useEffect(() => {
-    if (myUglyFaceIsAnimating) {
-      setTimeout(() => {
-        setReverseMyUglyFace(reverseMyUglyFace);
-      }, 1000)
-      return;
-    }
-
-    gsap.to(myUglyFaceRef.current, {
-      rotateY: reverseMyUglyFace ? 180 : 0,
-      duration: .5,
-      ease: 'power2.out',
-      onStart: () => {
-        setMyUglyFaceIsAnimating(true);
-      },
-      onComplete: () => {
-        setMyUglyFaceIsAnimating(false);
-      }
-    })
-
-  }, [reverseMyUglyFace])
   // Render
   return (
-    <StyledHome>
+    <StyledHome
+      ref={homeRef}
+    >
       {!isPlayingLoadingAnimation && <IsPlayingDisplay/>}
 
       <Header key="header" ref={headerRef} />
@@ -217,7 +182,6 @@ const Home = () => {
         >
           <h2>Tom Planche</h2>
           <h3>Full Stack Developer</h3>
-
         </StyledHomeHalf>
         <StyledHomeHalf
           style={{
@@ -225,17 +189,9 @@ const Home = () => {
           }}
           ref={rightHalfRef}
         >
-          <MyUglyFace
-            src="/imgs/imageCV.png"
-            alt="My ugly face"
-            ref={myUglyFaceRef}
-
-            onMouseEnter={handleMyUglyFaceMouseEnter}
-            onMouseLeave={handleMyUglyFaceMouseLeave}
-          />
-        </StyledHomeHalf>
+          <MyUglyFace ref={myUglyFaceRef} />
+        </StyledHomeHalf >
       </StyledHomeLanding>
-
     </StyledHome>
   )
 }

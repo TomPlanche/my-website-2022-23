@@ -151,12 +151,16 @@ const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
       // Set the cursor style
       cursorRef.current.style.transform = `translate3d(${lerpableOptionsRef.current.translateX.previous}px, ${lerpableOptionsRef.current.translateY.previous}px, 0) scale(${lerpableOptionsRef.current.scale.previous})`;
       cursorRef.current.style.opacity = `${lerpableOptionsRef.current.opacity.previous}`;
-    } else {
     }
 
     requestAnimationFrame(render);
   }
 
+  /**
+   * @function onCursorMove
+   * @description To call when the cursor moves
+   * @param event {MouseEvent} - The mouse event
+   */
   const handleMouseMove = (event: MouseEvent) => {
     !hasMoved && setHasMoved(true);
     mousePositionRef.current = { x: event.clientX, y: event.clientY };

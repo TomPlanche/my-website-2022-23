@@ -5,18 +5,28 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {AnchorHTMLAttributes, ButtonHTMLAttributes} from "react";
+import {
+  AnchorHTMLAttributes,
+  ButtonHTMLAttributes, createRef, forwardRef,
+  ForwardRefExoticComponent, LegacyRef, RefAttributes, RefObject,
+} from "react";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
-type AnchorProps = AnchorHTMLAttributes<HTMLElement>
-type ButtonProps = ButtonHTMLAttributes<HTMLElement>
-type MyButtonProps = AnchorProps | ButtonProps
+type T_AnchorProps = AnchorHTMLAttributes<HTMLElement>
+type T_ButtonProps = ButtonHTMLAttributes<HTMLElement>
+
+type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement>
+
+type T_isAnchor = (props: T_MyButtonProps) => boolean;
+
+export type T_MyButton = ForwardRefExoticComponent<T_MyButtonProps>;
 // END VARIABLES ======================================================================================= END VARIABLES
 
-function isAnchor(props: MyButtonProps): props is AnchorProps {
-  return (props as AnchorProps).href !== undefined
+const isAnchor: T_isAnchor = (props) => {
+  return (props as T_AnchorProps).href !== undefined
 }
+
 
 // COMPONENENT  ============================================================================================= COMPONENT
 /**
@@ -24,15 +34,22 @@ function isAnchor(props: MyButtonProps): props is AnchorProps {
  * @return {JSX.Element}
  * @constructor
  **/
-export function MyButton(props: MyButtonProps) {
+const MyButton: T_MyButton = forwardRef((props, ref) => {
+
   if (isAnchor(props)) {
-    return <a className="my-button" {...props} />
+    return <a {...props} ref={ref as RefObject<HTMLAnchorElement>} />;
   }
-  return <button type="button" className="my-button" {...props} />
-}
 
+  const btnProps = {
+    ...(props as T_ButtonProps),
+  };
 
-
+  return<button
+    type={btnProps.type || 'button'}
+    {...btnProps}
+    ref={ref as RefObject<HTMLButtonElement>}
+  />;
+});
 
 // END COMPONENT =======================================================================================  END COMPONENT
 
