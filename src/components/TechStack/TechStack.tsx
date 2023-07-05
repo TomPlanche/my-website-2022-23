@@ -11,6 +11,7 @@ import styled from 'styled-components';
 import {gsap} from "gsap";
 import {E_Subtitles} from "../Home/Home";
 import {blurryBackground} from "../../App";
+import useDebounce from "../../hooks/use-debounce";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -133,7 +134,7 @@ type T_TechStack = (props: T_TechStackProps) => ReactElement;
  **/
 const TechStack: T_TechStack = (props) => {
   // State(s)
-  const [currentTech, setCurrentTech] = useState<number>(-1)
+  const [currentTech, setCurrentTech] = useDebounce(-1, 250);
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   // Ref(s)
@@ -155,10 +156,10 @@ const TechStack: T_TechStack = (props) => {
     setIsHovered(false)
 
     lastTechRef.current = -1;
-    setCurrentTech(-1);
   }
 
   const handleLineMouseEnter = (index: number) => {
+    console.log(`[TechStack] handleLineMouseEnter(${index})`);
     setCurrentTech(index)
   }
 
@@ -219,10 +220,16 @@ const TechStack: T_TechStack = (props) => {
   }, [isHovered])
 
   useEffect(() => {
-    if (lastTechRef.current < 0) {
+    if (currentTech < 0) {
+      lastTechRef.current = -1;
+      return;
+    }
+
+    if (lastTechRef.current < 0 && currentTech > 0) {
       lastTechRef.current = currentTech;
       return;
     }
+
 
     if (isHovered) {
       const techTimeline = gsap.timeline({

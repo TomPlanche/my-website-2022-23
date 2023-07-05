@@ -4,10 +4,13 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import { useState, useEffect } from 'react';
+import {useState, useEffect, SetStateAction, Dispatch} from 'react';
 // END IMPORTS ==========================================================================================   END IMPORTS
 
-const useDebounce = (value: any, delay: number) => {
+// VARIABLES ================================================================================================ VARIABLES
+type T_useDebounce = <Type>(value: Type, delay: number) => [Type, Dispatch<SetStateAction<Type>>]
+// END VARIABLES =======================================================================================  END VARIABLES
+const useDebounce: T_useDebounce = (value, delay) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   useEffect(() => {
@@ -20,7 +23,7 @@ const useDebounce = (value: any, delay: number) => {
     };
   }, [value]);
 
-  return debouncedValue;
+  return [debouncedValue, setDebouncedValue]
 }
 
 export default useDebounce;
