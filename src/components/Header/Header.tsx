@@ -61,17 +61,6 @@ const StyledHeader = styled.div(props => ({
   ...blurryBackground,
 }));
 
-const StyledHeaderTop = styled.div(props => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'space-between',
-
-  height: props.theme['header-height'],
-  width: '100%',
-
-  position: 'relative',
-}));
-
 const StyledHeaderRight = styled.div(props => ({
   height: props.theme['header-height'],
 

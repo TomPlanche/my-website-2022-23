@@ -15,6 +15,7 @@ import styled from "styled-components";
 import { gsap } from "gsap";
 
 import {AppContext} from "../../App";
+import {HomeContext} from "../Home/Home";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -32,7 +33,7 @@ const MyUglyFaceImg = styled.img`
   width: auto;
   
   border-radius: 5rem;
-`
+`;
 
 type T_MyUglyFace = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
 // END VARIABLES ======================================================================================= END VARIABLES
@@ -46,6 +47,7 @@ type T_MyUglyFace = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
 const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   // Context(s)
   const { theme, toggleTheme, cursorRef } = useContext(AppContext);
+  const { isPlayingLoadingAnimation } = useContext(HomeContext)
 
   // State(s)
   const [isAnimating, setIsAnimating] = useState(false);
@@ -57,6 +59,11 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
 
   // Methods
   const handleMouseEnter = () => {
+    if (
+      isPlayingLoadingAnimation
+      || isAnimating
+    ) return;
+
     if(!cursorRef.current) return;
 
     cursorRef.current.onCursorEnter(null, true);
@@ -68,7 +75,11 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
 
     cursorRef.current.onCursorLeave(null, true);
 
-    if (isAnimating) return;
+    if (
+      isAnimating
+      || isPlayingLoadingAnimation
+    ) return;
+
     gsap
       .to(myUglyFaceRef.current, {
         onStart: () => setIsAnimating(true),
@@ -85,9 +96,12 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   }
 
   const handleMouseMove = (e: any) => {
-    if(!cursorRef.current) return;
-    if(!myUglyFaceRef.current) return;
-    if (isAnimating) return;
+    if(
+      !cursorRef.current
+      || !myUglyFaceRef.current
+      || isAnimating
+      || isPlayingLoadingAnimation
+    ) return;
 
     const { clientX, clientY } = e;
     const { top, left, width, height } = myUglyFaceRect.current;

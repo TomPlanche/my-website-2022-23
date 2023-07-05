@@ -9,10 +9,10 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
 import Home from "./components/Home/Home";
-import Header from "./components/Header/Header";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
 import {calcCssVar, stripCssVar} from "./assets/utils";
+import Tests from "./components/Test/Tests";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -42,7 +42,7 @@ export const themeValues = {
   blurryBackgroundAlpha: 25,
   blurryBackgroundBlur: '12px',
 
-  headerHeight: '6vh',
+  headerHeight: '6rem',
 
   mainPadding: '2rem',
 
@@ -86,7 +86,7 @@ export const commonTheme = {
 
   minHeight: `calc(100vh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
   sidePadding: themeValues.mainPadding,
-  minTopPadding: `calc((${themeValues.mainPadding} * 2) + ${themeValues.headerHeight})`,
+  minTopPadding: calcCssVar(themeValues.headerHeight, variableWithoutUnit => variableWithoutUnit + stripCssVar(themeValues.mainPadding)),
 
   // Sizes
   'header-font-size': '2rem',
@@ -123,7 +123,6 @@ const AppDivStyled = styled.div(props => ({
 export const AppContext: Context<I_AppContext> = createContext<I_AppContext>({
   theme: 'dark',
   LastFM_HandlerInstance: LastFM_handler.getInstance('Tom_planche')
-
 } as I_AppContext);
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -193,6 +192,8 @@ const App = (): ReactElement => {
 
             <Routes>
                 <Route index element={<Home />} />
+
+                <Route path={'/tests'} element={<Tests />} />
 
                 <Route path="*" element={<h1>Route: '{location.pathname}' not found</h1>} />
               </Routes>

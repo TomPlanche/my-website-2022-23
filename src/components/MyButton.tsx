@@ -7,8 +7,8 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import {
   AnchorHTMLAttributes,
-  ButtonHTMLAttributes, createRef, forwardRef,
-  ForwardRefExoticComponent, LegacyRef, RefAttributes, RefObject,
+  ButtonHTMLAttributes, forwardRef,
+  ForwardRefExoticComponent, RefAttributes, RefObject,
 } from "react";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -44,7 +44,7 @@ const MyButton: T_MyButton = forwardRef((props, ref) => {
     ...(props as T_ButtonProps),
   };
 
-  return<button
+  return <button
     type={btnProps.type || 'button'}
     {...btnProps}
     ref={ref as RefObject<HTMLButtonElement>}
