@@ -19,6 +19,7 @@ import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 
 import {noUserSelection, commonTheme} from "../../App";
 import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
+import Footer from "../Footer/Footer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -148,6 +149,12 @@ const TechStackChildren = [
     description: 'Python is an interpreted, high-level and general-purpose programming language.',
     image: '/imgs/python-pic.jpg',
   } as T_TechStackChild,
+  {
+    title: "Shell",
+    subtitles: [E_Subtitles.GeneralCoding],
+    description: 'A shell is a user interface for access to an operating system\'s services.',
+    image: '/imgs/shell-pic.jpeg',
+  }
 ];
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -309,8 +316,11 @@ const Home = () => {
         {
           !isPlayingLoadingAnimation && <TechStack children={TechStackChildren} />
         }
-
       </StyledSection>
+
+      {
+        !isPlayingLoadingAnimation && <Footer />
+      }
     </StyledHome>
   )
 }

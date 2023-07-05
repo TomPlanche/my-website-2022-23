@@ -78,7 +78,7 @@ const StyledSpanChip = styled.span<{
 `;
 
 const StyledImagesContainer = styled.div((props) => ({
-  height: "100%",
+  height: "40vmin",
   width: "auto",
 
   position: "absolute",
@@ -104,7 +104,7 @@ const StyledImage = styled.img`
   top: 0;
   left: 0;
   
-  object-fit: fill;
+  object-fit: cover;
   
   pointer-events: none;
 `;
@@ -159,7 +159,6 @@ const TechStack: T_TechStack = (props) => {
   }
 
   const handleLineMouseEnter = (index: number) => {
-    console.log(`[TechStack] handleLineMouseEnter(${index})`);
     setCurrentTech(index)
   }
 
