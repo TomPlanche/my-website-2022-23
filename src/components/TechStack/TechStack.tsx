@@ -10,7 +10,6 @@ import {ReactElement, useEffect, useRef, useState} from "react";
 import styled from 'styled-components';
 import {gsap} from "gsap";
 import {E_Subtitles} from "../Home/Home";
-import {blurryBackground} from "../../App";
 import useDebounce from "../../hooks/use-debounce";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -19,32 +18,32 @@ import useDebounce from "../../hooks/use-debounce";
 const StyledTechStack = styled.div`
   height: auto;
   width: 100%;
-  
+
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  
+
   position: relative;
 `;
 
 const StyledTechStackLine = styled.div`
   height: 10vmin;
   width: 100%;
-  
+
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  
+
   padding: 2rem;
-  
+
   border: 1px solid ${props => props.theme.color};
-  
+
   font-size: 2rem;
-  
+
   transition: all 0.3s ease;
-  
+
   &:hover {
     background-color: ${props => props.theme.color};
     color: ${props => props.theme.background};
@@ -54,7 +53,7 @@ const StyledTechStackLine = styled.div`
 const StyledTechName = styled.h1`
   font-size: 2rem;
   font-weight: 600;
-  
+
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -66,46 +65,46 @@ const StyledSpanChip = styled.span<{
   color?: string,
 }>`
   font-size: 1rem;
-  
-  padding: .5rem .75rem .25rem .75rem; 
+
+  padding: .5rem .75rem .25rem .75rem;
   margin-left: 1rem;
-  
+
   border-radius: 99px;
   background-color: ${(props) => props.backgroundColor};
   color: ${props => props.color};
-  
+
   font-family: "Radikal", sans-serif;
 `;
 
-const StyledImagesContainer = styled.div((props) => ({
-  height: "40vmin",
-  width: "auto",
+const StyledImagesContainer = styled.div`
+  height: 40vmin;
+  width: auto;
 
-  position: "absolute",
-  top: "50%",
-  right: "0",
-  transform: "translateY(-50%)",
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
 
-  aspectRatio: "1/1",
-  overflow: "hidden",
+  aspect-ratio: 1/1;
+  overflow: hidden;
 
-  pointerEvents: "none",
+  pointer-events: none;
 
-  borderRadius: "3rem",
+  border-radius: 3rem;
 
-  ...blurryBackground,
-}));
+... blurryBackground,
+`;
 
 const StyledImage = styled.img`
   height: 100%;
   width: 100%;
-  
+
   position: absolute;
   top: 0;
   left: 0;
-  
+
   object-fit: cover;
-  
+
   pointer-events: none;
 `;
 
@@ -134,7 +133,7 @@ type T_TechStack = (props: T_TechStackProps) => ReactElement;
  **/
 const TechStack: T_TechStack = (props) => {
   // State(s)
-  const [currentTech, setCurrentTech] = useDebounce(-1, 250);
+  const [currentTech, setCurrentTech] = useDebounce(-1, 1000);
   const [isHovered, setIsHovered] = useState<boolean>(false)
 
   // Ref(s)
@@ -146,6 +145,7 @@ const TechStack: T_TechStack = (props) => {
 
   // Other
   const lastTechRef = useRef<number>(-1)
+  const titleArrayRef = useRef<string[]>([])
 
   // Method(s)
   const handleContainerMouseEnter = () => {
@@ -288,7 +288,9 @@ const TechStack: T_TechStack = (props) => {
             }}
             onMouseEnter={() => handleLineMouseEnter(index)}
           >
-            <StyledTechName>
+            <StyledTechName
+              ref={el => titleArrayRef.current[index] = el?.textContent as string}
+            >
               {child.title}
               {
                 child.subtitles && child.subtitles.map((subtitle, index) => (

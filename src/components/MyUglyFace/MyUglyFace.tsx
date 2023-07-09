@@ -8,11 +8,17 @@
 import {
   forwardRef,
   ForwardRefExoticComponent,
-  RefAttributes, useContext, useEffect, useLayoutEffect, useRef, useState,
+  MouseEvent,
+  RefAttributes,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
 } from "react";
 
 import styled from "styled-components";
-import { gsap } from "gsap";
+import {gsap} from "gsap";
 
 import {AppContext} from "../../App";
 import {HomeContext} from "../Home/Home";
@@ -23,7 +29,7 @@ import {HomeContext} from "../Home/Home";
 const StyledMyUglyFaceContainer = styled.div`
   height: 25rem;
   border-radius: 5rem;
-  
+
   position: relative;
 `;
 
@@ -31,11 +37,12 @@ const StyledMyUglyFaceContainer = styled.div`
 const MyUglyFaceImg = styled.img`
   height: 100%;
   width: auto;
-  
+
   border-radius: 5rem;
 `;
 
 type T_MyUglyFace = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
+type T_onMouseHandlers = (event: MouseEvent<HTMLDivElement>) => void;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -46,8 +53,8 @@ type T_MyUglyFace = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
  **/
 const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   // Context(s)
-  const { theme, toggleTheme, cursorRef } = useContext(AppContext);
-  const { isPlayingLoadingAnimation } = useContext(HomeContext)
+  const {cursorRef} = useContext(AppContext);
+  const {isPlayingLoadingAnimation} = useContext(HomeContext)
 
   // State(s)
   const [isAnimating, setIsAnimating] = useState(false);
@@ -64,7 +71,7 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
       || isAnimating
     ) return;
 
-    if(!cursorRef.current) return;
+    if (!cursorRef.current) return;
 
     cursorRef.current.onCursorEnter(null, true);
   }
@@ -95,16 +102,16 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
       })
   }
 
-  const handleMouseMove = (e: any) => {
-    if(
+  const handleMouseMove: T_onMouseHandlers = (e) => {
+    if (
       !cursorRef.current
       || !myUglyFaceRef.current
       || isAnimating
       || isPlayingLoadingAnimation
     ) return;
 
-    const { clientX, clientY } = e;
-    const { top, left, width, height } = myUglyFaceRect.current;
+    const {clientX, clientY} = e;
+    const {top, left, width, height} = myUglyFaceRect.current;
 
     const turns = {
       x: -(-(clientX - left) + width / 2) / (width / 2),
@@ -117,14 +124,14 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   }
 
   const handleResize = () => {
-    if(!myUglyFaceRef.current) return;
+    if (!myUglyFaceRef.current) return;
 
     myUglyFaceRect.current = myUglyFaceRef.current.getBoundingClientRect();
   }
 
   // Effects
   useLayoutEffect(() => {
-    if(!myUglyFaceRef.current) return;
+    if (!myUglyFaceRef.current) return;
 
     myUglyFaceRect.current = myUglyFaceRef.current.getBoundingClientRect();
   })
@@ -154,6 +161,8 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   )
 })
 // END COMPONENT =======================================================================================  END COMPONENT
+
+MyUglyFace.displayName = 'MyUglyFace';
 
 export default MyUglyFace;
 

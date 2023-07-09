@@ -14,9 +14,7 @@ import {gsap} from "gsap";
 
 import styled from "styled-components";
 
-import {
-  blurryBackground, AppContext
-} from "../../App";
+import {AppContext, blurryBackground} from "../../App";
 
 import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
 import {calcCssVar, compareTracks} from "../../assets/utils";
@@ -84,11 +82,17 @@ const StyledTrackInfo = styled.div(props => ({
 
   'span': {
     textAlign: 'left',
+    // if the text is more than 2 lines, we want to hide the overflow
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    display: '-webkit-box',
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: 'vertical',
   }
 }));
 
 // Normal variable(s)
-const emptyAlbumCover: string = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
+const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -125,8 +129,7 @@ const IsPlayingDisplay = () => {
           currentTrackRef.current = track;
           setFinalTrack(track)
         } else {
-          if (compareTracks(currentTrackRef.current, track)) {
-          } else {
+          if (!compareTracks(currentTrackRef.current, track)) {
             setFinalTrack(track);
           }
         }
@@ -277,16 +280,16 @@ const IsPlayingDisplay = () => {
   useEffect(() => {
     if (isPlaying) {
       const tl = gsap.timeline({
-          duration: .75,
-          ease: 'power3.out',
+        duration: .75,
+        ease: 'power3.out',
 
-          onStart: () => {
-            setIsAnimating(true);
-          },
-          onComplete: () => {
-            setIsAnimating(false);
-          }
-        });
+        onStart: () => {
+          setIsAnimating(true);
+        },
+        onComplete: () => {
+          setIsAnimating(false);
+        }
+      });
       tl
         .fromTo(isPlayingDisplayRef.current, {
           opacity: 0,
@@ -345,18 +348,17 @@ const IsPlayingDisplay = () => {
       {
         finalTrack &&
           <>
-            <StyledAlbumCover
-              ref={albumCoverRef}
-              src={handleTrackImage()}
-              alt={finalTrack.name}
-            />
-
-            <StyledTrackInfo
-              ref={trackInfoRef}
-            >
-              <span>{finalTrack.name}</span>
-              <span>{finalTrack.artist['#text']}</span>
-            </StyledTrackInfo>
+              <StyledAlbumCover
+                  ref={albumCoverRef}
+                  src={handleTrackImage()}
+                  alt={finalTrack.name}
+              />
+              <StyledTrackInfo
+                  ref={trackInfoRef}
+              >
+                  <span title={finalTrack.name}>{finalTrack.name}</span>
+                  <span title={finalTrack.artist['#text']}>{finalTrack.artist['#text']}</span>
+              </StyledTrackInfo>
 
           </>
       }

@@ -6,12 +6,10 @@
 
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
-
-import {
-  commonTheme
-} from "../../App";
-
-import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
+import MyButton from "../MyButton";
+import MagnetikContainer from "../Magnetik/MagnetikContainer";
+import {useRef} from "react";
+import MagnetikButton from "../Magnetik/MagnetikButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -19,29 +17,40 @@ import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
 const StyledTests = styled.div(props => ({
   height: props.theme.firstPageHeight,
   width: '100%',
+
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
 }));
 
+const StyledButton = styled(MyButton)`
+  height: 5rem;
+  width: 10rem;
+
+  border-radius: 2.5rem;
+
+  font-size: 2rem;
+  font-family: 'Cirka', sans-serif;
+
+  background: ${props => props.theme.background};
+  border: 0.2rem solid ${props => props.theme.color};
+`;
+
+const StyledMagnetikButton = styled(MagnetikButton)`
+  height: 5rem;
+  width: 10rem;
+
+  border-radius: 2.5rem;
+
+  font-size: 2rem;
+  font-family: 'Cirka', sans-serif;
+
+  background: ${props => props.theme.background};
+  border: 0.2rem solid ${props => props.theme.color};
+`;
 // Others
-const TechStackChildren = [
-  {
-    title: 'React',
-    subtitles: ['Front-end', 'Back-end'],
-    description: 'React is a JavaScript library for building user interfaces. It is maintained by Facebook and a community of individual developers and companies.',
-    image: '/imgs/react.png',
-  } as T_TechStackChild,
-  {
-    title: 'TypeScript',
-    subtitles: ['Front-end', 'Back-end'],
-    description: 'TypeScript is an open-source language which builds on JavaScript, one of the world’s most used tools, by adding static type definitions.',
-    image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Typescript_logo_2020.svg/1280px-Typescript_logo_2020.svg.png',
-  } as T_TechStackChild,
-  {
-    title: 'Styled Components',
-    subtitles: ['Front-end'],
-    description: 'Styled Components is a CSS-in-JS library that enables developers to write each component with their own styles.',
-    image: 'https://styled-components.com/logo.png',
-  } as T_TechStackChild,
-];
+
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -54,7 +63,10 @@ const Tests = () => {
   // State(s)
 
   // Ref(s)
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const buttonTextRef = useRef<HTMLSpanElement>(null);
 
+  const textBtnRef = useRef<HTMLButtonElement>(null);
   // Method(s)
 
   // Effect(s)
@@ -62,7 +74,46 @@ const Tests = () => {
   // Render
   return (
     <StyledTests>
-      <TechStack children={TechStackChildren} />
+      <MagnetikContainer
+        ref={buttonRef}
+
+        fieldSize={2}
+        fieldForce={1}
+        // centered
+      >
+        <StyledButton>
+          <span
+            ref={buttonTextRef}
+          >
+            Test
+          </span>
+        </StyledButton>
+      </MagnetikContainer>
+
+      <div className="spacer" style={{
+        margin: "2rem"
+      }}></div>
+
+      <MagnetikButton
+        ref={textBtnRef}
+        text={"Test"}
+        style={{
+          height: "5rem",
+          width: "10rem",
+
+          borderRadius: "2.5rem",
+
+          fontSize: "2rem",
+          fontFamily: "'Cirka', sans-serif",
+
+          border: "0.2rem solid #eeeeee",
+        }}
+
+        fieldSize={2}
+        fieldForce={1}
+        // centered
+      />
+
     </StyledTests>
   )
 }

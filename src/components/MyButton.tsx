@@ -7,8 +7,11 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import {
   AnchorHTMLAttributes,
-  ButtonHTMLAttributes, forwardRef,
-  ForwardRefExoticComponent, RefAttributes, RefObject,
+  ButtonHTMLAttributes,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  RefObject,
 } from "react";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -37,7 +40,7 @@ const isAnchor: T_isAnchor = (props) => {
 const MyButton: T_MyButton = forwardRef((props, ref) => {
 
   if (isAnchor(props)) {
-    return <a {...props} ref={ref as RefObject<HTMLAnchorElement>} />;
+    return <a {...props} ref={ref as RefObject<HTMLAnchorElement>}/>;
   }
 
   const btnProps = {
@@ -52,6 +55,8 @@ const MyButton: T_MyButton = forwardRef((props, ref) => {
 });
 
 // END COMPONENT =======================================================================================  END COMPONENT
+
+MyButton.displayName = 'MyButton';
 
 export default MyButton;
 

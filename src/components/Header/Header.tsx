@@ -6,26 +6,23 @@
 
 // IMPORTS ===================================================================================================  IMPORTS
 import React, {
-  createRef,
-  forwardRef, ForwardRefExoticComponent, RefAttributes,
-  useContext, useEffect,
+  forwardRef,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  useContext,
+  useEffect,
   useLayoutEffect,
-  useRef, useState
+  useRef,
+  useState
 } from "react";
 
 import styled from "styled-components";
-import { gsap } from "gsap";
+import {gsap} from "gsap";
 import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
-import {
-  AppContext,
-
-  blurryBackground,
-  noUserSelection,
-} from "../../App";
+import {AppContext, blurryBackground, noUserSelection,} from "../../App";
 
 import MyButton from "../MyButton";
-import {calcCssVar} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(ScrambleTextPlugin);
@@ -109,7 +106,7 @@ type T_changeEmoji = (theme?: 'light' | 'dark') => void;
  **/
 const Header: T_Header = forwardRef((_, ref) => {
   // Context(s)
-  const { theme, toggleTheme, cursorRef } = useContext(AppContext);
+  const {theme, toggleTheme, cursorRef} = useContext(AppContext);
 
   // State(s)
   const [emojiHovered, setEmojiHovered] = useState(false);
@@ -118,8 +115,8 @@ const Header: T_Header = forwardRef((_, ref) => {
   const timeRef = useRef<HTMLHeadingElement>(null);
   const themeBtnRef = useRef<HTMLButtonElement>(null);
 
-  let timeIntervalRef = useRef<NodeJS.Timer>();
-  let emojiChangeIntervalRef = useRef<NodeJS.Timer>();
+  const timeIntervalRef = useRef<NodeJS.Timer>();
+  const emojiChangeIntervalRef = useRef<NodeJS.Timer>();
 
   // Variable(s)
   // Method(s)
@@ -180,15 +177,23 @@ const Header: T_Header = forwardRef((_, ref) => {
       })
 
     if (timeRef.current) {
-      timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
+      timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
     }
 
-	  // Each second, update the time
-	  if (timeIntervalRef) {
+    // Each second, update the time
+    if (timeIntervalRef) {
       timeIntervalRef.current = setInterval(() => {
         // French time format like 18h30:14
         if (timeRef.current) {
-          timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit', second: '2-digit'});
+          timeRef.current.innerHTML = new Date().toLocaleTimeString('fr-FR', {
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit'
+          });
         }
       }, 1000);
     }
@@ -244,6 +249,8 @@ const Header: T_Header = forwardRef((_, ref) => {
   )
 })
 // END COMPONENT =======================================================================================  END COMPONENT
+
+Header.displayName = 'Header';
 
 export default Header;
 
