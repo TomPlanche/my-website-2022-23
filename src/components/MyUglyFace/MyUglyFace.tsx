@@ -5,23 +5,11 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {
-  forwardRef,
-  ForwardRefExoticComponent,
-  MouseEvent,
-  RefAttributes,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import {forwardRef, ForwardRefExoticComponent, MouseEvent, RefAttributes, useContext, useRef,} from "react";
 
 import styled from "styled-components";
-import {gsap} from "gsap";
-
-import {AppContext} from "../../App";
 import {HomeContext} from "../Home/Home";
+import MagnetikContainer from "../Magnetik/MagnetikContainer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -53,111 +41,25 @@ type T_onMouseHandlers = (event: MouseEvent<HTMLDivElement>) => void;
  **/
 const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   // Context(s)
-  const {cursorRef} = useContext(AppContext);
   const {isPlayingLoadingAnimation} = useContext(HomeContext)
-
-  // State(s)
-  const [isAnimating, setIsAnimating] = useState(false);
 
   // Ref(s)
   const myUglyFaceRef = useRef<HTMLImageElement>(null);
-
-  const myUglyFaceRect = useRef({} as DOMRect);
-
-  // Methods
-  const handleMouseEnter = () => {
-    if (
-      isPlayingLoadingAnimation
-      || isAnimating
-    ) return;
-
-    if (!cursorRef.current) return;
-
-    cursorRef.current.onCursorEnter(null, true);
-  }
-
-
-  const handleMouseLeave = () => {
-    if (!cursorRef.current) return;
-
-    cursorRef.current.onCursorLeave(null, true);
-
-    if (
-      isAnimating
-      || isPlayingLoadingAnimation
-    ) return;
-
-    gsap
-      .to(myUglyFaceRef.current, {
-        onStart: () => setIsAnimating(true),
-
-        duration: 1,
-        ease: 'Power3.easeOut',
-
-        rotateX: 0,
-        rotateY: 0,
-        rotateZ: 0,
-
-        onComplete: () => setIsAnimating(false),
-      })
-  }
-
-  const handleMouseMove: T_onMouseHandlers = (e) => {
-    if (
-      !cursorRef.current
-      || !myUglyFaceRef.current
-      || isAnimating
-      || isPlayingLoadingAnimation
-    ) return;
-
-    const {clientX, clientY} = e;
-    const {top, left, width, height} = myUglyFaceRect.current;
-
-    const turns = {
-      x: -(-(clientX - left) + width / 2) / (width / 2),
-      y: (height / 2 - (clientY - top)) / (height / 2),
-    }
-
-    const distance = Math.sqrt(Math.pow(turns.x, 2) + Math.pow(turns.y, 2));
-
-    myUglyFaceRef.current.style.transform = `rotate3d(${turns.y}, ${turns.x}, 0, ${20 * distance}deg)`;
-  }
-
-  const handleResize = () => {
-    if (!myUglyFaceRef.current) return;
-
-    myUglyFaceRect.current = myUglyFaceRef.current.getBoundingClientRect();
-  }
-
-  // Effects
-  useLayoutEffect(() => {
-    if (!myUglyFaceRef.current) return;
-
-    myUglyFaceRect.current = myUglyFaceRef.current.getBoundingClientRect();
-  })
-
-  useEffect(() => {
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    }
-  }, [])
   // Render
   return (
-    <StyledMyUglyFaceContainer
+    <MagnetikContainer
       ref={passedRef}
 
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      onMouseMove={handleMouseMove}
+      fieldForce={0.25}
+      fieldSize={1.5}
+      block={isPlayingLoadingAnimation}
     >
       <MyUglyFaceImg
         src="/imgs/imageCV.png"
         alt="My ugly face"
         ref={myUglyFaceRef}
       />
-    </StyledMyUglyFaceContainer>
+    </MagnetikContainer>
   )
 })
 // END COMPONENT =======================================================================================  END COMPONENT

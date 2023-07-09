@@ -32,6 +32,10 @@ type T_MagnetikContainerProps = {
   fieldSize?: number,
   fieldForce?: number,
   centered?: boolean,
+
+  block?: boolean,
+
+  debug?: boolean
 }
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -58,7 +62,10 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
 
   // Method(s)
   const handleMagnetikContainerMouseMove = (e: MouseEvent) => {
-    if (!mainContainerRef.current) return;
+    if (
+      !mainContainerRef.current
+      || props.block
+    ) return;
 
 
     const {clientX, clientY} = e;
@@ -106,7 +113,10 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
   }
 
   const handleMagnetikContainerMouseLeave = () => {
-    if (!mainContainerRef.current) return;
+    if (
+      !mainContainerRef.current
+      || props.block
+    ) return;
 
     // @ts-ignore
     // (TS2339: Property 'current' does not exist on type '((instance: HTMLElement | null) => void) | MutableRefObject<HTMLElement | null>'.
@@ -126,11 +136,16 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
     // (TS2339: Property 'current' does not exist on type '((instance: HTMLElement | null) => void) | MutableRefObject<HTMLElement | null>'.
     const {width, height} = passedRef.current.getBoundingClientRect();
 
+    const options = props.debug ? {
+      border: '4px dotted red',
+    } : {}
+
     // Apply the field size
     gsap.set(mainContainerRef.current, {
       width: width * fieldSize,
       height: height * fieldSize,
-      border: '4px solid red',
+
+      ...options
     });
   })
 
