@@ -31,7 +31,7 @@ gsap.registerPlugin(ScrambleTextPlugin);
 // Styles
 const StyledHeader = styled.div(props => ({
   position: 'fixed',
-  top: `${props.theme.sidePadding}`,
+  top: props.theme.sidePadding,
 
   height: props.theme.headerHeight,
   width: `calc(100% - ${props.theme.sidePadding} * 2)`,

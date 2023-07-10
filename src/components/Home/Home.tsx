@@ -7,7 +7,7 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import {createContext, useEffect, useRef, useState} from "react";
 
-import { gsap } from "gsap";
+import {gsap} from "gsap";
 import SplitText from "gsap/SplitText";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
@@ -17,9 +17,8 @@ import Header from "../Header/Header";
 import MyUglyFace from "../MyUglyFace/MyUglyFace";
 import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 
-import {noUserSelection, commonTheme} from "../../App";
+import {commonTheme, noUserSelection} from "../../App";
 import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
-import Footer from "../Footer/Footer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -30,6 +29,8 @@ gsap.registerPlugin(ScrollTrigger);
 // Styles
 const StyledHome = styled.div(props => ({
   minHeight: props.theme.firstPageHeight,
+  width: "100%",
+  // overflow: "hidden",
 
   'background': props.theme.background,
 
@@ -276,7 +277,7 @@ const Home = () => {
     >
       {!isPlayingLoadingAnimation && <IsPlayingDisplay/>}
 
-      <Header key="header" ref={headerRef} />
+      <Header key="header" ref={headerRef}/>
 
       <StyledHomeLanding
         ref={homeLandingRef}
@@ -299,9 +300,9 @@ const Home = () => {
           <HomeContext.Provider value={{
             isPlayingLoadingAnimation: isPlayingLoadingAnimation,
           }}>
-            <MyUglyFace ref={myUglyFaceRef} />
+            <MyUglyFace ref={myUglyFaceRef}/>
           </HomeContext.Provider>
-        </StyledHomeHalf >
+        </StyledHomeHalf>
       </StyledHomeLanding>
 
       <StyledSection
@@ -314,13 +315,13 @@ const Home = () => {
         >Tech Stack</h2>
 
         {
-          !isPlayingLoadingAnimation && <TechStack children={TechStackChildren} />
+          !isPlayingLoadingAnimation && <TechStack children={TechStackChildren}/>
         }
       </StyledSection>
 
-      {
-        !isPlayingLoadingAnimation && <Footer />
-      }
+      {/*{*/}
+      {/*  !isPlayingLoadingAnimation && <Footer/>*/}
+      {/*}*/}
     </StyledHome>
   )
 }

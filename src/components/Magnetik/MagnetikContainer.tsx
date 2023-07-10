@@ -6,7 +6,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {ForwardedRef, forwardRef, ReactElement, useLayoutEffect, useRef} from "react";
+import {CSSProperties, ForwardedRef, forwardRef, ReactElement, useLayoutEffect, useRef} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
@@ -28,10 +28,12 @@ const StyledChildContainer = styled.div`
 // Types
 type T_MagnetikContainerProps = {
   children?: ReactElement,
+  style?: CSSProperties,
 
   fieldSize?: number,
   fieldForce?: number,
   centered?: boolean,
+
 
   block?: boolean,
 
@@ -154,15 +156,13 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
     // @ts-ignore
     <StyledMagnetikContainer
       ref={mainContainerRef}
+
       onMouseMove={handleMagnetikContainerMouseMove}
       onMouseLeave={handleMagnetikContainerMouseLeave}
     >
       <StyledChildContainer
         // @ts-ignore
         ref={passedRef}
-        style={{
-          color: 'honeydew'
-        }}
       >
         {props.children}
       </StyledChildContainer>

@@ -5,7 +5,7 @@
 
 // IMPORTS ===================================================================================================  IMPORTS
 import {Context, createContext, ReactElement, RefObject, useEffect, useRef, useState} from 'react'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
 import Home from "./components/Home/Home";
@@ -42,9 +42,9 @@ export const themeValues = {
   blurryBackgroundAlpha: 25,
   blurryBackgroundBlur: '12px',
 
-  headerHeight: '6rem',
+  headerHeight: '10vmin',
 
-  mainPadding: '2rem',
+  mainPadding: '2vmax',
 
   // Colors
   dark: '#080a13',
@@ -108,6 +108,7 @@ export const commonTheme = {
 
 const AppDivStyled = styled.div(props => ({
   height: '100%',
+  width: '100vw',
 
   background: props.theme.background,
   color: props.theme.color,
@@ -185,18 +186,18 @@ const App = (): ReactElement => {
         LastFM_HandlerInstance: LastFM_handler.getInstance()
       }}>
         <ThemeProvider theme={
-          theme === 'dark' ? {...blackTheme, ...commonTheme}  : {...whiteTheme, ...commonTheme}
+          theme === 'dark' ? {...blackTheme, ...commonTheme} : {...whiteTheme, ...commonTheme}
         }>
           <AppDivStyled>
-            <CustomCursor ref={cursorRef} />
+            <CustomCursor ref={cursorRef}/>
 
             <Routes>
-                <Route index element={<Home />} />
+              <Route index element={<Home/>}/>
 
-                <Route path={'/tests'} element={<Tests />} />
+              <Route path={'/tests'} element={<Tests/>}/>
 
-                <Route path="*" element={<h1>Route: '{location.pathname}' not found</h1>} />
-              </Routes>
+              <Route path="*" element={<h1>Route: '{location.pathname}' not found</h1>}/>
+            </Routes>
           </AppDivStyled>
         </ThemeProvider>
       </AppContext.Provider>
