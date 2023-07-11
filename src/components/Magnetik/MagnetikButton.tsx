@@ -26,10 +26,14 @@ const StyledMagnetikContainer = styled.div`
 type T_MagnetikButtonProps = {
   text: string
   style: CSSProperties,
+  containerStyle?: CSSProperties,
 
   fieldSize?: number,
   fieldForce?: number,
   centered?: boolean,
+
+  debug?: boolean,
+  block?: boolean,
 }
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -57,7 +61,7 @@ const MagnetikButton = forwardRef(function MagnetikButton(
 
   // Method(s)
   const handleMagnetikContainerMouseMove = (e: MouseEvent) => {
-    if (!mainContainerRef.current) return;
+    if (!mainContainerRef.current || props.block) return;
 
 
     const {clientX, clientY} = e;
@@ -115,7 +119,7 @@ const MagnetikButton = forwardRef(function MagnetikButton(
   }
 
   const handleMagnetikContainerMouseLeave = () => {
-    if (!mainContainerRef.current) return;
+    if (!mainContainerRef.current || props.block) return;
 
     const buttonAnimTl = gsap.timeline({
       defaults: {
@@ -150,7 +154,7 @@ const MagnetikButton = forwardRef(function MagnetikButton(
     gsap.set(mainContainerRef.current, {
       width: width * fieldSize,
       height: height * fieldSize,
-      border: '4px solid red',
+      border: props.debug ? '4px solid red' : 'none',
     });
   })
 
@@ -159,6 +163,9 @@ const MagnetikButton = forwardRef(function MagnetikButton(
     // @ts-ignore
     <StyledMagnetikContainer
       ref={mainContainerRef}
+      style={{
+        ...props.containerStyle,
+      }}
 
       onMouseMove={handleMagnetikContainerMouseMove}
       onMouseLeave={handleMagnetikContainerMouseLeave}
@@ -169,9 +176,9 @@ const MagnetikButton = forwardRef(function MagnetikButton(
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+
           ...props.style,
-        }
-        }
+        }}
       >
         <span ref={textRef}>{props.text}</span>
       </MyButton>

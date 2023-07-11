@@ -45,7 +45,6 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
       fieldSize={1.5}
       block={isPlayingLoadingAnimation}
 
-      debug
     >
       <MyUglyFaceImg
         src="/imgs/imageCV.png"

@@ -11,14 +11,15 @@ import {gsap} from "gsap";
 import SplitText from "gsap/SplitText";
 import ScrollTrigger from "gsap/ScrollTrigger";
 
-import styled from 'styled-components'
+import styled, {useTheme} from 'styled-components'
 
 import Header from "../Header/Header";
 import MyUglyFace from "../MyUglyFace/MyUglyFace";
 import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 
-import {commonTheme, noUserSelection} from "../../App";
+import {commonTheme, I_Theme, noUserSelection} from "../../App";
 import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
+import MagnetikButton from "../Magnetik/MagnetikButton";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -64,6 +65,8 @@ const StyledHomeLanding = styled.div(props => ({
   flexDirection: "row",
   alignItems: 'center',
   justifyContent: 'center',
+
+  position: 'relative',
 }));
 
 const StyledHomeHalf = styled.div(props => ({
@@ -167,6 +170,7 @@ const TechStackChildren = [
  **/
 const Home = () => {
   // Context(s)
+  const theme: I_Theme = useTheme() as I_Theme;
 
   // State(s)
   const [
@@ -182,6 +186,7 @@ const Home = () => {
   const rightHalfRef = useRef<HTMLDivElement>(null);
   const myUglyFaceRef = useRef<HTMLDivElement>(null);
   const firstSectionRef = useRef<HTMLSelectElement>(null);
+  const aboutMeButtonRef = useRef<HTMLButtonElement>(null);
 
   // Method(s)
 
@@ -217,6 +222,10 @@ const Home = () => {
         display: 'none',
         paddingTop: 0,
       })
+      .set(aboutMeButtonRef.current, {
+        opacity: 0,
+        y: '100%',
+      })
       .to(myUglyFaceRef.current, {
         opacity: 1,
         scale: 1,
@@ -251,6 +260,11 @@ const Home = () => {
         opacity: 1,
         height: commonTheme.firstPageHeight,
         display: 'flex',
+      })
+      .to(aboutMeButtonRef.current, {
+        opacity: 1,
+        y: '0%',
+        duration: .5,
       });
 
     const scrollTriggerTl = gsap.timeline({
@@ -303,6 +317,28 @@ const Home = () => {
             <MyUglyFace ref={myUglyFaceRef}/>
           </HomeContext.Provider>
         </StyledHomeHalf>
+
+        <MagnetikButton
+          ref={aboutMeButtonRef}
+
+          text="About Me"
+          containerStyle={{
+            position: 'absolute',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+          }}
+          style={{
+            width: 'fit-content',
+            padding: '1rem 2rem',
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            borderRadius: '99px',
+            border: `2px solid ${theme.color}`,
+            fontFamily: 'Cirka, sans-serif',
+            opacity: 0,
+          }}
+        />
       </StyledHomeLanding>
 
       <StyledSection
@@ -315,7 +351,7 @@ const Home = () => {
         >Tech Stack</h2>
 
         {
-          !isPlayingLoadingAnimation && <TechStack children={TechStackChildren}/>
+          !isPlayingLoadingAnimation && <TechStack childrenObj={TechStackChildren}/>
         }
       </StyledSection>
 

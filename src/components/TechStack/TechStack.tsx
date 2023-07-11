@@ -10,7 +10,6 @@ import {ReactElement, useEffect, useRef, useState} from "react";
 import styled from 'styled-components';
 import {gsap} from "gsap";
 import {E_Subtitles} from "../Home/Home";
-import useDebounce from "../../hooks/use-debounce";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -117,7 +116,7 @@ export type T_TechStackChild = {
 }
 
 type T_TechStackProps = {
-  children: T_TechStackChild[],
+  childrenObj: T_TechStackChild[],
 }
 
 type T_getSubtitleInfo = (subtitle: string) => string;
@@ -133,19 +132,20 @@ type T_TechStack = (props: T_TechStackProps) => ReactElement;
  **/
 const TechStack: T_TechStack = (props) => {
   // State(s)
-  const [currentTech, setCurrentTech] = useDebounce(-1, 1000);
-  const [isHovered, setIsHovered] = useState<boolean>(false)
+  const [currentTech, setCurrentTech] = useState(-1);
+  const [debouncedCurrentTech, setDebouncedCurrentTech] = useState<number>(-1);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
 
   // Ref(s)
   // HTML
-  const containersRef = useRef<HTMLDivElement[]>([])
-  const imagesContainerRef = useRef<HTMLDivElement>(null)
-  const currentImageRef = useRef<HTMLImageElement>(null)
-  const lastImageRef = useRef<HTMLImageElement>(null)
+  const containersRef = useRef<HTMLDivElement[]>([]);
+  const imagesContainerRef = useRef<HTMLDivElement>(null);
+  const currentImageRef = useRef<HTMLImageElement>(null);
+  const lastImageRef = useRef<HTMLImageElement>(null);
 
   // Other
-  const lastTechRef = useRef<number>(-1)
-  const titleArrayRef = useRef<string[]>([])
+  const lastTechRef = useRef<number>(-1);
+  const titleArrayRef = useRef<string[]>([]);
 
   // Method(s)
   const handleContainerMouseEnter = () => {
@@ -159,7 +159,11 @@ const TechStack: T_TechStack = (props) => {
   }
 
   const handleLineMouseEnter = (index: number) => {
-    setCurrentTech(index)
+    if (currentTech < 0) {
+      setCurrentTech(index)
+    } else {
+      setDebouncedCurrentTech(index)
+    }
   }
 
   const getSubtitleBackgroundColor: T_getSubtitleInfo = (subtitle) => {
@@ -224,11 +228,10 @@ const TechStack: T_TechStack = (props) => {
       return;
     }
 
-    if (lastTechRef.current < 0 && currentTech > 0) {
+    if (lastTechRef.current < 0 && currentTech >= 0) {
       lastTechRef.current = currentTech;
       return;
     }
-
 
     if (isHovered) {
       const techTimeline = gsap.timeline({
@@ -271,6 +274,14 @@ const TechStack: T_TechStack = (props) => {
     }
   }, [currentTech])
 
+  useEffect(() => {
+    const debounce = setTimeout(() => {
+      setCurrentTech(debouncedCurrentTech)
+    }, 75);
+
+    return () => clearTimeout(debounce);
+  }, [debouncedCurrentTech])
+
   // Render
   return (
     <StyledTechStack
@@ -278,13 +289,13 @@ const TechStack: T_TechStack = (props) => {
       onMouseLeave={handleContainerMouseLeave}
     >
       {
-        props.children.map((child, index) => (
+        props.childrenObj.map((child, index) => (
 
           <StyledTechStackLine
             key={index}
             ref={el => containersRef.current[index] = el as HTMLDivElement}
             style={{
-              borderBottom: index !== props.children.length - 1 ? 'none' : '1px solid white',
+              borderBottom: index !== props.childrenObj.length - 1 ? 'none' : '1px solid white',
             }}
             onMouseEnter={() => handleLineMouseEnter(index)}
           >
@@ -313,8 +324,8 @@ const TechStack: T_TechStack = (props) => {
             ref={imagesContainerRef}
           >
             <StyledImage
-              src={props.children[currentTech].image}
-              alt={props.children[currentTech].title}
+              src={props.childrenObj[currentTech].image}
+              alt={props.childrenObj[currentTech].title}
 
               ref={currentImageRef}
             />
@@ -322,8 +333,8 @@ const TechStack: T_TechStack = (props) => {
             {
               lastTechRef.current >= 0 && (
                 <StyledImage
-                  src={props.children[lastTechRef.current].image}
-                  alt={props.children[lastTechRef.current].title}
+                  src={props.childrenObj[lastTechRef.current].image}
+                  alt={props.childrenObj[lastTechRef.current].title}
                   ref={lastImageRef}
                 />
               )
