@@ -6,7 +6,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {CSSProperties, ForwardedRef, forwardRef, ReactElement, useLayoutEffect, useRef} from "react";
+import {CSSProperties, ForwardedRef, forwardRef, MouseEventHandler, ReactElement, useLayoutEffect, useRef} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
@@ -34,6 +34,13 @@ type T_MagnetikButtonProps = {
 
   debug?: boolean,
   block?: boolean,
+
+  // All React.ButtonHTMLAttributes<HTMLButtonElement | HTMLAnchorElement> props
+  onClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
+  onMouseEnter?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
+  onMouseLeave?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
+  onMouseDown?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
+  onMouseUp?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>,
 }
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -179,6 +186,12 @@ const MagnetikButton = forwardRef(function MagnetikButton(
 
           ...props.style,
         }}
+
+        onClick={props.onClick}
+        onMouseEnter={props.onMouseEnter}
+        onMouseLeave={props.onMouseLeave}
+        onMouseDown={props.onMouseDown}
+        onMouseUp={props.onMouseUp}
       >
         <span ref={textRef}>{props.text}</span>
       </MyButton>

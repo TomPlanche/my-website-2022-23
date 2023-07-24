@@ -33,7 +33,6 @@ const playingDisplayVars = {
 }
 
 const StyledIsPlayingDisplay = styled.div(props => ({
-  ...blurryBackground,
 
   position: 'fixed',
   bottom: playingDisplayVars.marginFromBottom,
@@ -56,6 +55,9 @@ const StyledIsPlayingDisplay = styled.div(props => ({
   border: `1px solid ${props.theme['blurryBackground']}`,
 
   opacity: 0,
+
+  zIndex: 9999,
+  ...blurryBackground,
 }));
 
 const StyledAlbumCover = styled.img`

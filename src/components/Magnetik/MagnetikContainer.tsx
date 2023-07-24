@@ -10,6 +10,7 @@ import {CSSProperties, ForwardedRef, forwardRef, ReactElement, useLayoutEffect, 
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
+import {limitNumberInBounds} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -39,6 +40,8 @@ type T_MagnetikContainerProps = {
 
   debug?: boolean
 }
+
+type DOMRefs = HTMLElement | SVGSVGElement;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -49,7 +52,7 @@ type T_MagnetikContainerProps = {
  **/
 const MagnetikContainer = forwardRef(function MagnetikContainer(
   props: T_MagnetikContainerProps,
-  passedRef: ForwardedRef<HTMLElement>
+  passedRef: ForwardedRef<DOMRefs>
 ): ReactElement {
   // State(s)
 
@@ -60,7 +63,7 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
 
   // Variable(s)
   const fieldSize = props.fieldSize ?? 2;
-  const fieldForce = props.fieldForce ?? .5;
+  const fieldForce = limitNumberInBounds(props.fieldForce ?? .5);
 
   // Method(s)
   const handleMagnetikContainerMouseMove = (e: MouseEvent) => {

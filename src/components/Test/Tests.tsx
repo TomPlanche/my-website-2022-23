@@ -7,9 +7,9 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
 import MyButton from "../MyButton";
-import MagnetikContainer from "../Magnetik/MagnetikContainer";
 import {useRef} from "react";
 import MagnetikButton from "../Magnetik/MagnetikButton";
+import TwoOptionsSelector from "../TwoOptionsSelector/TwoOptionsSelector";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -50,7 +50,10 @@ const StyledMagnetikButton = styled(MagnetikButton)`
   border: 0.2rem solid ${props => props.theme.color};
 `;
 // Others
-
+const selectItems = [
+  "About Me",
+  "Projects",
+]
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -74,45 +77,16 @@ const Tests = () => {
   // Render
   return (
     <StyledTests>
-      <MagnetikContainer
-        ref={buttonRef}
 
-        fieldSize={2}
-        fieldForce={1}
-        // centered
-      >
-        <StyledButton>
-          <span
-            ref={buttonTextRef}
-          >
-            Test
-          </span>
-        </StyledButton>
-      </MagnetikContainer>
+      <h1>TEST</h1>
 
-      <div className="spacer" style={{
-        margin: "2rem"
-      }}></div>
+      <TwoOptionsSelector options={selectItems}/>
 
-      <MagnetikButton
-        ref={textBtnRef}
-        text={"Test"}
-        style={{
-          height: "5rem",
-          width: "10rem",
+      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Aliquid aperiam, architecto, aut consequuntur ea
+        facere natus, nobis perspiciatis ratione repellendus repudiandae saepe temporibus totam unde vitae. Maxime quos
+        saepe veritatis?
+      </p>
 
-          borderRadius: "2.5rem",
-
-          fontSize: "2rem",
-          fontFamily: "'Cirka', sans-serif",
-
-          border: "0.2rem solid #eeeeee",
-        }}
-
-        fieldSize={2}
-        fieldForce={1}
-        // centered
-      />
 
     </StyledTests>
   )

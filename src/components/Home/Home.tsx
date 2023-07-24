@@ -10,6 +10,7 @@ import {createContext, useEffect, useRef, useState} from "react";
 import {gsap} from "gsap";
 import SplitText from "gsap/SplitText";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import ScrollToPlugin from "gsap/ScrollToPlugin";
 
 import styled, {useTheme} from 'styled-components'
 
@@ -19,12 +20,13 @@ import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
 
 import {commonTheme, I_Theme, noUserSelection} from "../../App";
 import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
-import MagnetikButton from "../Magnetik/MagnetikButton";
+import TwoOptionsSelector from "../TwoOptionsSelector/TwoOptionsSelector";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(SplitText);
 gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollToPlugin);
 
 // VARIABLES ================================================================================================ VARIABLES
 // Styles
@@ -79,10 +81,26 @@ const StyledHomeHalf = styled.div(props => ({
 
   fontFamily: "Mondwest, sans-serif !important",
 
+  padding: '3rem',
+
   'h2, h3': {
     textAlign: 'left',
   }
 }));
+
+const StyledChevronDown = styled.svg(props => ({
+  height: '3rem',
+  width: 'auto',
+
+  fill: props.theme.color,
+  '*': {
+    fill: props.theme.color,
+  },
+
+  position: 'absolute',
+  bottom: '2rem',
+}));
+
 
 const StyledSection = styled.section(props => ({
   height: props.theme.firstPageHeight,
@@ -187,9 +205,17 @@ const Home = () => {
   const myUglyFaceRef = useRef<HTMLDivElement>(null);
   const firstSectionRef = useRef<HTMLSelectElement>(null);
   const aboutMeButtonRef = useRef<HTMLButtonElement>(null);
+  const chevronDownRef = useRef<SVGSVGElement>(null);
 
   // Method(s)
-
+  const handleAboutMeButtonClick = () => {
+    gsap.to(window, {
+      duration: 1,
+      scrollTo: {
+        y: firstSectionRef.current?.offsetTop,
+      },
+    })
+  }
 
   // Effect(s)
   useEffect(() => {
@@ -221,10 +247,6 @@ const Home = () => {
         height: 0,
         display: 'none',
         paddingTop: 0,
-      })
-      .set(aboutMeButtonRef.current, {
-        opacity: 0,
-        y: '100%',
       })
       .to(myUglyFaceRef.current, {
         opacity: 1,
@@ -261,11 +283,6 @@ const Home = () => {
         height: commonTheme.firstPageHeight,
         display: 'flex',
       })
-      .to(aboutMeButtonRef.current, {
-        opacity: 1,
-        y: '0%',
-        duration: .5,
-      });
 
     const scrollTriggerTl = gsap.timeline({
       scrollTrigger: {
@@ -298,7 +315,7 @@ const Home = () => {
       >
         <StyledHomeHalf
           style={{
-            width: '60%',
+            alignItems: 'flex-start',
           }}
           ref={leftHalfRef}
         >
@@ -317,33 +334,13 @@ const Home = () => {
             <MyUglyFace ref={myUglyFaceRef}/>
           </HomeContext.Provider>
         </StyledHomeHalf>
-
-        <MagnetikButton
-          ref={aboutMeButtonRef}
-
-          text="About Me"
-          containerStyle={{
-            position: 'absolute',
-            bottom: '2rem',
-            left: '50%',
-            transform: 'translateX(-50%)',
-          }}
-          style={{
-            width: 'fit-content',
-            padding: '1rem 2rem',
-            fontSize: '1.5rem',
-            fontWeight: 'bold',
-            borderRadius: '99px',
-            border: `2px solid ${theme.color}`,
-            fontFamily: 'Cirka, sans-serif',
-            opacity: 0,
-          }}
-        />
       </StyledHomeLanding>
 
       <StyledSection
         ref={firstSectionRef}
       >
+        <TwoOptionsSelector options={["About Me", "Projects"]}/>
+
         <h2
           style={{
             marginBottom: '2rem',

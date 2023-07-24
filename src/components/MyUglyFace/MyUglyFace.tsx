@@ -36,13 +36,14 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
 
   // Ref(s)
   const myUglyFaceRef = useRef<HTMLImageElement>(null);
+
   // Render
   return (
     <MagnetikContainer
       ref={passedRef}
 
-      fieldForce={0.25}
-      fieldSize={1.5}
+      fieldForce={2}
+      fieldSize={2}
       block={isPlayingLoadingAnimation}
 
     >
