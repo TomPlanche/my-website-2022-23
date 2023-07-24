@@ -1,11 +1,11 @@
 /**
-  * @file src/assets/LastFM_handler.ts
-  * @description LastFM API handler.
-  * @author Tom Planche
+ * @file src/assets/LastFM_handler.ts
+ * @description LastFM API handler.
+ * @author Tom Planche
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import { LAST_FM_API_KEY } from "./secrets";
+import {LAST_FM_API_KEY} from "./secrets";
 import axios from 'axios';
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -138,11 +138,11 @@ type T_RecentTracksRes = {
   recenttracks: {
     track: T_RecentTracksTrackAll[];
     "@attr": {
-        user: string;
-        totalPages: number;
-        page: number;
-        total: number;
-        perPage: number;
+      user: string;
+      totalPages: number;
+      page: number;
+      total: number;
+      perPage: number;
     }
   }
 }
@@ -173,21 +173,29 @@ export class UsernameNotFoundError extends Error {
     super(`Username '${username}' not found.`);
   }
 }
+
 export class NoCurrentlyPlayingTrackError extends Error {
   constructor() {
     super("No currently playing track.");
   }
 }
+
 // END VARIABLES ======================================================================================= END VARIABLES
 /**
  * Singleton class to handle LastFM API requests.
  * @class LastFM_handler
  */
-class LastFM_handler implements I_LastFM_handler{
+class LastFM_handler implements I_LastFM_handler {
+  static instance: LastFM_handler;
   readonly baseURL: string = "http://ws.audioscrobbler.com/2.0/";
   readonly endURL: string = `&api_key=${LAST_FM_API_KEY}&format=json`;
+  username = "LASTFM_USERNAME";
 
-  static instance: LastFM_handler;
+  constructor(username?: string) {
+    if (username) {
+      this.username = username;
+    }
+  }
 
   /**
    * @function getInstance
@@ -201,55 +209,12 @@ class LastFM_handler implements I_LastFM_handler{
     return LastFM_handler.instance;
   }
 
-  username: string = "LASTFM_USERNAME";
-
-  constructor(username?: string) {
-    if (username) {
-      this.username = username;
-    }
-  }
-
   setUsername: T_setUsername = (username) => {
     this.username = username;
   }
 
   getUsername: T_getUsername = () => {
     return this.username;
-  }
-
-  /**
-   * @function fetchData
-   * @description Fetches data from the LastFM API.
-   *
-   * @param method {Method} The method to call.
-   * @param params
-   */
-  private fetchData: T_fetchData = async (method, params) => {
-    const paramsString = Object.keys(params).map((key) => {
-      const
-        finalKey = key as keyof T_GoodParams,
-        finalValue = params[finalKey] as unknown as string;
-
-      return `${encodeURIComponent(finalKey)}=${encodeURIComponent(finalValue)}`;
-    }).join('&');
-
-    const url: string = `${this.baseURL}?method=${method}&user=${this.username}${paramsString ? '&' + paramsString : ''}${this.endURL}`;
-
-    return new Promise((resolve, reject) => {
-      axios.get(url)
-        .then((response) => {
-          resolve(response.data as T_UserInfoRes);
-        })
-        // if the error is like {error: 6, message: "User not found"}
-        .catch((error) => {
-          if (error.response.data.message === "User not found") {
-            reject(new UsernameNotFoundError(this.username));
-          }
-
-          console.log(error.response.data);
-          reject(error);
-        })
-    });
   }
 
   /**
@@ -278,13 +243,48 @@ class LastFM_handler implements I_LastFM_handler{
   }
 
   ifNowPlaying: T_isNowPlaying = async () => {
-    const track = await this.fetchData(METHODS.user.getRecentTracks, { limit: 1 }) as T_RecentTracksRes;
+    const track = await this.fetchData(METHODS.user.getRecentTracks, {limit: 1}) as T_RecentTracksRes;
 
     if (track.recenttracks.track[0]["@attr"]?.nowplaying) {
       return await track.recenttracks.track[0] as T_RecentTracksTrackAll;
     }
 
     throw NoCurrentlyPlayingTrackError;
+  }
+
+  /**
+   * @function fetchData
+   * @description Fetches data from the LastFM API.
+   *
+   * @param method {Method} The method to call.
+   * @param params
+   */
+  private fetchData: T_fetchData = async (method, params) => {
+    const paramsString = Object.keys(params).map((key) => {
+      const
+        finalKey = key as keyof T_GoodParams,
+        finalValue = params[finalKey] as unknown as string;
+
+      return `${encodeURIComponent(finalKey)}=${encodeURIComponent(finalValue)}`;
+    }).join('&');
+
+    const url = `${this.baseURL}?method=${method}&user=${this.username}${paramsString ? '&' + paramsString : ''}${this.endURL}`;
+
+    return new Promise((resolve, reject) => {
+      axios.get(url)
+        .then((response) => {
+          resolve(response.data as T_UserInfoRes);
+        })
+        // if the error is like {error: 6, message: "User not found"}
+        .catch((error) => {
+          if (error.response.data.message === "User not found") {
+            reject(new UsernameNotFoundError(this.username));
+          }
+
+          console.log(error.response.data);
+          reject(error);
+        })
+    });
   }
 }
 

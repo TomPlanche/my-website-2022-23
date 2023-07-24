@@ -41,6 +41,7 @@ type T_lineEq = (
 
 type T_lerp = (a: number, b: number, n: number) => number;
 type T_random = (min: number, max: number, round: number) => number;
+type T_stripCssVar = (cssVar: string) => number;
 
 type T_verifyIsInBounds = (
   mousepos: { x: number, y: number },
@@ -200,10 +201,14 @@ const getMousePos: T_getMousePos = (e): { x: number; y: number; } => {
  */
 const limitNumberInBounds: T_limitNumberInBounds = (
   num: number,
-  lowBound = 0,
-  highBound = 1
+  lowBound: number | undefined,
+  highBound: number | undefined
 ) => {
-  return Math.max(Math.min(num, highBound), lowBound);
+  const
+    lowB = lowBound === undefined ? 0 : lowBound,
+    highB = highBound === undefined ? 1 : highBound;
+
+  return Math.max(Math.min(num, highB), lowB);
 }
 
 
@@ -284,6 +289,26 @@ const random: T_random = (min: number, max: number, round: number) => {
 }
 
 /**
+ * @function stripCssVar
+ * @description Strip the css variable to get the number.
+ * @example
+ * stripCssVar('5rem'); // 5
+ * stripCssVar('5'); // 5
+ * stripCssVar('5px'); // 5
+ * stripCssVar('5.5rem'); // 5.5
+ *
+ * @param cssVar {string} The css variable.
+ *
+ * @returns {number} The number.
+ */
+const stripCssVar: T_stripCssVar = (cssVar: string): number => {
+  const regex = new RegExp(/(\d+)/);
+  const match = regex.exec(cssVar);
+
+  return match ? +match[0] : 0;
+}
+
+/**
  * @function verifyIsInBounds
  * @description Verify if the mouse is in the bounds.
  *
@@ -316,6 +341,7 @@ export {
   lineEq0to100,
   lerp,
   random,
+  stripCssVar,
   verifyIsInBounds
 }
 

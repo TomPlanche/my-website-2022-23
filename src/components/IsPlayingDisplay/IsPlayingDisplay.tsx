@@ -17,7 +17,7 @@ import styled from "styled-components";
 import {AppContext, blurryBackground} from "../../App";
 
 import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
-import {calcCssVar, compareTracks} from "../../assets/utils";
+import {calcCssVar} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -93,10 +93,26 @@ const StyledTrackInfo = styled.div(props => ({
   }
 }));
 
+// Type(s)
+type T_compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => boolean;
+
 // Normal variable(s)
 const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 // END VARIABLES ======================================================================================= END VARIABLES
 
+// FUNCTION(S) =============================================================================================   FUNCTION
+const compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => {
+  if (!track2) {
+    console.log("track2 is null");
+    return false;
+  }
+
+  if (track1.mbid !== "" && track2.mbid !== "") {
+    return track1.mbid === track2.mbid;
+  }
+
+  return track1.name === track2.name && track1.artist["#text"] === track2.artist["#text"];
+}
 // COMPONENENT  ============================================================================================= COMPONENT
 /**
  * IsPlayingDisplay component

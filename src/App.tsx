@@ -4,7 +4,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {Context, createContext, ReactElement, RefObject, useEffect, useRef, useState} from 'react'
+import {Context, createContext, FC, ReactElement, RefObject, useEffect, useRef, useState} from 'react'
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
@@ -136,7 +136,7 @@ export const AppContext: Context<I_AppContext> = createContext<I_AppContext>({
  * @returns {React.ReactElement}
  * @constructor
  */
-const App = (): ReactElement => {
+const App: FC = (): ReactElement => {
   // State(s)
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   const [platform, setPlatform] = useState<T_Support>('desktop');
