@@ -8,11 +8,12 @@ import {Context, createContext, FC, ReactElement, RefObject, useEffect, useRef, 
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
-import Home from "./components/Home/Home";
+import Home from "./pages/Home/Home";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
 import {calcCssVar, stripCssVar} from "./assets/utils";
-import Tests from "./components/Test/Tests";
+import Tests from "./pages/Test/Tests";
+import IPDHome from "./pages/IsPlayingDisplayPage/IPDHome";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -44,7 +45,7 @@ export const themeValues = {
   blurryBackgroundAlpha: 25,
   blurryBackgroundBlur: '12px',
 
-  headerHeight: '10vmin',
+  headerHeight: '8vmin',
 
   mainPadding: '2vmax',
 
@@ -208,6 +209,8 @@ const App: FC = (): ReactElement => {
 
             <Routes>
               <Route index element={<Home/>}/>
+
+              <Route path={'/my-music-player'} element={<IPDHome/>}/>
 
               <Route path={'/tests'} element={<Tests/>}/>
 

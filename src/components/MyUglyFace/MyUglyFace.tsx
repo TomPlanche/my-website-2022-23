@@ -5,16 +5,25 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {forwardRef, ForwardRefExoticComponent, RefAttributes, useContext, useRef,} from "react";
+import {forwardRef, ForwardRefExoticComponent, RefAttributes, useContext} from "react";
 
 import styled from "styled-components";
-import {HomeContext} from "../Home/Home";
+
+import {HomeContext} from "../../pages/Home/Home";
 import MagnetikContainer from "../Magnetik/MagnetikContainer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
-const MyUglyFaceImg = styled.img`
+const StyledContainer = styled.div`
+  height: 45vmin;
+  width: 35vmin;
+
+  border-radius: 5rem;
+`;
+
+
+export const MyUglyFaceImg = styled.img`
   height: 45vmin;
   width: auto;
 
@@ -35,23 +44,32 @@ const MyUglyFace: T_MyUglyFace = forwardRef((_, passedRef) => {
   const {isPlayingLoadingAnimation} = useContext(HomeContext)
 
   // Ref(s)
-  const myUglyFaceRef = useRef<HTMLImageElement>(null);
+
+  // Method(s)
+
+  // Effect(s)
 
   // Render
   return (
     <MagnetikContainer
+      onMouseEnter={() => {
+        console.log('enter');
+      }}
+
       ref={passedRef}
 
-      fieldForce={2}
-      fieldSize={2}
+      fieldForce={.85}
+      fieldSize={1.5}
       block={isPlayingLoadingAnimation}
 
     >
-      <MyUglyFaceImg
-        src="/imgs/imageCV.png"
-        alt="My ugly face"
-        ref={myUglyFaceRef}
-      />
+      <StyledContainer
+      >
+        <MyUglyFaceImg
+          src="/imgs/imageCV.png"
+          alt="My ugly face"
+        />
+      </StyledContainer>
     </MagnetikContainer>
   )
 })

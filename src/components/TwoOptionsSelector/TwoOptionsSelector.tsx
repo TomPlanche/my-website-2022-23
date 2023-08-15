@@ -5,7 +5,17 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {CSSProperties, ReactElement, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {
+  CSSProperties,
+  forwardRef,
+  ForwardRefExoticComponent,
+  HTMLAttributes,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 
 import styled, {useTheme} from 'styled-components';
 import {gsap} from "gsap";
@@ -83,9 +93,12 @@ type T_TwoOptionsSelectorProps = {
 
   style?: CSSProperties,
   choice?: number,
-};
+  stateAndSetter?: [number, (choice: number) => void],
+} & HTMLAttributes<HTMLDivElement>
 
-type T_TwoOptionsSelector = (props: T_TwoOptionsSelectorProps) => ReactElement;
+type T_TwoOptionsSelector = ForwardRefExoticComponent<T_TwoOptionsSelectorProps>
+
+export type T_returnChoice = () => [number, string];
 
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -95,7 +108,7 @@ type T_TwoOptionsSelector = (props: T_TwoOptionsSelectorProps) => ReactElement;
  * @return
  * @constructor
  **/
-const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
+const TwoOptionsSelector: T_TwoOptionsSelector = forwardRef((props, optionChosenRef) => {
   // Context
   const {cursorRef} = useContext(AppContext);
 
@@ -117,6 +130,10 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
   // Method(s)
   const handleClick = (choice: number) => {
     setChoice(choice);
+
+    if (props.stateAndSetter) {
+      props.stateAndSetter[1](choice);
+    }
   }
 
   const handleMouseEnter = () => {
@@ -134,6 +151,7 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
       || !relativeContainerRef.current
     ) return;
 
+    // @ts-ignore
     gsap.set(optionsArrayRef.current[choice], {
       color: theme.background,
     })
@@ -148,12 +166,13 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
     // Find the percentage of the width of each option
     optionsWidthsRef.current = optionsArrayRef.current.map((option) => {
       if (!selectorRef.current) return 50;
-      
+
       return (option.getBoundingClientRect().width + gap + sidePadding) / selectorRefWidth;
     });
 
 
     gsap.set(backgroundRef.current, {
+      // @ts-ignore
       width: `${optionsWidthsRef.current[choice] * 100}%`,
     });
 
@@ -195,12 +214,15 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
           )
         }
       })
+      // @ts-ignore
       .to(optionsArrayRef.current[choice], {
         color: theme.background,
       }, '<')
       .to(backgroundRef.current, {
+        // @ts-ignore
         width: optionsWidthsRef.current[choice] * 100 + '%',
       })
+      // @ts-ignore
       .to(optionsArrayRef.current[choice === 0 ? 1 : 0], {
         color: theme.color,
       }, '<');
@@ -236,8 +258,10 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
       </StyledRelativeContainer>
     </StyledTwoOptionsSelector>
   )
-}
+})
 // END COMPONENT =======================================================================================  END COMPONENT
+
+TwoOptionsSelector.displayName = 'TwoOptionsSelector';
 
 export default TwoOptionsSelector;
 

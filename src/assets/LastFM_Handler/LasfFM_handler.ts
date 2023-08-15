@@ -33,21 +33,25 @@ interface I_LastFM_handler {
 type T_Period = "overall" | "7day" | "1month" | "3month" | "6month" | "12month";
 
 export type T_UserInfoRes = {
-  id: string;
-  name: string;
-  realname: string;
-  url: string;
-  image: string;
+  age: number;
+  album_count: number | string;
+  artist_count: number | string;
+  bootstrap: boolean | string;
   country: string;
-  age: string;
   gender: string;
-  subscriber: string;
-  playcount: string;
-  playlists: string;
-  bootstrap: string;
+  id: string;
+  image: string;
+  name: string;
+  playcount: number | string;
+  playlists: number | string;
+  realname: string;
   registered: {
     unixtime: string;
   }
+  subscriber: number | string;
+  track_count: number | string;
+  type: string;
+  url: string;
 }
 
 export type T_UserTopTracksParams = {
@@ -71,8 +75,8 @@ type T_Image = {
 
 export type T_UserTopTracksTrack = {
   streamable: {
-    fulltrack: boolean;
-    "#text": boolean;
+    fulltrack: boolean | string;
+    "#text": boolean | string;
   }
   mbid: string;
   name: string;
@@ -83,11 +87,11 @@ export type T_UserTopTracksTrack = {
     url: string;
   }
   url: string;
-  duration: number;
+  duration: number | string;
   "@attr": {
-    rank: number;
+    rank: number | string;
   }
-  playcount: number;
+  playcount: number | string;
 }
 
 export type T_RecentTracksTrack = {
@@ -95,7 +99,7 @@ export type T_RecentTracksTrack = {
     mbid: string;
     '#text': string;
   }
-  streamable: boolean;
+  streamable: boolean | string;
   image: T_Image[];
   mbid: string;
   album: {
@@ -104,7 +108,7 @@ export type T_RecentTracksTrack = {
   }
   name: string;
   '@attr'?: {
-    nowplaying: boolean;
+    nowplaying: boolean | string;
   }
   url: string;
 }
@@ -157,10 +161,12 @@ type T_getInstance = (username?: string) => LastFM_handler;
 type T_setUsername = (username: string) => void;
 type T_getUsername = () => string;
 
+type T_allResponse = T_UserInfoRes | T_UserTopTracksRes | T_RecentTracksRes;
+
 type T_fetchData = (
   method: Method,
   params: Partial<T_GoodParams>,
-) => Promise<T_UserInfoRes | T_UserTopTracksRes | T_RecentTracksRes>;
+) => Promise<T_allResponse>;
 
 type T_getUserInfo = () => Promise<T_UserInfoRes>;
 type T_getUserTopTracks = (params?: Partial<T_UserTopTracksParams>) => Promise<T_UserTopTracksRes>;
@@ -181,14 +187,61 @@ export class NoCurrentlyPlayingTrackError extends Error {
 }
 
 // END VARIABLES ======================================================================================= END VARIABLES
+
+// FUNCTIONS ================================================================================================ FUNCTIONS
+/**
+ * @function castResponse
+ * @description Casts the response to the correct type. The API returns types in string, so we need to cast them.
+ *
+ * @param response {T_allResponse} The response to cast.
+ * @returns {T_allResponse} The casted response.
+ */
+const castResponse = <T extends T_UserInfoRes | T_RecentTracksRes | T_UserTopTracksRes>(response: T): T => {
+  // Check which type the response is
+  if ("recenttracks" in response) {
+    response.recenttracks.track.forEach((track) => {
+      track['@attr'] = track['@attr'] || {nowplaying: false};
+      track.streamable = track.streamable === "1";
+    })
+
+    return response;
+  }
+
+  if ("toptracks" in response) {
+    response.toptracks.track.forEach((track) => {
+      track.streamable.fulltrack = track.streamable.fulltrack === "1";
+      track.streamable["#text"] = track.streamable["#text"] === "1";
+      track.duration = Number(track.duration);
+      track.playcount = Number(track.playcount);
+      track["@attr"].rank = Number(track["@attr"].rank);
+    })
+
+    return response;
+  }
+
+  response.age = Number(response.age);
+  response.album_count = Number(response.album_count);
+  response.artist_count = Number(response.artist_count);
+  response.bootstrap = response.bootstrap === "1";
+  response.playcount = Number(response.playcount);
+  response.playlists = Number(response.playlists);
+  response.subscriber = Number(response.subscriber);
+  response.track_count = Number(response.track_count);
+
+  return response;
+}
+
+// END FUNCTIONS ======================================================================================== END FUNCTIONS
 /**
  * Singleton class to handle LastFM API requests.
  * @class LastFM_handler
  */
 class LastFM_handler implements I_LastFM_handler {
   static instance: LastFM_handler;
+
   readonly baseURL: string = "http://ws.audioscrobbler.com/2.0/";
   readonly endURL: string = `&api_key=${LAST_FM_API_KEY}&format=json`;
+
   username = "LASTFM_USERNAME";
 
   constructor(username?: string) {
@@ -243,10 +296,15 @@ class LastFM_handler implements I_LastFM_handler {
   }
 
   ifNowPlaying: T_isNowPlaying = async () => {
-    const track = await this.fetchData(METHODS.user.getRecentTracks, {limit: 1}) as T_RecentTracksRes;
+    const track = castResponse(
+      await this.fetchData(METHODS.user.getRecentTracks, {limit: 1}) as T_RecentTracksRes
+    );
 
+    if (!track.recenttracks.track[0]) throw NoCurrentlyPlayingTrackError
+
+    // The '@attr' property is only present if the track is currently playing.
     if (track.recenttracks.track[0]["@attr"]?.nowplaying) {
-      return await track.recenttracks.track[0] as T_RecentTracksTrackAll;
+      return track.recenttracks.track[0] as T_RecentTracksTrackAll;
     }
 
     throw NoCurrentlyPlayingTrackError;
@@ -277,11 +335,18 @@ class LastFM_handler implements I_LastFM_handler {
         })
         // if the error is like {error: 6, message: "User not found"}
         .catch((error) => {
+          // Check if error is due to Network problem
+          if (error.code === "ERR_NETWORK") {
+            reject(new Error("No internet connexion found, switching to auto mode."))
+            // Reject does not cancel the thread - not sure
+            return
+          }
+
           if (error.response.data.message === "User not found") {
             reject(new UsernameNotFoundError(this.username));
           }
 
-          console.log(error.response.data);
+          console.log(`Error not classified: ${error.response.data}`);
           reject(error);
         })
     });

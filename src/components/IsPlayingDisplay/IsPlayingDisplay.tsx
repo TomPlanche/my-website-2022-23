@@ -14,7 +14,7 @@ import {gsap} from "gsap";
 
 import styled from "styled-components";
 
-import {AppContext, blurryBackground} from "../../App";
+import {AppContext, blurryBackground, noUserSelection} from "../../App";
 
 import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
 import {calcCssVar} from "../../assets/utils";
@@ -36,7 +36,7 @@ const StyledIsPlayingDisplay = styled.div(props => ({
 
   position: 'fixed',
   bottom: playingDisplayVars.marginFromBottom,
-  right: playingDisplayVars.marginFromRight,
+  right: '2vmax',
 
   height: playingDisplayVars.height,
   width: playingDisplayVars.width,
@@ -56,8 +56,13 @@ const StyledIsPlayingDisplay = styled.div(props => ({
 
   opacity: 0,
 
-  zIndex: 9999,
+  zIndex: 999,
+
   ...blurryBackground,
+
+  "*": {
+    ...noUserSelection,
+  }
 }));
 
 const StyledAlbumCover = styled.img`
@@ -78,7 +83,8 @@ const StyledTrackInfo = styled.div(props => ({
   gap: '.25rem',
 
   color: props.theme.color,
-  fontFamily: 'Radikal, sans-serif !important',
+  fontFamily: 'Radikal',
+  fontWeight: 700,
 
   opacity: 0,
 
@@ -96,14 +102,58 @@ const StyledTrackInfo = styled.div(props => ({
 // Type(s)
 type T_compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => boolean;
 
+type T_IsPlayingDisplayPropsNoPlayongSong = {
+  songIfNotPlaying: boolean,
+  jsonSong?: T_RecentTracksTrackAll
+}
+
+type T_IsPlayingDisplayProps = T_IsPlayingDisplayPropsNoPlayongSong | null;
+
+type T_IsPlayingDisplay = (props: T_IsPlayingDisplayProps) => JSX.Element;
+
 // Normal variable(s)
 const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
+
+const exampleTrack: T_RecentTracksTrackAll = {
+  "artist": {
+    "mbid": "",
+    "#text": "Népal"
+  },
+  "streamable": "0",
+  "image": [
+    {
+      "size": "small",
+      "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2ab9be86b67cad862c789b1261165c34.jpg"
+    },
+    {
+      "size": "medium",
+      "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2ab9be86b67cad862c789b1261165c34.jpg"
+    },
+    {
+      "size": "large",
+      "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2ab9be86b67cad862c789b1261165c34.jpg"
+    },
+    {
+      "size": "extralarge",
+      "#text": "imgs/444nuits.webp"
+    }
+  ],
+  "mbid": "",
+  "album": {
+    "mbid": "",
+    "#text": "444Nuits (Version Bleue)"
+  },
+  "name": "04 444 Nuits",
+  "@attr": {
+    "nowplaying": "true"
+  },
+  "url": "https://www.last.fm/music/N%C3%A9pal/_/04+444+Nuits"
+}
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // FUNCTION(S) =============================================================================================   FUNCTION
-const compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => {
+const compareTracks: T_compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => {
   if (!track2) {
-    console.log("track2 is null");
     return false;
   }
 
@@ -119,7 +169,7 @@ const compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTra
  * @return {JSX.Element}
  * @constructor
  **/
-const IsPlayingDisplay = () => {
+const IsPlayingDisplay: T_IsPlayingDisplay = (props) => {
   // Context(s)
   const {LastFM_HandlerInstance, cursorRef} = useContext(AppContext);
 
@@ -154,10 +204,19 @@ const IsPlayingDisplay = () => {
 
       })
       .catch((err: NoCurrentlyPlayingTrackError) => {
-        setIsPlaying(false);
+        if (!props) {
+          setIsPlaying(false);
+          return;
+        }
+
+        if (props.songIfNotPlaying) {
+          setFinalTrack((props.jsonSong ?? exampleTrack) as T_RecentTracksTrackAll);
+        } else {
+          setIsPlaying(false);
+        }
       })
       .catch((err: Error) => {
-        console.error(err);
+        console.log(`Weird error: ${err.message}`);
       })
   }
 
@@ -177,9 +236,8 @@ const IsPlayingDisplay = () => {
   }
 
   const handleClicked = () => {
-    if (isAnimating) {
-      return;
-    }
+    if (isAnimating) return;
+
 
     const animationTl = gsap.timeline({
       duration: .75,
@@ -223,11 +281,16 @@ const IsPlayingDisplay = () => {
   }
 
   const handleTrackImage = () => {
-    if (finalTrack?.image) {
-      return finalTrack.image[finalTrack.image.length - 1]['#text'] || emptyAlbumCover;
-    }
 
-    return emptyAlbumCover;
+    if (
+      !finalTrack ||
+      !finalTrack?.image
+    ) return emptyAlbumCover
+
+
+    const image = finalTrack.image[finalTrack.image.length - 1]['#text'] ?? emptyAlbumCover;
+
+    return image === "" ? emptyAlbumCover : image;
   }
 
   // UseEffect(s)

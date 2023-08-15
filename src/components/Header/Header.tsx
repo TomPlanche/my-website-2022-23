@@ -21,8 +21,6 @@ import {gsap} from "gsap";
 import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
 import {AppContext, blurryBackground, noUserSelection,} from "../../App";
-
-import MyButton from "../MyButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(ScrambleTextPlugin);
@@ -75,7 +73,7 @@ const StyledHeaderTime = styled.p(props => ({
   fontSize: '1rem',
 }));
 
-const StyledHeaderThemeBtn = styled(MyButton)`
+const StyledHeaderThemeBtn = styled.button`
   height: 2rem;
   width: 2rem;
 

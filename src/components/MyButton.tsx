@@ -12,18 +12,77 @@ import {
   ForwardRefExoticComponent,
   RefAttributes,
   RefObject,
+  useContext,
 } from "react";
+import {AppContext} from "../App";
+import styled from "styled-components";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
 type T_AnchorProps = AnchorHTMLAttributes<HTMLElement>
 type T_ButtonProps = ButtonHTMLAttributes<HTMLElement>
 
-type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement>
+type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement>;
 
 type T_isAnchor = (props: T_MyButtonProps) => boolean;
 
 export type T_MyButton = ForwardRefExoticComponent<T_MyButtonProps>;
+
+const StyledMyButton = styled.button`
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+
+  color: #2077b2;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2077b2;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+
+    z-index: 444;
+  }
+
+  &:hover:after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+`;
+
+const StyledMyLink = styled.a`
+  display: inline-block;
+  position: relative;
+  cursor: pointer;
+
+  color: #2077b2;
+
+  &:after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #2077b2;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+
+    z-index: 444;
+  }
+
+  &:hover:after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+  }
+`;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 const isAnchor: T_isAnchor = (props) => {
@@ -38,19 +97,51 @@ const isAnchor: T_isAnchor = (props) => {
  * @constructor
  **/
 const MyButton: T_MyButton = forwardRef((props, ref) => {
+  // Context(s)
+  const {cursorRef} = useContext(AppContext);
 
+  // Method(s)
+  const handleMouseEnter = () => {
+    if (cursorRef.current) {
+      cursorRef.current.onCursorEnter({
+        backgroundColor: 'red',
+      }, true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (cursorRef.current) {
+      cursorRef.current.onCursorLeave({}, true)
+    }
+  }
+
+  // Render
   if (isAnchor(props)) {
-    return <a {...props} ref={ref as RefObject<HTMLAnchorElement>}/>;
+    return <StyledMyLink
+      {...props}
+
+      className={'link'}
+
+      ref={ref as RefObject<HTMLAnchorElement>}
+
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    />;
   }
 
   const btnProps = {
     ...(props as T_ButtonProps),
   };
 
-  return <button
+  return <StyledMyButton
     type={btnProps.type || 'button'}
+
     {...btnProps}
+
     ref={ref as RefObject<HTMLButtonElement>}
+
+    onMouseEnter={handleMouseEnter}
+    onMouseLeave={handleMouseLeave}
   />;
 });
 

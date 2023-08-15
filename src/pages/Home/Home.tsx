@@ -5,7 +5,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {createContext, useEffect, useRef, useState} from "react";
+import {createContext, RefObject, useEffect, useRef, useState} from "react";
 
 import {gsap} from "gsap";
 import SplitText from "gsap/SplitText";
@@ -14,13 +14,15 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 
 import styled, {useTheme} from 'styled-components'
 
-import Header from "../Header/Header";
-import MyUglyFace from "../MyUglyFace/MyUglyFace";
-import IsPlayingDisplay from "../IsPlayingDisplay/IsPlayingDisplay";
+import Header from "../../components/Header/Header";
+import MyUglyFace from "../../components/MyUglyFace/MyUglyFace";
+import IsPlayingDisplay from "../../components/IsPlayingDisplay/IsPlayingDisplay";
 
 import {commonTheme, I_Theme, noUserSelection} from "../../App";
-import TechStack, {T_TechStackChild} from "../TechStack/TechStack";
-import TwoOptionsSelector from "../TwoOptionsSelector/TwoOptionsSelector";
+import TechStack, {T_TechStackChild} from "../../components/TechStack/TechStack";
+import TwoOptionsSelector, {T_returnChoice} from "../../components/TwoOptionsSelector/TwoOptionsSelector";
+import ArrowLink from "../../components/ArrowLink";
+import MyButton from "../../components/MyButton";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -88,19 +90,6 @@ const StyledHomeHalf = styled.div(props => ({
   }
 }));
 
-const StyledChevronDown = styled.svg(props => ({
-  height: '3rem',
-  width: 'auto',
-
-  fill: props.theme.color,
-  '*': {
-    fill: props.theme.color,
-  },
-
-  position: 'absolute',
-  bottom: '2rem',
-}));
-
 
 const StyledSection = styled.section(props => ({
   height: props.theme.firstPageHeight,
@@ -113,13 +102,18 @@ const StyledSection = styled.section(props => ({
 
   paddingTop: props.theme.minTopPadding,
 
-  fontFamily: "Fraktion Mono, sans-serif !important",
+  fontFamily: "Fraktion Mono, sans-serif",
 }));
 
 // Types
 type T_homeContext = {
   isPlayingLoadingAnimation: boolean,
 }
+
+type T_choiceRef = RefObject<{
+  choice: number,
+  returnChoice: T_returnChoice
+}>
 
 // Context
 export const HomeContext = createContext<T_homeContext>({
@@ -178,6 +172,8 @@ const TechStackChildren = [
     image: '/imgs/shell-pic.jpeg',
   }
 ];
+
+const twoOptions = ["About Me", "Projects"]
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -195,6 +191,7 @@ const Home = () => {
     isPlayingLoadingAnimation,
     setIsPlayingLoadingAnimation
   ] = useState<boolean>(true);
+  const [twoOptionsChoice, setTwoOptionsChoice] = useState<number>(0);
 
   // Ref(s)
   const headerRef = useRef<HTMLDivElement>(null);
@@ -204,17 +201,10 @@ const Home = () => {
   const rightHalfRef = useRef<HTMLDivElement>(null);
   const myUglyFaceRef = useRef<HTMLDivElement>(null);
   const firstSectionRef = useRef<HTMLSelectElement>(null);
-  const aboutMeButtonRef = useRef<HTMLButtonElement>(null);
-  const chevronDownRef = useRef<SVGSVGElement>(null);
 
   // Method(s)
-  const handleAboutMeButtonClick = () => {
-    gsap.to(window, {
-      duration: 1,
-      scrollTo: {
-        y: firstSectionRef.current?.offsetTop,
-      },
-    })
+  const handleChoice = () => {
+    console.log(`handleChoice()`);
   }
 
   // Effect(s)
@@ -301,12 +291,16 @@ const Home = () => {
       })
   }, []);
 
+  useEffect(() => {
+    console.log(`[Home] twoOptionsChoice: ${twoOptionsChoice}`);
+  }, [twoOptionsChoice]);
+
   // Render
   return (
     <StyledHome
       ref={homeRef}
     >
-      {!isPlayingLoadingAnimation && <IsPlayingDisplay/>}
+      {!isPlayingLoadingAnimation && <IsPlayingDisplay songIfNotPlaying={false}/>}
 
       <Header key="header" ref={headerRef}/>
 
@@ -339,17 +333,40 @@ const Home = () => {
       <StyledSection
         ref={firstSectionRef}
       >
-        <TwoOptionsSelector options={["About Me", "Projects"]}/>
+        <TwoOptionsSelector
+          options={twoOptions}
+          stateAndSetter={[twoOptionsChoice, setTwoOptionsChoice]}
+        />
 
         <h2
           style={{
             marginBottom: '2rem',
           }}
-        >Tech Stack</h2>
+        >
+          {twoOptionsChoice === 0 ? "Tech Stack" : "Projects"}
+        </h2>
 
         {
-          !isPlayingLoadingAnimation && <TechStack childrenObj={TechStackChildren}/>
+          !isPlayingLoadingAnimation && (
+            twoOptionsChoice === 0 ?
+              <>
+                <TechStack childrenObj={TechStackChildren}/>
+                <ArrowLink title={"My CV"} href={'/files/CV_FIN_2023.pdf'} style={{
+                  marginTop: '2rem',
+                  gap: '1rem',
+                }}/>
+              </>
+              :
+              <>
+                <p>
+                  <MyButton href={'/my-music-player'}>
+                    Little component
+                  </MyButton> for displaying what I&apos;m listening live.
+                </p>
+              </>
+          )
         }
+
       </StyledSection>
 
       {/*{*/}

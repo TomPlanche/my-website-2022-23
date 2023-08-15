@@ -6,7 +6,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {CSSProperties, ForwardedRef, forwardRef, ReactElement, useLayoutEffect, useRef} from "react";
+import {CSSProperties, ForwardedRef, forwardRef, HTMLAttributes, ReactElement, useLayoutEffect, useRef} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
@@ -23,7 +23,7 @@ const StyledMagnetikContainer = styled.div`
 `;
 
 const StyledChildContainer = styled.div`
-  pointer-events: none;
+  //pointer-events: none;
 `;
 
 // Types
@@ -39,7 +39,7 @@ type T_MagnetikContainerProps = {
   block?: boolean,
 
   debug?: boolean
-}
+} & HTMLAttributes<HTMLDivElement>;
 
 type DOMRefs = HTMLElement | SVGSVGElement;
 // END VARIABLES ======================================================================================= END VARIABLES

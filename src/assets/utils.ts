@@ -17,6 +17,8 @@ type T_NoArgsCallbackNoReturn = () => void;
 type T_calcCssVar = (variable: string, func: T_CalcCssVarCallback) => string;
 type T_calcWinSize = () => { width: number, height: number };
 
+type T_capitalize = (str: string, lower?: boolean) => string;
+
 type T_determinateOnHoverFromWhere = (
   e: MouseEvent,
   ifFromLeft: T_NoArgsCallbackNoReturn,
@@ -90,6 +92,21 @@ const calcCssVar: T_calcCssVar = (variable, func) => {
 const calcWinSize: T_calcWinSize = (): { width: number; height: number; } => {
   return {width: window.innerWidth, height: window.innerHeight};
 };
+
+/**
+ * Capitalizes first letters of words in string.
+ * @param {string} str String to be modified
+ * @param {boolean = true} lower Whether all other letters should be lowercased
+ * @return {string}
+ * @usage
+ *   capitalize('fix this string');     // -> 'Fix This String'
+ *   capitalize('javaSCrIPT');          // -> 'JavaSCrIPT'
+ *   capitalize('javaSCrIPT', true);    // -> 'Javascript'
+ */
+const capitalize: T_capitalize = (str: string, lower = true): string => {
+  return (lower ? str.toLowerCase() : str).replace(/(?:^|\s|["'([{])+\S/g, match => match.toUpperCase());
+}
+
 
 /**
  * @function determinateOnHoverFromWhere
@@ -333,6 +350,7 @@ const verifyIsInBounds: T_verifyIsInBounds = (
 export {
   calcCssVar,
   calcWinSize,
+  capitalize,
   determinateOnHoverFromWhere,
   distanceBetweenPoints,
   getMousePos,

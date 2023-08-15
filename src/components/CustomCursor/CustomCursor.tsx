@@ -29,20 +29,20 @@ const cursorConsts = {
 
 const Cursor = styled.div`
   position: absolute;
-  
+
   height: ${cursorConsts.size};
   width: ${cursorConsts.size};
-  
+
   top: calc(${cursorConsts.size} / -2);
   left: calc(${cursorConsts.size} / -2);
-  
+
   border-radius: ${cursorConsts.size};
-  
+
   background-color: ${cursorConsts.backgroundColor};
   opacity: .6;
-  
+
   z-index: 9999;
-  
+
   pointer-events: none;
 `;
 
@@ -121,12 +121,13 @@ const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
     scale: {previous: 0, current: 0, amount: .1},
     opacity: {previous: .6, current: .6, amount: .1},
   });
-  const mousePositionRef = useRef<T_MousePosition>({ x: 0, y: 0 });
+  const mousePositionRef = useRef<T_MousePosition>({x: 0, y: 0});
 
   useImperativeHandle(ref, () => ({
     onCursorEnter,
     onCursorLeave
   }));
+
   // Method(s)
   const render = () => {
     if (cursorRef.current) {
@@ -163,7 +164,7 @@ const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
    */
   const handleMouseMove = (event: MouseEvent) => {
     !hasMoved && setHasMoved(true);
-    mousePositionRef.current = { x: event.clientX, y: event.clientY };
+    mousePositionRef.current = {x: event.clientX, y: event.clientY};
   }
 
   /**

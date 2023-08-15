@@ -9,7 +9,7 @@ import {ReactElement, useEffect, useRef, useState} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
-import {E_Subtitles} from "../Home/Home";
+import {E_Subtitles} from "../../pages/Home/Home";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
