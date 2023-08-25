@@ -191,21 +191,21 @@ const App: FC = (): ReactElement => {
   }, []);
 
   return (
-    <BrowserRouter>
-      <AppContext.Provider value={{
-        theme: theme,
-        toggleTheme: toggleTheme,
-        cursorRef: cursorRef,
-        LastFM_HandlerInstance: LastFM_handler.getInstance(),
-        support: platform,
-      }}>
-        <ThemeProvider theme={
-          theme === 'dark' ? {...blackTheme, ...commonTheme} : {...whiteTheme, ...commonTheme}
-        }>
-          <AppDivStyled>
-            {
-              platform === 'desktop' && <CustomCursor ref={cursorRef}/>
-            }
+    <AppContext.Provider value={{
+      theme: theme,
+      toggleTheme: toggleTheme,
+      cursorRef: cursorRef,
+      LastFM_HandlerInstance: LastFM_handler.getInstance(),
+      support: platform,
+    }}>
+      <ThemeProvider theme={
+        theme === 'dark' ? {...blackTheme, ...commonTheme} : {...whiteTheme, ...commonTheme}
+      }>
+        <AppDivStyled>
+          {
+            platform === 'desktop' && <CustomCursor ref={cursorRef}/>
+          }
+          <BrowserRouter>
 
             <Routes>
               <Route index element={<Home/>}/>
@@ -216,10 +216,10 @@ const App: FC = (): ReactElement => {
 
               <Route path="*" element={<h1>Route: &apos{location.pathname}&apos not found</h1>}/>
             </Routes>
-          </AppDivStyled>
-        </ThemeProvider>
-      </AppContext.Provider>
-    </BrowserRouter>
+          </BrowserRouter>
+        </AppDivStyled>
+      </ThemeProvider>
+    </AppContext.Provider>
   );
 }
 // END COMPONENT ======================================================================================== END COMPONENT

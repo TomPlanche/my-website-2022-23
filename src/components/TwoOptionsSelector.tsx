@@ -5,23 +5,13 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {
-  CSSProperties,
-  forwardRef,
-  ForwardRefExoticComponent,
-  HTMLAttributes,
-  useContext,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState
-} from "react";
+import {CSSProperties, HTMLAttributes, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import styled, {useTheme} from 'styled-components';
 import {gsap} from "gsap";
 
-import {AppContext, I_Theme, noUserSelection} from "../../App";
-import {stripCssVar} from "../../assets/utils";
+import {AppContext, I_Theme, noUserSelection} from "../App";
+import {stripCssVar} from "../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -94,12 +84,10 @@ type T_TwoOptionsSelectorProps = {
   style?: CSSProperties,
   choice?: number,
   stateAndSetter?: [number, (choice: number) => void],
+  theme?: I_Theme,
 } & HTMLAttributes<HTMLDivElement>
 
-type T_TwoOptionsSelector = ForwardRefExoticComponent<T_TwoOptionsSelectorProps>
-
-export type T_returnChoice = () => [number, string];
-
+type T_TwoOptionsSelector = (props: T_TwoOptionsSelectorProps) => JSX.Element;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -108,7 +96,7 @@ export type T_returnChoice = () => [number, string];
  * @return
  * @constructor
  **/
-const TwoOptionsSelector: T_TwoOptionsSelector = forwardRef((props, optionChosenRef) => {
+const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
   // Context
   const {cursorRef} = useContext(AppContext);
 
@@ -176,7 +164,7 @@ const TwoOptionsSelector: T_TwoOptionsSelector = forwardRef((props, optionChosen
       width: `${optionsWidthsRef.current[choice] * 100}%`,
     });
 
-  }, [])
+  });
 
   useEffect(() => {
     if (
@@ -227,7 +215,31 @@ const TwoOptionsSelector: T_TwoOptionsSelector = forwardRef((props, optionChosen
         color: theme.color,
       }, '<');
 
-  }, [choice])
+  }, [choice]);
+
+  useEffect(() => {
+    if (firstRender) return;
+
+    const animTl = gsap.timeline({
+      defaults: {
+        duration: 0.3,
+        ease: "power2.inOut"
+      }
+    });
+
+    animTl
+      .to(backgroundRef.current, {
+        backgroundColor: theme.color,
+      })
+      // @ts-ignore
+      .to(optionsArrayRef.current[choice], {
+        color: theme.background,
+      }, '<')
+      // @ts-ignore
+      .to(optionsArrayRef.current[choice === 0 ? 1 : 0], {
+        color: theme.color,
+      }, '<')
+  }, [theme]);
 
   // Render
   return (
@@ -258,10 +270,9 @@ const TwoOptionsSelector: T_TwoOptionsSelector = forwardRef((props, optionChosen
       </StyledRelativeContainer>
     </StyledTwoOptionsSelector>
   )
-})
+};
 // END COMPONENT =======================================================================================  END COMPONENT
 
-TwoOptionsSelector.displayName = 'TwoOptionsSelector';
 
 export default TwoOptionsSelector;
 

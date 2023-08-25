@@ -324,7 +324,9 @@ const TechStack: T_TechStack = (props) => {
             ref={imagesContainerRef}
           >
             <StyledImage
+              // @ts-ignore
               src={props.childrenObj[currentTech].image}
+              // @ts-ignore
               alt={props.childrenObj[currentTech].title}
 
               ref={currentImageRef}
@@ -333,7 +335,9 @@ const TechStack: T_TechStack = (props) => {
             {
               lastTechRef.current >= 0 && (
                 <StyledImage
+                  // @ts-ignore
                   src={props.childrenObj[lastTechRef.current].image}
+                  // @ts-ignore
                   alt={props.childrenObj[lastTechRef.current].title}
                   ref={lastImageRef}
                 />

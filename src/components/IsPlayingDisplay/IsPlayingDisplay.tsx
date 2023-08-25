@@ -288,6 +288,7 @@ const IsPlayingDisplay: T_IsPlayingDisplay = (props) => {
     ) return emptyAlbumCover
 
 
+    // @ts-ignore
     const image = finalTrack.image[finalTrack.image.length - 1]['#text'] ?? emptyAlbumCover;
 
     return image === "" ? emptyAlbumCover : image;

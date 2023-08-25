@@ -126,6 +126,7 @@ const Header: T_Header = forwardRef((_, ref) => {
     const next = (current + 1) % moonsArray.length;
 
     if (!themeToGo) {
+      // @ts-ignore
       themeBtnRef.current.innerHTML = moonsArray[next];
       return;
     }
@@ -135,6 +136,7 @@ const Header: T_Header = forwardRef((_, ref) => {
       return;
     }
 
+    // @ts-ignore
     themeBtnRef.current.innerHTML = moonsArray[next];
   }
 

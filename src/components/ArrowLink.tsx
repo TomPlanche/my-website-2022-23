@@ -83,13 +83,14 @@ const ArrowLink: T_ArrowLink = (props) => {
       defaults: {
         duration: .5,
         ease: "power2.inOut",
+        
+        onStart: () => {
+          setIsAnimating(true);
+        },
+        onComplete: () => {
+          setIsAnimating(false);
+        }
       },
-      onStart: () => {
-        setIsAnimating(true);
-      },
-      onComplete: () => {
-        setIsAnimating(false);
-      }
     })
   );
 
@@ -114,7 +115,10 @@ const ArrowLink: T_ArrowLink = (props) => {
 
   // Method(s)
   const handleMouseEnter = () => {
-    if (isAnimating) return;
+    if (isAnimating) {
+      console.log(`[ArrowLink] handleMouseLeave: isAnimating = ${isAnimating}`);
+      return
+    }
 
     animRef.current
       .fromTo(arrow1Ref.current, {
@@ -144,7 +148,10 @@ const ArrowLink: T_ArrowLink = (props) => {
   }
 
   const handleMouseLeave = () => {
-    if (isAnimating) return;
+    if (isAnimating) {
+      return
+    }
+
 
     animRef.current
       .fromTo(arrow1Ref.current, {
@@ -187,9 +194,11 @@ const ArrowLink: T_ArrowLink = (props) => {
 
       position: "absolute",
     });
-
-
   }, []);
+
+  // useEffect(() => {
+  //   console.log(`[ArrowLink] useEffect: isAnimating = ${isAnimating}`);
+  // }, [isAnimating]);
 
   // Render
   return (
