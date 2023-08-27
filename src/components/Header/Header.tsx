@@ -21,6 +21,7 @@ import {gsap} from "gsap";
 import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
 import {AppContext, blurryBackground, noUserSelection,} from "../../App";
+import MyButton from "../MyButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(ScrambleTextPlugin);
@@ -226,9 +227,12 @@ const Header: T_Header = forwardRef((_, ref) => {
     <StyledHeader
       ref={ref}
     >
-      <h1
+      <MyButton
         ref={titleRef}
-      ></h1>
+        href={'/'}
+        linkStyle={false}
+      ></MyButton>
+
       <StyledHeaderRight
       >
         <StyledHeaderTime

@@ -5,123 +5,202 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {ReactElement, useEffect, useRef, useState} from "react";
+import {ReactElement, useEffect, useLayoutEffect, useRef, useState} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
-import {E_Subtitles} from "../../pages/Home/Home";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
 // Styled components
-const StyledTechStack = styled.div`
-  height: auto;
+const StyledTechContainer = styled.div<{$isLines: boolean}>`
   width: 100%;
-
+  
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  position: relative;
-`;
-
-const StyledTechStackLine = styled.div`
-  height: 10vmin;
-  width: 100%;
-
-  display: flex;
-  flex-direction: row;
+  flex-direction: ${props => props.$isLines ? 'column' : 'row'};
   align-items: center;
   justify-content: flex-start;
-
-  padding: 2rem;
-
-  border: 1px solid ${props => props.theme.color};
-
-  font-size: 2rem;
-
-  transition: all 0.3s ease;
-
-  &:hover {
-    background-color: ${props => props.theme.color};
-    color: ${props => props.theme.background};
+  gap: ${props => props.$isLines ? '.5rem' : '0'};
+  padding: ${props => props.$isLines ? '2rem 0' : '0'};
+  
+  // if the screen is less than 600px wide, the flex-direction is column
+  @media (max-width: 600px) {
+    flex-direction: column;
   }
 `;
 
-const StyledTechName = styled.h1`
-  font-size: 2rem;
-  font-weight: 600;
-
+const StyledTechNames = styled.div`
+  height: auto;
+  width: 40%;  
+  
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 1rem;
+  
+  padding: 2rem 0;
+  
+  @media (max-width: 600px) {
+    height: 20%;
+    width: 100%;
+    
+    flex-direction: row;
+  }
+`;
+
+const StyledTechCardContainer = styled.div`
+  width: 60%;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  justify-content: flex-start;
+  
+  @media (max-width: 600px) {
+    height: 80%;
+    width: 100%;
+  }
 `;
 
-const StyledSpanChip = styled.span<{
-  backgroundColor?: string,
-  color?: string,
-}>`
-  font-size: 1rem;
-
-  padding: .5rem .75rem .25rem .75rem;
-  margin-left: 1rem;
-
-  border-radius: 99px;
-  background-color: ${(props) => props.backgroundColor};
-  color: ${props => props.color};
-
-  font-family: "Radikal", sans-serif;
+const StyledTechCard = styled.div`
+  height: 70%;
+  width: 45%;
+  
+  border-radius: 1rem;
+  
+  border: .5rem solid ${props => props.theme.color};
 `;
 
-const StyledImagesContainer = styled.div`
-  height: 40vmin;
-  width: auto;
+const StyledTechName = styled.h2(props => ({
+  color: props.theme.color,
 
-  position: absolute;
-  top: 50%;
-  right: 0;
-  transform: translateY(-50%);
+  WebkitTextStrokeWidth: '.1rem',
 
-  aspect-ratio: 1/1;
-  overflow: hidden;
+  fontSize: '4rem',
+}));
 
-  pointer-events: none;
 
-  border-radius: 3rem;
-
-... blurryBackground,
-`;
-
-const StyledImage = styled.img`
-  height: 100%;
+const StyledLine = styled.div<{$selected?: boolean}>`
+  min-height: ${props => props.$selected ? '20rem' : '6rem'};
   width: 100%;
-
-  position: absolute;
-  top: 0;
-  left: 0;
-
-  object-fit: cover;
-
-  pointer-events: none;
+  
+  display: flex;
+  // flex-direction: ${props => props.$selected ? 'column' : 'row'};;
+  // justify-content: ${props => props.$selected ? 'flex-start' : 'space-between'};
+  align-items: center;
+  
+  padding: ${props => props.$selected ? '2rem' : '0 2rem'};
+  
+  border-radius: 1rem;
+  
+  font-size: 1.5rem;
+  font-family: "Editorial New", sans-serif;
+  
+  transition: all .5s ease-in-out;
 `;
 
-// Types
-export type T_TechStackChild = {
-  title: string,
-  subtitles?: string[],
-  description: string,
-  image: string,
+// Normal
+const colors: T_Color[] = [
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "rgb(103, 145, 165)",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "rgb(238, 128, 120)",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "rgb(229, 213, 236)",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "rgb(247, 214, 135)",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "rgb(182, 225, 239)",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "#C6AFB1",
+  },
+  {
+    color: "rgb(34, 37, 41)",
+    backgroundColor: "#68C3D4",
+  },
+];
+
+const lineHeightAnimationDuration = .5;
+
+// Type(s)
+type T_Color = {
+  color: string;
+  backgroundColor: string;
+}
+
+
+type T_Technology = {
+  name: string;
+  bio: string;
+
+  imgs: string[];
 }
 
 type T_TechStackProps = {
-  childrenObj: T_TechStackChild[],
+  technologies: T_Technology[];
+  isLines?: boolean;
 }
 
-type T_getSubtitleInfo = (subtitle: string) => string;
-
 type T_TechStack = (props: T_TechStackProps) => ReactElement;
+
+// Others
+const technologies: T_Technology[] = [
+  {
+    name: "React",
+    bio: "I learned and used React for this website. " +
+      "I used it with TypeScript and styled-components.",
+
+    imgs: []
+  },
+
+  {
+    name: "TypeScript",
+    bio: "I learned and used TypeScript for this website.",
+
+    imgs: []
+  },
+
+  {
+    name: "Python",
+    bio: "I learned and used since 2017. Web scraping, data analysis, I love this language.",
+
+    imgs: []
+  },
+
+  {
+    name: "PHP",
+    bio: "I learned PHP at school and mastered it during my internship at the end of my second year of BUT.",
+
+    imgs: []
+  },
+
+  {
+    "name": "DBs",
+    "bio": "I learned and used MySQL, MongoDB, PostgreSQL and SQLite.",
+
+    imgs: []
+  },
+
+  {
+    name: "Others",
+    bio: "I also learned and used other languages and frameworks, such as Java, C, C++, Angular, Symphony " +
+      ", Laravel and more.",
+
+    imgs: []
+  }
+];
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -132,221 +211,221 @@ type T_TechStack = (props: T_TechStackProps) => ReactElement;
  **/
 const TechStack: T_TechStack = (props) => {
   // State(s)
-  const [currentTech, setCurrentTech] = useState(-1);
-  const [debouncedCurrentTech, setDebouncedCurrentTech] = useState<number>(-1);
-  const [isHovered, setIsHovered] = useState<boolean>(false);
+  const [selectedTech, setSelectedTech] = useState<number>(0);
+  const [cardTilt, setCardTilt] = useState<number>(Math.random() * 20 - 10);
 
   // Ref(s)
-  // HTML
-  const containersRef = useRef<HTMLDivElement[]>([]);
-  const imagesContainerRef = useRef<HTMLDivElement>(null);
-  const currentImageRef = useRef<HTMLImageElement>(null);
-  const lastImageRef = useRef<HTMLImageElement>(null);
+  const techNamesRefArray = useRef<HTMLHeadingElement[]>([]);
+  const lastSelectedTechRef = useRef<number>(-1);
 
-  // Other
-  const lastTechRef = useRef<number>(-1);
-  const titleArrayRef = useRef<string[]>([]);
+  // Grid case
+  const techNamesContainerRef = useRef<HTMLDivElement>(null);
+  const techCardContainerRef = useRef<HTMLDivElement>(null);
+  const techCardRef = useRef<HTMLDivElement>(null);
+
+  // Lines case
+  const linesRefArray = useRef<HTMLDivElement[]>([]);
+
+
+  const colorOffsetRef = useRef<number>(Math.floor(Math.random() * colors.length));
 
   // Method(s)
-  const handleContainerMouseEnter = () => {
-    setIsHovered(true)
-  }
+  const handleTechNameClick = (index: number) => {
+    if (index === selectedTech && props.isLines) return;
 
-  const handleContainerMouseLeave = () => {
-    setIsHovered(false)
+    lastSelectedTechRef.current = selectedTech;
+    setSelectedTech(index);
 
-    lastTechRef.current = -1;
-  }
-
-  const handleLineMouseEnter = (index: number) => {
-    if (currentTech < 0) {
-      setCurrentTech(index)
-    } else {
-      setDebouncedCurrentTech(index)
+    if (!props.isLines) {
+      setCardTilt(Math.random() * 20 - 10);
     }
-  }
+  };
 
-  const getSubtitleBackgroundColor: T_getSubtitleInfo = (subtitle) => {
-    switch (subtitle) {
-      case E_Subtitles.FrontEnd:
-        return E_Subtitles.FrontEndBackground
-      case E_Subtitles.BackEnd:
-        return E_Subtitles.BackEndBackground
-      case E_Subtitles.GeneralCoding:
-        return E_Subtitles.GeneralCodingBackground
-      case E_Subtitles.DataAnalysis:
-        return E_Subtitles.DataAnalysisBackground
-
-      default:
-        return E_Subtitles.FrontEndBackground
-    }
-  }
-
-  const getSubtitleColor: T_getSubtitleInfo = (subtitle) => {
-    switch (subtitle) {
-      case E_Subtitles.FrontEnd:
-        return E_Subtitles.FrontEndColor
-      case E_Subtitles.BackEnd:
-        return E_Subtitles.BackEndColor
-      case E_Subtitles.GeneralCoding:
-        return E_Subtitles.GeneralCodingColor
-      case E_Subtitles.DataAnalysis:
-        return E_Subtitles.DataAnalysisColor
-
-      default:
-        return E_Subtitles.FrontEndColor
-    }
-  }
   // Effect(s)
-  useEffect(() => {
-    if (!imagesContainerRef.current) return;
+  useLayoutEffect(() => {
+    if (!props.isLines) {
+      techNamesRefArray.current.forEach((techName, index) => {
+        const colorIndex = (index + colorOffsetRef.current) % colors.length;
 
-    if (isHovered) {
-      gsap
-        .fromTo(imagesContainerRef.current, {
-          opacity: 0,
-        }, {
-          opacity: 1,
-          duration: 0.3,
-        })
+        gsap.set(techName, {
+          color: index === selectedTech ? colors[colorIndex].backgroundColor : 'transparent',
+          WebkitTextStrokeColor: index === selectedTech ? 'transparent' : colors[colorIndex].backgroundColor,
+        });
+      });
     } else {
-      gsap
-        .fromTo(imagesContainerRef.current, {
-          opacity: 1,
-        }, {
-          opacity: 0,
-          duration: 0.3,
-        })
+      linesRefArray.current.forEach((line, index) => {
+        const colorIndex = (index + colorOffsetRef.current) % colors.length;
 
-      lastTechRef.current = -1;
+        gsap.set(line, {
+          backgroundColor: colors[colorIndex].backgroundColor,
+          color: colors[colorIndex].color,
+        });
+      });
     }
-  }, [isHovered])
+  }, [props.isLines]);
 
   useEffect(() => {
-    if (currentTech < 0) {
-      lastTechRef.current = -1;
-      return;
-    }
 
-    if (lastTechRef.current < 0 && currentTech >= 0) {
-      lastTechRef.current = currentTech;
-      return;
-    }
 
-    if (isHovered) {
-      const techTimeline = gsap.timeline({
-        defaults: {
-          duration: 0.3,
-          ease: 'power2.inOut',
-        },
-        onComplete: () => {
-          lastTechRef.current = currentTech;
+    if (!props.isLines) {
+      gsap.set(techCardContainerRef.current, {
+        height: techNamesContainerRef.current?.getBoundingClientRect().height,
+      });
+
+      gsap.set(techCardRef.current, {
+        rotate: cardTilt,
+      });
+    }
+  }, [props.isLines, cardTilt]);
+
+  useEffect(() => {
+    setSelectedTech(0)
+  }, [props.isLines]);
+
+  useEffect(() => {
+    if (!props.isLines) {
+      gsap.to(techNamesRefArray.current[selectedTech], {
+        color: colors[(selectedTech + colorOffsetRef.current) % colors.length].backgroundColor,
+        WebkitTextStrokeColor: 'transparent',
+
+        duration: lineHeightAnimationDuration,
+      });
+
+      techNamesRefArray.current.forEach((techName, index) => {
+        if (index !== selectedTech) {
+          gsap.to(techName, {
+            color: 'transparent',
+            WebkitTextStrokeColor: colors[(index + colorOffsetRef.current) % colors.length].backgroundColor,
+
+            duration: lineHeightAnimationDuration,
+          });
         }
-      })
+      });
+    } else {
+      const animTl = gsap.timeline({
+        defaults: {
+          duration: lineHeightAnimationDuration,
+          ease: "power2.inOut"
+        }
+      });
 
-      if (lastTechRef.current < currentTech) {
-        // Going down
-        techTimeline
-          .fromTo(currentImageRef.current, {
-            y: '100%',
-          }, {
-            y: '0%',
-          })
-          .fromTo(lastImageRef.current, {
-            y: '0%',
-          }, {
-            y: '-100%',
-          }, '<')
-      } else {
-        // Going up
-        techTimeline
-          .fromTo(currentImageRef.current, {
-            y: '-100%',
-          }, {
-            y: '0%',
-          })
-          .fromTo(lastImageRef.current, {
-            y: '0%',
-          }, {
-            y: '100%',
-          }, '<')
-      }
+      animTl
+        .to(techNamesRefArray.current[selectedTech], {
+          opacity: 0,
+
+          onStart: () => {
+            if (lastSelectedTechRef.current !== -1) {
+              gsap
+                .to(techNamesRefArray.current[lastSelectedTechRef.current], {
+                  opacity: 0,
+
+                  onComplete: () => {
+                    gsap.set(linesRefArray.current[lastSelectedTechRef.current], {
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+
+                      onComplete: () => {
+                        gsap
+                          .fromTo(techNamesRefArray.current[lastSelectedTechRef.current], {
+                            x: '100%',
+                            opacity: 0,
+                            delay: lineHeightAnimationDuration,
+                          }, {
+                            x: '0',
+                            opacity: 1,
+                          })
+                      }
+                    })
+                  }
+                });
+
+
+            }
+          }
+        })
+        .to(linesRefArray.current[selectedTech], {
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          duration: 0,
+        })
+        .fromTo(techNamesRefArray.current[selectedTech], {
+          y: '-100%',
+        }, {
+          y: '0',
+          opacity: 1,
+        }, '<')
+
+
+
     }
-  }, [currentTech])
-
-  useEffect(() => {
-    const debounce = setTimeout(() => {
-      setCurrentTech(debouncedCurrentTech)
-    }, 75);
-
-    return () => clearTimeout(debounce);
-  }, [debouncedCurrentTech])
+  }, [selectedTech]);
 
   // Render
   return (
-    <StyledTechStack
-      onMouseEnter={handleContainerMouseEnter}
-      onMouseLeave={handleContainerMouseLeave}
+    <StyledTechContainer
+      $isLines={props.isLines ?? false}
     >
       {
-        props.childrenObj.map((child, index) => (
-
-          <StyledTechStackLine
-            key={index}
-            ref={el => containersRef.current[index] = el as HTMLDivElement}
-            style={{
-              borderBottom: index !== props.childrenObj.length - 1 ? 'none' : '1px solid white',
-            }}
-            onMouseEnter={() => handleLineMouseEnter(index)}
-          >
-            <StyledTechName
-              ref={el => titleArrayRef.current[index] = el?.textContent as string}
+        !props.isLines && (
+          <>
+            <StyledTechNames
+              ref={techNamesContainerRef}
             >
-              {child.title}
               {
-                child.subtitles && child.subtitles.map((subtitle, index) => (
-                  <StyledSpanChip
-                    key={index}
-                    backgroundColor={getSubtitleBackgroundColor(subtitle)}
-                    color={getSubtitleColor(subtitle)}
-                  >
-                    {subtitle}
-                  </StyledSpanChip>
-                ))
+                technologies.map((technology, index) => {
+                  return (
+                    <div key={index}>
+                      <StyledTechName
+                        ref={ref => techNamesRefArray.current[index] = ref as HTMLHeadingElement}
+                        onClick={() => handleTechNameClick(index)}
+                      >
+                        {technology.name}
+                      </StyledTechName>
+                    </div>
+                  )
+                })
               }
-            </StyledTechName>
-          </StyledTechStackLine>
-        ))
-      }
-      {
-        isHovered && (
-          <StyledImagesContainer
-            ref={imagesContainerRef}
-          >
-            <StyledImage
-              // @ts-ignore
-              src={props.childrenObj[currentTech].image}
-              // @ts-ignore
-              alt={props.childrenObj[currentTech].title}
+            </StyledTechNames>
+            <StyledTechCardContainer
+              ref={techCardContainerRef}
+            >
+              <StyledTechCard
+                ref={techCardRef}
+              >
 
-              ref={currentImageRef}
-            />
-
-            {
-              lastTechRef.current >= 0 && (
-                <StyledImage
-                  // @ts-ignore
-                  src={props.childrenObj[lastTechRef.current].image}
-                  // @ts-ignore
-                  alt={props.childrenObj[lastTechRef.current].title}
-                  ref={lastImageRef}
-                />
-              )
-            }
-          </StyledImagesContainer>
+                <h2>{technologies[selectedTech].name}</h2>
+              </StyledTechCard>
+            </StyledTechCardContainer>
+          </>
         )
       }
-    </StyledTechStack>
+      {
+        props.isLines && (
+          <>
+            {
+              technologies.map((technology, index) => {
+                return (
+                  <StyledLine
+                    key={index}
+                    $selected={index === selectedTech}
+
+                    ref={ref => linesRefArray.current[index] = ref as HTMLDivElement}
+                    onClick={() => handleTechNameClick(index)}
+                  >
+                    <h2
+                      ref={ref => techNamesRefArray.current[index] = ref as HTMLHeadingElement}
+                    >
+                      {technology.name}
+                    </h2>
+                  </StyledLine>
+                )
+              })
+
+            }
+          </>
+        )
+      }
+    </StyledTechContainer>
   )
 }
 

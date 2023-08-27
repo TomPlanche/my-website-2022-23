@@ -5,7 +5,6 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import styled from "styled-components";
 import {
   forwardRef,
   ForwardRefExoticComponent,
@@ -16,6 +15,9 @@ import {
   useRef,
   useState
 } from "react";
+
+import {gsap} from "gsap";
+import styled from "styled-components";
 
 import {lerp} from "../../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
@@ -97,7 +99,11 @@ type T_MousePosition = {
   y: number,
 }
 
-type T_CustomCursor = ForwardRefExoticComponent<RefAttributes<unknown>>;
+type T_CustomCursorProps = {
+  theme?: 'light' | 'dark',
+}
+
+type T_CustomCursor = ForwardRefExoticComponent<T_CustomCursorProps & RefAttributes<unknown>>;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -106,7 +112,7 @@ type T_CustomCursor = ForwardRefExoticComponent<RefAttributes<unknown>>;
  * @return {JSX.Element}
  * @constructor
  **/
-const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
+const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
   // State(s)
   const [hasMoved, setHasMoved] = useState<boolean>(false);
 
@@ -339,13 +345,23 @@ const CustomCursor: T_CustomCursor = forwardRef((_, ref): ReactElement => {
       }, 150);
     }
   }, [hasMoved])
+
+  useEffect(() => {
+    if (props.theme) {
+      gsap.set(cursorRef.current, {
+        backgroundColor: props.theme === 'light' ? '#222222' : '#eeeeee',
+      })
+    }
+  }, [props.theme]);
+
   // Render
   return (
-    <Cursor ref={cursorRef}>
-    </Cursor>
+    <Cursor ref={cursorRef} />
   )
 });
 // END COMPONENT =======================================================================================  END COMPONENT
+
+CustomCursor.displayName = 'CustomCursor';
 
 export default CustomCursor;
 

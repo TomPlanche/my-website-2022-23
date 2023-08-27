@@ -8,13 +8,25 @@
 import styled from 'styled-components';
 import IsPlayingDisplay from "../../components/IsPlayingDisplay/IsPlayingDisplay";
 import MyButton from "../../components/MyButton";
+import Header from "../../components/Header/Header";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
-const StyledIPDHome = styled.div`
-  height: 100vh;
-  width: 100vw;
-`;
+const StyledIPDHome = styled.div(props => ({
+  minHeight: props.theme.firstPageHeight,
+  width: "100%",
+
+  padding: `0 ${props.theme.sidePadding}`,
+
+  background: props.theme.background,
+
+  color: props.theme.color,
+
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -36,6 +48,8 @@ const IPDHome = () => {
   return (
     <>
       <StyledIPDHome>
+        <Header key="header" />
+
         <h1>IsPlayingDisplay</h1>
         <p>
           This little diisplay shows what I am currently playing.

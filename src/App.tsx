@@ -89,7 +89,7 @@ export const commonTheme = {
 
   minHeight: `calc(100vh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
   sidePadding: themeValues.mainPadding,
-  minTopPadding: calcCssVar(themeValues.headerHeight, variableWithoutUnit => variableWithoutUnit + stripCssVar(themeValues.mainPadding)),
+  minTopPadding: calcCssVar(themeValues.headerHeight, variableWithoutUnit => variableWithoutUnit + stripCssVar(themeValues.mainPadding) * 2),
 
   // Sizes
   'header-font-size': '2rem',
@@ -110,14 +110,11 @@ export const commonTheme = {
 }
 
 const AppDivStyled = styled.div(props => ({
-  height: '100%',
+  // height: '100vh',
   width: '100vw',
 
   background: props.theme.background,
   color: props.theme.color,
-
-  padding: `${props.theme.sidePadding}`,
-  // paddingTop: `calc(${props.theme['header-height']} + ${props.theme.sidePadding})`,
 
   '*:focus': {
     outline: `2px solid ${props.theme['accent']}`,
@@ -203,12 +200,12 @@ const App: FC = (): ReactElement => {
       }>
         <AppDivStyled>
           {
-            platform === 'desktop' && <CustomCursor ref={cursorRef}/>
+            platform === 'desktop' && <CustomCursor ref={cursorRef} theme={theme} />
           }
           <BrowserRouter>
 
             <Routes>
-              <Route index element={<Home/>}/>
+              <Route index element={<Home />}/>
 
               <Route path={'/my-music-player'} element={<IPDHome/>}/>
 

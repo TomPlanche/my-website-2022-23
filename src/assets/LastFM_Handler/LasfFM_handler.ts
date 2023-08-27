@@ -346,7 +346,8 @@ class LastFM_handler implements I_LastFM_handler {
             reject(new UsernameNotFoundError(this.username));
           }
 
-          console.log(`Error not classified: ${error.response.data}`);
+          console.log(`Error not classified: ${JSON.stringify(error.response.data)}`);
+
           reject(error);
         })
     });

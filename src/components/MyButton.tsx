@@ -19,8 +19,9 @@ import styled from "styled-components";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
-type T_AnchorProps = AnchorHTMLAttributes<HTMLElement>
+type T_AnchorProps = AnchorHTMLAttributes<HTMLElement> & {linkStyle?: boolean};
 type T_ButtonProps = ButtonHTMLAttributes<HTMLElement>
+
 
 type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement>;
 
@@ -83,6 +84,8 @@ const StyledMyLink = styled.a`
     transform-origin: bottom left;
   }
 `;
+
+const NonStyledAnchor = styled.a``;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 const isAnchor: T_isAnchor = (props) => {
@@ -117,10 +120,14 @@ const MyButton: T_MyButton = forwardRef((props, ref) => {
 
   // Render
   if (isAnchor(props)) {
-    return <StyledMyLink
-      {...props}
 
-      className={'link'}
+    const finalProps = props as T_AnchorProps;
+    const linkClass = finalProps.linkStyle ?? true;
+
+    const FinalLink = linkClass ? StyledMyLink : NonStyledAnchor;
+
+    return <FinalLink
+      {...props}
 
       ref={ref as RefObject<HTMLAnchorElement>}
 

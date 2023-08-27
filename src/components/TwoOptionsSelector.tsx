@@ -5,7 +5,16 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {CSSProperties, HTMLAttributes, useContext, useEffect, useLayoutEffect, useRef, useState} from "react";
+import {
+  CSSProperties,
+  HTMLAttributes,
+  ReactNode,
+  useContext,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState
+} from "react";
 
 import styled, {useTheme} from 'styled-components';
 import {gsap} from "gsap";
@@ -79,7 +88,7 @@ const StyledBackground = styled.div(props => (({
 
 // Types
 type T_TwoOptionsSelectorProps = {
-  options: string[],
+  options: string[] | ReactNode[],
 
   style?: CSSProperties,
   choice?: number,
