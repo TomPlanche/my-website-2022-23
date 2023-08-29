@@ -5,22 +5,23 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {createContext, useEffect, useRef, useState} from "react";
+import {createContext, useContext, useEffect, useRef, useState} from "react";
 
 import {gsap} from "gsap";
 import SplitText from "gsap/SplitText";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import ScrollToPlugin from "gsap/ScrollToPlugin";
 
-import styled, {useTheme} from 'styled-components'
+import styled from 'styled-components'
 
 import Header from "../../components/Header/Header";
 import MyUglyFace from "../../components/MyUglyFace/MyUglyFace";
 import IsPlayingDisplay from "../../components/IsPlayingDisplay/IsPlayingDisplay";
 
-import {commonTheme, I_Theme, noUserSelection} from "../../App";
+import {AppContext, commonTheme, noUserSelection} from "../../App";
 import TwoOptionsSelector from "../../components/TwoOptionsSelector";
 import TechStack from "../../components/TechStack/TechStack";
+import MagnetikContainer from "../../components/Magnetik/MagnetikContainer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -88,7 +89,7 @@ const StyledHomeHalf = styled.div(props => ({
 
 
 const StyledSection = styled.section(props => ({
-  height: '100%',
+  height: '100vh',
   width: '100%',
 
   display: 'flex',
@@ -96,9 +97,11 @@ const StyledSection = styled.section(props => ({
   alignItems: 'center',
   justifyContent: 'flex-start',
 
-  paddingTop: props.theme.minTopPadding,
+  paddingTop: '15vh',
 
   fontFamily: "Fraktion Mono, sans-serif",
+
+  position: 'relative',
 }));
 
 // Types
@@ -200,7 +203,7 @@ const technologies: T_Technology[] = [
  **/
 const Home = () => {
   // Context(s)
-  const theme: I_Theme = useTheme() as I_Theme;
+  const {theme} = useContext(AppContext)
 
   // State(s)
   const [
@@ -217,6 +220,7 @@ const Home = () => {
   const rightHalfRef = useRef<HTMLDivElement>(null);
   const myUglyFaceRef = useRef<HTMLDivElement>(null);
   const firstSectionRef = useRef<HTMLSelectElement>(null);
+  const techStackSelectorRef = useRef<HTMLDivElement>(null);
 
   // Method(s)
   const handleChoice = () => {
@@ -252,7 +256,6 @@ const Home = () => {
         opacity: 0,
         height: 0,
         display: 'none',
-        paddingTop: 0,
       })
       .to(myUglyFaceRef.current, {
         opacity: 1,
@@ -290,25 +293,6 @@ const Home = () => {
         height: 'auto',
         display: 'flex',
       })
-
-    const scrollTriggerTl = gsap.timeline({
-      scrollTrigger: {
-        trigger: homeRef.current,
-        start: `${window.innerHeight * .5}px`,
-        end: `${window.innerHeight * .9}px`,
-        scrub: true,
-      }
-    });
-
-    scrollTriggerTl
-      .fromTo(firstSectionRef.current, {
-        paddingTop: 0,
-      }, {
-        paddingTop: commonTheme.minTopPadding,
-      })
-  }, []);
-
-  useEffect(() => {
 
   }, []);
 
@@ -354,14 +338,29 @@ const Home = () => {
       <StyledSection
         ref={firstSectionRef}
       >
-        <TwoOptionsSelector
-          options={optionsArray}
-          stateAndSetter={[twoOptionsChoice, setTwoOptionsChoice]}
-        />
+        <MagnetikContainer
+          ref={techStackSelectorRef}
+
+          style={{
+            position: 'absolute',
+
+            top: commonTheme.minTopPadding,
+            right: 0,
+          }}
+
+          recentred={true}
+        >
+          <TwoOptionsSelector
+            options={optionsArray}
+            stateAndSetter={[twoOptionsChoice, setTwoOptionsChoice]}
+          />
+        </MagnetikContainer>
 
         <TechStack
           technologies={technologies}
           isLines={twoOptionsChoice !== 0}
+
+          theme={theme}
         />
 
         {/*<h2*/}

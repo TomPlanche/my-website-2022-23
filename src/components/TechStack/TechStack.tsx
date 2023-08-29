@@ -46,6 +46,12 @@ const StyledTechNames = styled.div`
     width: 100%;
     
     flex-direction: row;
+    overflow-x: scroll;
+    
+    // Scrollbar invisible
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
 `;
 
@@ -151,6 +157,7 @@ type T_Technology = {
 type T_TechStackProps = {
   technologies: T_Technology[];
   isLines?: boolean;
+  theme?: string;
 }
 
 type T_TechStack = (props: T_TechStackProps) => ReactElement;
@@ -241,6 +248,10 @@ const TechStack: T_TechStack = (props) => {
     }
   };
 
+  const handleMouseEnter = () => {
+
+  }
+
   // Effect(s)
   useLayoutEffect(() => {
     if (!props.isLines) {
@@ -248,7 +259,9 @@ const TechStack: T_TechStack = (props) => {
         const colorIndex = (index + colorOffsetRef.current) % colors.length;
 
         gsap.set(techName, {
+          // @ts-ignore
           color: index === selectedTech ? colors[colorIndex].backgroundColor : 'transparent',
+          // @ts-ignore
           WebkitTextStrokeColor: index === selectedTech ? 'transparent' : colors[colorIndex].backgroundColor,
         });
       });
@@ -257,7 +270,9 @@ const TechStack: T_TechStack = (props) => {
         const colorIndex = (index + colorOffsetRef.current) % colors.length;
 
         gsap.set(line, {
+          // @ts-ignore
           backgroundColor: colors[colorIndex].backgroundColor,
+          // @ts-ignore
           color: colors[colorIndex].color,
         });
       });
@@ -265,37 +280,54 @@ const TechStack: T_TechStack = (props) => {
   }, [props.isLines]);
 
   useEffect(() => {
+    if (!props.isLines) {
+      gsap.set(techCardRef.current, {
+        rotate: cardTilt,
+      });
+    }
+  }, [cardTilt]);
 
+  useEffect(() => {
+    setSelectedTech(0);
 
     if (!props.isLines) {
       gsap.set(techCardContainerRef.current, {
         height: techNamesContainerRef.current?.getBoundingClientRect().height,
       });
-
-      gsap.set(techCardRef.current, {
-        rotate: cardTilt,
-      });
     }
-  }, [props.isLines, cardTilt]);
-
-  useEffect(() => {
-    setSelectedTech(0)
   }, [props.isLines]);
 
   useEffect(() => {
     if (!props.isLines) {
+      const colorIndex = (selectedTech + colorOffsetRef.current) % colors.length;
+
+      // @ts-ignore
       gsap.to(techNamesRefArray.current[selectedTech], {
-        color: colors[(selectedTech + colorOffsetRef.current) % colors.length].backgroundColor,
+        // @ts-ignore
+        color: colors[colorIndex].backgroundColor,
         WebkitTextStrokeColor: 'transparent',
 
+        // If the screen is less than 600px wide, the x is 0, y is 2rem
+        x: window.innerWidth < 600 ? '0' : '2rem',
+        y: window.innerWidth < 600 ? '-2rem' : '0',
+
         duration: lineHeightAnimationDuration,
+      });
+
+      gsap.to(techCardRef.current, {
+        // @ts-ignore
+        border: `.5rem solid ${colors[colorIndex].backgroundColor}`,
       });
 
       techNamesRefArray.current.forEach((techName, index) => {
         if (index !== selectedTech) {
           gsap.to(techName, {
             color: 'transparent',
+            // @ts-ignore
             WebkitTextStrokeColor: colors[(index + colorOffsetRef.current) % colors.length].backgroundColor,
+
+            x: '0',
+            y: '0',
 
             duration: lineHeightAnimationDuration,
           });
@@ -310,22 +342,27 @@ const TechStack: T_TechStack = (props) => {
       });
 
       animTl
+        // @ts-ignore
         .to(techNamesRefArray.current[selectedTech], {
           opacity: 0,
 
           onStart: () => {
             if (lastSelectedTechRef.current !== -1) {
               gsap
+                // @ts-ignore
                 .to(techNamesRefArray.current[lastSelectedTechRef.current], {
                   opacity: 0,
 
                   onComplete: () => {
+
+                    // @ts-ignore
                     gsap.set(linesRefArray.current[lastSelectedTechRef.current], {
                       flexDirection: 'row',
                       justifyContent: 'space-between',
 
                       onComplete: () => {
                         gsap
+                          // @ts-ignore
                           .fromTo(techNamesRefArray.current[lastSelectedTechRef.current], {
                             x: '100%',
                             opacity: 0,
@@ -343,11 +380,13 @@ const TechStack: T_TechStack = (props) => {
             }
           }
         })
+        // @ts-ignore
         .to(linesRefArray.current[selectedTech], {
           flexDirection: 'column',
           justifyContent: 'flex-start',
           duration: 0,
         })
+        // @ts-ignore
         .fromTo(techNamesRefArray.current[selectedTech], {
           y: '-100%',
         }, {
@@ -359,6 +398,41 @@ const TechStack: T_TechStack = (props) => {
 
     }
   }, [selectedTech]);
+
+  useEffect(() => {
+    if (
+      !props.isLines
+      && props.theme
+      && props.theme === 'light'
+    ) {
+      techNamesRefArray.current.forEach((techName, index) => {
+        gsap.set(techName, {
+          // @ts-ignore
+          color: colors[(index + colorOffsetRef.current) % colors.length].backgroundColor,
+          WebkitTextStrokeColor: 'transparent',
+        })
+      });
+    }
+
+    if (
+      props.isLines
+      && props.theme
+    ) {
+      const outline = props.theme === 'light'
+        // @ts-ignore
+        ? `.1rem solid ${colors[(selectedTech + colorOffsetRef.current) % colors.length].color}`
+        : '0';
+
+      linesRefArray.current.forEach((line, index) => {
+        gsap.to(line, {
+          outline: outline,
+
+          duration: lineHeightAnimationDuration,
+          ease: "power2.inOut"
+        })
+      });
+    }
+  }, [props.theme, props.isLines]);
 
   // Render
   return (
@@ -392,8 +466,12 @@ const TechStack: T_TechStack = (props) => {
               <StyledTechCard
                 ref={techCardRef}
               >
-
-                <h2>{technologies[selectedTech].name}</h2>
+                <h2>
+                  {
+                    // @ts-ignore
+                    technologies[selectedTech].name
+                  }
+                </h2>
               </StyledTechCard>
             </StyledTechCardContainer>
           </>

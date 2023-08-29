@@ -34,6 +34,7 @@ type T_MagnetikContainerProps = {
   fieldSize?: number,
   fieldForce?: number,
   centered?: boolean,
+  recentred?: boolean,
 
 
   block?: boolean,
@@ -145,10 +146,25 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
       border: '4px dotted red',
     } : {}
 
+    const heightTransform = props.recentred
+      ? `${(height - (height * fieldSize)) / 2}px`
+      : 'none';
+
+    const widthTransform = props.recentred
+      ? `${(width - (width * fieldSize)) / -2}px`
+      : 'none';
+
+    const transform = props.recentred
+      ? `translate(${widthTransform}, ${heightTransform})`
+      : 'none';
+
+    console.log(`[MagnetikContainer] transform = ${transform}`);
     // Apply the field size
     gsap.set(mainContainerRef.current, {
       width: width * fieldSize,
       height: height * fieldSize,
+
+      transform: transform,
 
       ...options
     });
@@ -158,6 +174,7 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
   return (
     // @ts-ignore
     <StyledMagnetikContainer
+      style={props.style}
       ref={mainContainerRef}
 
       onMouseMove={handleMagnetikContainerMouseMove}

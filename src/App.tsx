@@ -96,7 +96,7 @@ export const commonTheme = {
   headerHeight: themeValues.headerHeight,
 
   mainBorderRadius: '8px',
-  firstPageHeight: `calc(100vh - (${themeValues.mainPadding} * 2))`,
+  firstPageHeight: `calc(100vh - ${themeValues.mainPadding})`,
 
   boxShadowSize: '.5rem',
 

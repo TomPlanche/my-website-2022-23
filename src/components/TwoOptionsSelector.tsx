@@ -253,6 +253,7 @@ const TwoOptionsSelector: T_TwoOptionsSelector = (props) => {
   // Render
   return (
     <StyledTwoOptionsSelector
+      style={props.style}
       ref={selectorRef}
 
       onMouseEnter={handleMouseEnter}
