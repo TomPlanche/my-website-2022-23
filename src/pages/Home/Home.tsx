@@ -14,13 +14,13 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 
 import styled from 'styled-components'
 
-import Header from "../../components/Header/Header";
-import MyUglyFace from "../../components/MyUglyFace/MyUglyFace";
-import IsPlayingDisplay from "../../components/IsPlayingDisplay/IsPlayingDisplay";
+import Header from "../../components/Header";
+import MyUglyFace from "../../components/MyUglyFace";
+import IsPlayingDisplay from "../../components/IsPlayingDisplay";
 
 import {AppContext, commonTheme, noUserSelection} from "../../App";
 import TwoOptionsSelector from "../../components/TwoOptionsSelector";
-import TechStack from "../../components/TechStack/TechStack";
+import TechStack from "../../components/TechStack";
 import MagnetikContainer from "../../components/Magnetik/MagnetikContainer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS

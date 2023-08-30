@@ -10,10 +10,11 @@ import styled, {ThemeProvider} from "styled-components";
 
 import Home from "./pages/Home/Home";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
-import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor/CustomCursor";
+import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor";
 import {calcCssVar, stripCssVar} from "./assets/utils";
 import Tests from "./pages/Test/Tests";
 import IPDHome from "./pages/IsPlayingDisplayPage/IPDHome";
+import CustomCursorPage from "./pages/CustomCursorPage/CustomCursorPage";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -208,6 +209,7 @@ const App: FC = (): ReactElement => {
               <Route index element={<Home />}/>
 
               <Route path={'/my-music-player'} element={<IPDHome/>}/>
+              <Route path={'/my-custom-cursor'} element={<CustomCursorPage />}/>
 
               <Route path={'/tests'} element={<Tests/>}/>
 

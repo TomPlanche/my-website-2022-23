@@ -12,29 +12,45 @@ import {
   ForwardRefExoticComponent,
   RefAttributes,
   RefObject,
-  useContext,
 } from "react";
-import {AppContext} from "../App";
+
 import styled from "styled-components";
+
+import {T_OnEnterLeave, T_OnEnterLeaveArgs} from "./CustomCursor";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
+// Type(s)
+type T_CursorRef = RefObject<{
+  onCursorEnter: T_OnEnterLeave,
+  onCursorLeave: T_OnEnterLeave,
+}>
+
 type T_AnchorProps = AnchorHTMLAttributes<HTMLElement> & {linkStyle?: boolean};
 type T_ButtonProps = ButtonHTMLAttributes<HTMLElement>
 
+type T_CurstomCursorTrue = {
+  cursorRef: T_CursorRef;
 
-type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement>;
+  onEnterOptions?: T_OnEnterLeaveArgs;
+  onLeaveOptions?: T_OnEnterLeaveArgs;
+}
+
+type T_MyButtonProps = (T_AnchorProps | T_ButtonProps) & RefAttributes<HTMLElement> & {
+  customCursor?: T_CurstomCursorTrue | T_CursorRef;
+}
 
 type T_isAnchor = (props: T_MyButtonProps) => boolean;
 
 export type T_MyButton = ForwardRefExoticComponent<T_MyButtonProps>;
 
+// Styled components
 const StyledMyButton = styled.button`
   display: inline-block;
   position: relative;
   cursor: pointer;
 
-  color: #2077b2;
+  color: #679fc5;
 
   &:after {
     content: '';
@@ -44,7 +60,7 @@ const StyledMyButton = styled.button`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #2077b2;
+    background-color: #679fc5;
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 
@@ -62,7 +78,7 @@ const StyledMyLink = styled.a`
   position: relative;
   cursor: pointer;
 
-  color: #2077b2;
+  color: #679fc5;
 
   &:after {
     content: '';
@@ -72,7 +88,7 @@ const StyledMyLink = styled.a`
     height: 2px;
     bottom: 0;
     left: 0;
-    background-color: #2077b2;
+    background-color: #679fc5;
     transform-origin: bottom right;
     transition: transform 0.25s ease-out;
 
@@ -100,21 +116,55 @@ const isAnchor: T_isAnchor = (props) => {
  * @constructor
  **/
 const MyButton: T_MyButton = forwardRef((props, ref) => {
-  // Context(s)
-  const {cursorRef} = useContext(AppContext);
-
   // Method(s)
   const handleMouseEnter = () => {
-    if (cursorRef.current) {
-      cursorRef.current.onCursorEnter({
-        backgroundColor: 'red',
-      }, true)
+    if (props.customCursor) {
+      // Is props.customCursor a T_CurstomCursorTrue ?
+      if ((props.customCursor as T_CursorRef).hasOwnProperty('current')) {
+        const customCursor = props.customCursor as T_CursorRef;
+
+        if (customCursor.current) {
+          customCursor.current.onCursorEnter({},true);
+        }
+      } else {
+        const customCursor = props.customCursor as T_CurstomCursorTrue;
+
+        if (customCursor.cursorRef.current) {
+          const {
+            options,
+            addBaseStyles,
+            persist,
+            verbose
+          } = customCursor.onEnterOptions ?? {};
+
+          customCursor.cursorRef.current.onCursorEnter(options ?? {}, addBaseStyles, persist, verbose);
+        }
+      }
     }
   }
 
   const handleMouseLeave = () => {
-    if (cursorRef.current) {
-      cursorRef.current.onCursorLeave({}, true)
+    if (props.customCursor) {
+      if ((props.customCursor as T_CursorRef).hasOwnProperty('current')) {
+        const customCursor = props.customCursor as T_CursorRef;
+
+        if (customCursor.current) {
+          customCursor.current.onCursorLeave({},true);
+        }
+      } else {
+        const customCursor = props.customCursor as T_CurstomCursorTrue;
+
+        if (customCursor.cursorRef.current) {
+          const {
+            options,
+            addBaseStyles,
+            persist,
+            verbose
+          } = customCursor.onLeaveOptions ?? {};
+
+          customCursor.cursorRef.current.onCursorLeave(options ?? {}, addBaseStyles, persist, verbose);
+        }
+      }
     }
   }
 

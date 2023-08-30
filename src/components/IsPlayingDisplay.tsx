@@ -14,10 +14,10 @@ import {gsap} from "gsap";
 
 import styled from "styled-components";
 
-import {AppContext, blurryBackground, noUserSelection} from "../../App";
+import {AppContext, blurryBackground, noUserSelection} from "../App";
 
-import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../../assets/LastFM_Handler/LasfFM_handler";
-import {calcCssVar} from "../../assets/utils";
+import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../assets/LastFM_Handler/LasfFM_handler";
+import {calcCssVar} from "../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES

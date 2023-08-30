@@ -20,8 +20,8 @@ import styled from "styled-components";
 import {gsap} from "gsap";
 import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
-import {AppContext, blurryBackground, noUserSelection,} from "../../App";
-import MyButton from "../MyButton";
+import {AppContext, blurryBackground, noUserSelection,} from "../App";
+import MyButton from "./MyButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(ScrambleTextPlugin);

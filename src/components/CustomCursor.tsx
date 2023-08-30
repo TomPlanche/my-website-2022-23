@@ -19,7 +19,7 @@ import {
 import {gsap} from "gsap";
 import styled from "styled-components";
 
-import {lerp} from "../../assets/utils";
+import {lerp} from "../assets/utils";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -46,6 +46,7 @@ const Cursor = styled.div`
   z-index: 9999;
 
   pointer-events: none;
+  
 `;
 
 // Object variables
@@ -85,10 +86,25 @@ type T_StyleOptions = {
   backgroundColor?: string,
 }
 
-export type T_OnEnterLeaveOptions = T_StyleOptions & T_LerpableOptionsWithOptional;
+export type T_OnEnterOptions = T_StyleOptions & T_LerpableOptionsWithOptional & {
+  svg?: string;
+}
+
+export type T_OnLeaveOptions = T_StyleOptions & T_LerpableOptionsWithOptional & {
+  svg?: boolean;
+}
+
+export type T_OnEnterLeaveOptions = T_OnEnterOptions | T_OnLeaveOptions | null;
+
+export type T_OnEnterLeaveArgs = {
+  options: T_OnEnterLeaveOptions,
+  addBaseStyles?: boolean,
+  persist?: boolean,
+  verbose?: boolean
+}
 
 export type T_OnEnterLeave = (
-  options: T_OnEnterLeaveOptions | null,
+  options: T_OnEnterLeaveOptions,
   addBaseStyles?: boolean,
   persist?: boolean,
   verbose?: boolean
@@ -184,21 +200,24 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
    *
    * @return {void}
    */
+  // @ts-ignore
   const onCursorEnter: T_OnEnterLeave = (
-    options,
+    options: T_OnEnterLeaveOptions,
     addBaseStyles = true,
     persist = false,
     verbose = false
-  ) => {
+  ): void => {
     verbose && console.log("[CustomCursor] onCursorEnter");
 
     if (!cursorRef.current) {
       verbose && console.log(`[CustomCursor] cursorRef.current is null!`);
-      return 0;
+
+      return;
     }
 
     const toApplyStyle: T_StyleOptions = {};
     const toApply: T_LerpableOptionsWithOptional = {};
+
 
     if (addBaseStyles) {
       // for each key in onEnterBaseOptions
@@ -208,9 +227,29 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
 
         // If the key is in lerpableOptionsRef.current
         if (key in lerpableOptionsRef.current) {
-
           verbose && console.log(`[CustomCursor] key: ${key} is in lerpableOptionsRef.current`);
+
           const keyRef = key as keyof T_LerpableOptions;
+
+          // If the key is in options
+          if (
+            options
+            && key in options
+          ) {
+            verbose && console.log(`[CustomCursor] key: ${key} is in options`);
+
+            const keyRef = key as keyof T_LerpableOptions;
+            // Set the current value to the previous value
+            toApply[keyRef]
+              = {
+              ...lerpableOptionsRef.current[keyRef],
+              ...options[keyRef]
+            };
+
+            // go to the next iteration
+            return;
+          }
+
           // Set the current value to the previous value
           toApply[keyRef]
             = {
@@ -243,6 +282,21 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
       });
     }
 
+    if (options) {
+      if (options.svg) {
+        // svg is the path to the svg file
+        cursorRef.current!.innerHTML = `<img src="${options.svg}" alt=""/>`;
+      }
+
+      if (options.backgroundColor) {
+        cursorRef.current!.style.backgroundColor = options.backgroundColor;
+      }
+
+      if (options.opacity) {
+        cursorRef.current!.style.opacity = `${options.opacity.current}`;
+      }
+    }
+
 
   }
 
@@ -257,17 +311,18 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
    *
    * @return {void}
    */
+  // @ts-ignore
   const onCursorLeave: T_OnEnterLeave = (
-    options,
+    options: T_OnEnterLeaveOptions,
     addBaseStyles = true,
     persist = false,
     verbose = false
-  ) => {
+  ): void => {
     verbose && console.log("[CustomCursor] onCursorLeave");
 
     if (!cursorRef.current) {
       verbose && console.log(`[CustomCursor] cursorRef.current is null!`);
-      return 0;
+      return;
     }
 
     const toApplyStyle: T_StyleOptions = {};
@@ -314,6 +369,13 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
         lerpableOptionsRef.current[keyRef]
           = toApply[keyRef] as T_LerpableOptions[keyof T_LerpableOptions];
       });
+    }
+
+    if (options) {
+      if (options.svg === false) {
+        cursorRef.current!.innerHTML = '';
+        cursorRef.current!.style.backgroundColor = cursorConsts.backgroundColor;
+      }
     }
   }
 

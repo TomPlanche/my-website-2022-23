@@ -27,6 +27,13 @@ const StyledChildContainer = styled.div`
 `;
 
 // Types
+type T_recenteredTrue = {
+  value: true,
+  verticalUp: boolean,
+  horizontalLeft: boolean,
+}
+
+
 type T_MagnetikContainerProps = {
   children?: ReactElement,
   style?: CSSProperties,
@@ -34,15 +41,13 @@ type T_MagnetikContainerProps = {
   fieldSize?: number,
   fieldForce?: number,
   centered?: boolean,
-  recentred?: boolean,
+  recentred?: T_recenteredTrue | false,
 
 
   block?: boolean,
 
   debug?: boolean
 } & HTMLAttributes<HTMLDivElement>;
-
-type DOMRefs = HTMLElement | SVGSVGElement;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -53,7 +58,7 @@ type DOMRefs = HTMLElement | SVGSVGElement;
  **/
 const MagnetikContainer = forwardRef(function MagnetikContainer(
   props: T_MagnetikContainerProps,
-  passedRef: ForwardedRef<DOMRefs>
+  passedRef: ForwardedRef<HTMLElement>
 ): ReactElement {
   // State(s)
 
@@ -100,13 +105,13 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
     const sideRatioX = Math.floor((clientX - centerX) / (mainContainerInfos.width / 2) * 100) / 100;
     const sideRatioY = Math.floor((clientY - centerY) / (mainContainerInfos.height / 2) * 100) / 100;
 
-    const translateX = props.centered ?
-      mainContainerInfos.width / 2 * sideRatioX * fieldForce :
-      (passedInfos.width - mainContainerInfos.width) / -2 * sideRatioX * fieldForce;
+    const translateX = props.centered
+      ? mainContainerInfos.width / 2 * sideRatioX * fieldForce
+      : (passedInfos.width - mainContainerInfos.width) / -2 * sideRatioX * fieldForce;
 
-    const translateY = props.centered ?
-      mainContainerInfos.height / 2 * sideRatioY * fieldForce :
-      (passedInfos.height - mainContainerInfos.height) / -2 * sideRatioY * fieldForce;
+    const translateY = props.centered
+      ? mainContainerInfos.height / 2 * sideRatioY * fieldForce
+      : (passedInfos.height - mainContainerInfos.height) / -2 * sideRatioY * fieldForce;
 
     // @ts-ignore
     // (TS2339: Property 'current' does not exist on type '((instance: HTMLElement | null) => void) | MutableRefObject<HTMLElement | null>'.
@@ -146,19 +151,21 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
       border: '4px dotted red',
     } : {}
 
+    const recenteredTop = props.recentred && props.recentred?.verticalUp ? -1 : 1;
+    const recenteredLeft = props.recentred && props.recentred?.horizontalLeft ? 1 : -1;
+
     const heightTransform = props.recentred
-      ? `${(height - (height * fieldSize)) / 2}px`
+      ? `${(height - (height * fieldSize)) / (2 * recenteredTop)}px`
       : 'none';
 
     const widthTransform = props.recentred
-      ? `${(width - (width * fieldSize)) / -2}px`
+      ? `${(width - (width * fieldSize)) / (2 * recenteredLeft)}px`
       : 'none';
 
     const transform = props.recentred
       ? `translate(${widthTransform}, ${heightTransform})`
       : 'none';
 
-    console.log(`[MagnetikContainer] transform = ${transform}`);
     // Apply the field size
     gsap.set(mainContainerRef.current, {
       width: width * fieldSize,

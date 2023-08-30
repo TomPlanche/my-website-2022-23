@@ -7,7 +7,7 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
 
-import Header from "../../components/Header/Header";
+import Header from "../../components/Header";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
