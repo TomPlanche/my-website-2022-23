@@ -8,13 +8,14 @@ import {Context, createContext, FC, ReactElement, RefObject, useEffect, useRef, 
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
-import Home from "./pages/Home/Home";
+import Home from "./pages/Home";
 import LastFM_handler from "./assets/LastFM_Handler/LasfFM_handler";
 import CustomCursor, {T_OnEnterLeave} from "./components/CustomCursor";
 import {calcCssVar, stripCssVar} from "./assets/utils";
 import Tests from "./pages/Test/Tests";
-import IPDHome from "./pages/IsPlayingDisplayPage/IPDHome";
-import CustomCursorPage from "./pages/CustomCursorPage/CustomCursorPage";
+import IPDHome from "./pages/IPDHome";
+import CustomCursorPage from "./pages/CustomCursorPage";
+import LastFMHandlerPage from "./pages/LastFMHandlerPage";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -208,8 +209,9 @@ const App: FC = (): ReactElement => {
             <Routes>
               <Route index element={<Home />}/>
 
-              <Route path={'/my-music-player'} element={<IPDHome/>}/>
+              <Route path={'/my-music-player'} element={<IPDHome />}/>
               <Route path={'/my-custom-cursor'} element={<CustomCursorPage />}/>
+              <Route path={'/lastFM-handler'} element={<LastFMHandlerPage />}/>
 
               <Route path={'/tests'} element={<Tests/>}/>
 

@@ -2,6 +2,8 @@
  * @file src/components/CustomCursor/CustomCursor.tsx
  * @description CustomCursor component.
  * @author Tom Planche
+ *
+ * @todo Add a way to add a custom cursor
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
@@ -86,27 +88,27 @@ type T_StyleOptions = {
   backgroundColor?: string,
 }
 
-export type T_OnEnterOptions = T_StyleOptions & T_LerpableOptionsWithOptional & {
-  svg?: string;
-}
+export type T_OnEnterOptions = T_StyleOptions & T_LerpableOptionsWithOptional & (
+  | { svg: string; img?: never }
+  | { svg?: never; img: string }
+);
 
-export type T_OnLeaveOptions = T_StyleOptions & T_LerpableOptionsWithOptional & {
-  svg?: boolean;
-}
+export type T_OnLeaveOptions = T_StyleOptions & T_LerpableOptionsWithOptional & (
+  | { svg?: boolean; img?: never }
+  | { svg?: never; img?: boolean }
+);
 
 export type T_OnEnterLeaveOptions = T_OnEnterOptions | T_OnLeaveOptions | null;
 
 export type T_OnEnterLeaveArgs = {
   options: T_OnEnterLeaveOptions,
   addBaseStyles?: boolean,
-  persist?: boolean,
   verbose?: boolean
 }
 
 export type T_OnEnterLeave = (
   options: T_OnEnterLeaveOptions,
   addBaseStyles?: boolean,
-  persist?: boolean,
   verbose?: boolean
 ) => void;
 
@@ -180,7 +182,7 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
   }
 
   /**
-   * @function onCursorMove
+   * @function handleMouseMove
    * @description To call when the cursor moves
    * @param event {MouseEvent} - The mouse event
    */
@@ -195,17 +197,15 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
    *
    * @param options {T_OnEnterLeaveOptions} - Options to apply to the cursor
    * @param addBaseStyles {boolean} - Whether to add the base styles or not
-   * @param persist {boolean} - Whether to persist the styles or not
-   * @param verbose {boolean} - Whether to log or not
+   * @param verbose {boolean | undefined} - Whether to log or not
    *
    * @return {void}
    */
   // @ts-ignore
   const onCursorEnter: T_OnEnterLeave = (
     options: T_OnEnterLeaveOptions,
-    addBaseStyles = true,
-    persist = false,
-    verbose = false
+    addBaseStyles: boolean | undefined = true,
+    verbose: boolean | undefined = false
   ): void => {
     verbose && console.log("[CustomCursor] onCursorEnter");
 
@@ -283,9 +283,12 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
     }
 
     if (options) {
-      if (options.svg) {
+      if (
+        options.svg
+        || options.img
+      ) {
         // svg is the path to the svg file
-        cursorRef.current!.innerHTML = `<img src="${options.svg}" alt=""/>`;
+        cursorRef.current!.innerHTML = `<img src="${options.svg ?? options.img}" alt="cursor"/>`;
       }
 
       if (options.backgroundColor) {
@@ -306,7 +309,6 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
    *
    * @param options {T_OnEnterLeaveOptions} - Options to apply to the cursor
    * @param addBaseStyles {boolean} - Whether to add the base styles or not
-   * @param persist {boolean} - Whether to persist the styles or not
    * @param verbose {boolean} - Whether to log or not
    *
    * @return {void}
@@ -314,9 +316,8 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
   // @ts-ignore
   const onCursorLeave: T_OnEnterLeave = (
     options: T_OnEnterLeaveOptions,
-    addBaseStyles = true,
-    persist = false,
-    verbose = false
+    addBaseStyles: boolean | undefined = true,
+    verbose: boolean | undefined = false
   ): void => {
     verbose && console.log("[CustomCursor] onCursorLeave");
 
@@ -389,7 +390,7 @@ const CustomCursor: T_CustomCursor = forwardRef((props, ref): ReactElement => {
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
     }
-  }, []);
+  }, [handleMouseMove]);
 
   useEffect(() => {
     if (hasMoved) {

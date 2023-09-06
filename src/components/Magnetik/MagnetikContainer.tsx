@@ -28,7 +28,6 @@ const StyledChildContainer = styled.div`
 
 // Types
 type T_recenteredTrue = {
-  value: true,
   verticalUp: boolean,
   horizontalLeft: boolean,
 }

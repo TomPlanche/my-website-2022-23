@@ -9,7 +9,7 @@ import {forwardRef, ForwardRefExoticComponent, RefAttributes, useContext} from "
 
 import styled from "styled-components";
 
-import {HomeContext} from "../pages/Home/Home";
+import {HomeContext} from "../pages/Home";
 import MagnetikContainer from "./Magnetik/MagnetikContainer";
 
 // END IMPORTS ==========================================================================================   END IMPORTS

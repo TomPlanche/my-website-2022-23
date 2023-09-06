@@ -102,12 +102,17 @@ const StyledTrackInfo = styled.div(props => ({
 // Type(s)
 type T_compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => boolean;
 
-type T_IsPlayingDisplayPropsNoPlayongSong = {
-  songIfNotPlaying: boolean,
-  jsonSong?: T_RecentTracksTrackAll
+type T_Position = {
+  top: boolean,
+  left: boolean,
 }
 
-type T_IsPlayingDisplayProps = T_IsPlayingDisplayPropsNoPlayongSong | null;
+type T_IsPlayingDisplayPropsNoPlayongSong = {
+  songIfNotPlaying: boolean,
+  jsonSong?: T_RecentTracksTrackAll,
+}
+
+type T_IsPlayingDisplayProps = T_Position & (T_IsPlayingDisplayPropsNoPlayongSong | null);
 
 type T_IsPlayingDisplay = (props: T_IsPlayingDisplayProps) => JSX.Element;
 
@@ -223,9 +228,7 @@ const IsPlayingDisplay: T_IsPlayingDisplay = (props) => {
   // Others
   const handleMouseEnter = () => {
     if (cursorRef.current) {
-      cursorRef.current.onCursorEnter({
-        backgroundColor: 'red',
-      }, true)
+      cursorRef.current.onCursorEnter({}, true)
     }
   }
 

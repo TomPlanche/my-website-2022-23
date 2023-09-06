@@ -1,21 +1,21 @@
 /**
- * @file src/pages/CustomCursorPage/CustomCursorPage.tsx
- * @description CustomCursorPage component.
+ * @file src/pages/ProjectPageLayout.tsx
+ * @description ProjectPageLayout component.
  * @author Tom Planche
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
-import MagnetikContainer from "../../components/Magnetik/MagnetikContainer";
-import MyButton from "../../components/MyButton";
+import {AppContext} from "../App";
 import {useContext, useRef} from "react";
-import {AppContext} from "../../App";
+import MagnetikContainer from "../components/Magnetik/MagnetikContainer";
+import MyButton from "../components/MyButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
 // Style variables
-const StyledPage = styled.div`
-  height: 100vh;
+const StyledProjectPageLayout = styled.div`
+  min-height: 100vh;
   width: 100vw;
   
   display: flex;
@@ -34,18 +34,6 @@ const StyledTitle = styled.h1`
   color: #679fc5;
 `;
 
-const StyledParagraph = styled.p`
-  font-size: 1.5rem;
-  font-family: "Editorial New", sans-serif;
-  
-  text-align: justify;
-  
-  padding: 0 5rem;
-  margin-top: 5rem;
-  
-  line-height: 2rem;
-`;
-
 const StyledBottomLink = styled.div<{$left: boolean}>`
   font-size: 2rem;
   font-family: "Mondwest", sans-serif;
@@ -57,17 +45,30 @@ const StyledBottomLink = styled.div<{$left: boolean}>`
   right: ${props => props.$left ? 'auto' : '2rem'};
 `;
 
+// Type(s)
+type T_ProjectPageLayoutProps = {
+  title: string;
+  children: JSX.Element | JSX.Element[];
+
+  leftTitle?: string;
+  leftLink?: string;
+  rightTitle?: string;
+  rightLink?: string;
+}
+
+type T_ProjectPageLayout = (props: T_ProjectPageLayoutProps) => JSX.Element;
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
 /**
- * CustomCursorPage component
+ * ProjectPageLayout component
  * @return
  * @constructor
  **/
-const CustomCursorPage = () => {
+const ProjectPageLayout: T_ProjectPageLayout = (props) => {
   // Context(s)
   const {cursorRef} = useContext(AppContext);
+
   // State(s)
 
   // Ref(s)
@@ -80,57 +81,39 @@ const CustomCursorPage = () => {
 
   // Render
   return (
-    <StyledPage>
+    <StyledProjectPageLayout>
       <StyledTitle>
-        Tom&apos;s custom cursor.
+        {props.title}
       </StyledTitle>
 
-      <StyledParagraph>
-        I made this custom cursor for my <MyButton href={'https://tomplanche.fr'} customCursor={cursorRef}>portfolio website</MyButton>. It is a simple circle that follows the mouse cursor.
-        I learned a lot about React and Typescript while making this project. I also learned basic animation tools
-        such as lerping and easing and GSAP animations.
-      </StyledParagraph>
+      {
+        props.children
+      }
 
       <StyledBottomLink
         $left={true}
       >
         <MagnetikContainer
           ref={magnetikContainersLeftRef}
+
+          style={{
+            left: 0,
+            bottom: 0
+          }}
+
           recentred={{
-            value: true,
             verticalUp: true,
             horizontalLeft: true,
           }}
         >
           <MyButton
-            href={"https://tomplanche.fr"}
-            customCursor={cursorRef}
-          >Tom Planche
-          </MyButton>
-        </MagnetikContainer>
-      </StyledBottomLink>
-      <StyledBottomLink
-        $left={false}
-      >
-        <MagnetikContainer
-          ref={magnetikContainersRightRef}
-          recentred={{
-            value: true,
-            verticalUp: true,
-            horizontalLeft: false,
-          }}
-
-
-        >
-          <MyButton
-            href={"https://github.com/tomplanche"}
-            linkStyle={false}
+            href={props.leftLink ?? "https://tomplanche.fr"}
             customCursor={{
               cursorRef: cursorRef,
 
               onEnterOptions: {
                 options: {
-                  svg: '/imgs/github-mark-white.svg',
+                  img: '/imgs/monMii(moustache)Tete.png',
                   backgroundColor: 'transparent',
                   opacity: {current: 1},
                 },
@@ -144,17 +127,53 @@ const CustomCursorPage = () => {
               }
             }}
           >
-            GitHub
+            {props.leftTitle ?? "Tom Planche"}
           </MyButton>
         </MagnetikContainer>
       </StyledBottomLink>
-    </StyledPage>
+      <StyledBottomLink
+        $left={false}
+      >
+        <MagnetikContainer
+          ref={magnetikContainersRightRef}
+          recentred={{
+            verticalUp: true,
+            horizontalLeft: false,
+          }}
+        >
+          <MyButton
+            href={props.rightLink ?? "https://github.com/TomPlanche/LastFM_handler"}
+            linkStyle={false}
+            customCursor={{
+              cursorRef: cursorRef,
+
+              onEnterOptions: {
+                options: {
+                  svg: 'https://github.githubassets.com/images/mona-loading-dark.gif',
+                  backgroundColor: 'transparent',
+                  opacity: {current: 1},
+                },
+                addBaseStyles: true,
+              },
+              onLeaveOptions: {
+                options: {
+                  svg: false
+                },
+                addBaseStyles: true,
+              }
+            }}
+          >
+            {props.rightTitle ?? "GitHub"}
+          </MyButton>
+        </MagnetikContainer>
+      </StyledBottomLink>
+    </StyledProjectPageLayout>
   )
 }
 // END COMPONENT =======================================================================================  END COMPONENT
 
-export default CustomCursorPage;
+export default ProjectPageLayout;
 
 /**
- * End of file src/components/src/pages/CustomCursorPage/CustomCursorPage.tsx
+ * End of file src/components/src/pages/ProjectPageLayout.tsx
  */

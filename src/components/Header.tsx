@@ -69,6 +69,19 @@ const StyledHeaderRight = styled.div(props => ({
   fontSize: '1rem',
 }));
 
+const StyledGithubLogo = styled.img`
+  height: 1.5rem;
+  width: auto;
+  
+  cursor: pointer;
+  
+  transition: opacity 0.25s ease-in-out;
+  
+  &:hover {
+    opacity: 0;
+  }
+`;
+
 const StyledHeaderTime = styled.p(props => ({
   fontFamily: props.theme.fontFamilyFraktionMono,
   fontSize: '1rem',
@@ -152,13 +165,31 @@ const Header: T_Header = forwardRef((_, ref) => {
     toggleTheme();
   }
 
+  const handleGithubLogoMouseEnter = () => {
+    cursorRef.current?.onCursorEnter({
+      svg: "https://github.githubassets.com/images/mona-loading-dark.gif",
+      backgroundColor: 'transparent',
+      opacity: {current: 1},
+    }, true);
+  }
+
+  const handleGithubLogoMouseClick = () => {
+    window.open('https://github.com/tomplanche', '_blank');
+  }
+
   const handleButtonMouseEnter = () => {
     cursorRef.current?.onCursorEnter(null, true);
     setEmojiHovered(true)
   }
 
-  const handleButtonMouseLeave = () => {
-    cursorRef.current?.onCursorLeave(null, true);
+  const handleButtonMouseLeave = (removeSvg?: boolean) => {
+
+    const options = removeSvg
+      ? {
+        svg: false,
+      } : null
+
+    cursorRef.current?.onCursorLeave(options, true);
     setEmojiHovered(false)
   }
 
@@ -235,6 +266,13 @@ const Header: T_Header = forwardRef((_, ref) => {
 
       <StyledHeaderRight
       >
+        <StyledGithubLogo
+          src={"/imgs/github-mark-white.svg"}
+
+          onMouseEnter={handleGithubLogoMouseEnter}
+          onMouseLeave={() => handleButtonMouseLeave(true)}
+          onClick={handleGithubLogoMouseClick}
+        />
         <StyledHeaderTime
           ref={timeRef}
         >
@@ -244,7 +282,7 @@ const Header: T_Header = forwardRef((_, ref) => {
 
           onClick={handleThemeButtonClick}
           onMouseEnter={handleButtonMouseEnter}
-          onMouseLeave={handleButtonMouseLeave}
+          onMouseLeave={() => handleButtonMouseLeave()}
         >
           {placeEmoji()}
         </StyledHeaderThemeBtn>

@@ -6,9 +6,9 @@
 
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
-import IsPlayingDisplay from "../../components/IsPlayingDisplay";
-import MyButton from "../../components/MyButton";
-import Header from "../../components/Header";
+import IsPlayingDisplay from "../components/IsPlayingDisplay";
+import MyButton from "../components/MyButton";
+import Header from "../components/Header";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE

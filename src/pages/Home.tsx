@@ -14,14 +14,12 @@ import ScrollToPlugin from "gsap/ScrollToPlugin";
 
 import styled from 'styled-components'
 
-import Header from "../../components/Header";
-import MyUglyFace from "../../components/MyUglyFace";
-import IsPlayingDisplay from "../../components/IsPlayingDisplay";
+import Header from "../components/Header";
+import MyUglyFace from "../components/MyUglyFace";
+import IsPlayingDisplay from "../components/IsPlayingDisplay";
 
-import {AppContext, commonTheme, noUserSelection} from "../../App";
-import TwoOptionsSelector from "../../components/TwoOptionsSelector";
-import TechStack from "../../components/TechStack";
-import MagnetikContainer from "../../components/Magnetik/MagnetikContainer";
+import {AppContext, commonTheme, noUserSelection} from "../App";
+import TechStack from "../components/TechStack";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -338,27 +336,10 @@ const Home = () => {
       <StyledSection
         ref={firstSectionRef}
       >
-        <MagnetikContainer
-          ref={techStackSelectorRef}
-
-          style={{
-            position: 'absolute',
-
-            top: commonTheme.minTopPadding,
-            right: 0,
-          }}
-
-          recentred={true}
-        >
-          <TwoOptionsSelector
-            options={optionsArray}
-            stateAndSetter={[twoOptionsChoice, setTwoOptionsChoice]}
-          />
-        </MagnetikContainer>
 
         <TechStack
           technologies={technologies}
-          isLines={twoOptionsChoice !== 0}
+          isLines={true}
 
           theme={theme}
         />
