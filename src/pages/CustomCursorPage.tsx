@@ -14,18 +14,6 @@ import ProjectPageLayout from "./ProjectPageLayout";
 
 // VARIABLES ================================================================================================ VARIABLE
 // Style variables
-const StyledPage = styled.div`
-  height: 100vh;
-  width: 100vw;
-  
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  
-  padding: 2rem;
-`;
-
 const StyledTitle = styled.h1`
   font-size: 5rem;
   font-family: "Mondwest", sans-serif;
@@ -45,18 +33,6 @@ const StyledParagraph = styled.p`
   
   line-height: 2rem;
 `;
-
-const StyledBottomLink = styled.div<{$left: boolean}>`
-  font-size: 2rem;
-  font-family: "Mondwest", sans-serif;
-  
-  position: absolute;
-  
-  bottom: 2rem;
-  left: ${props => props.$left ? '2rem' : 'auto'};
-  right: ${props => props.$left ? 'auto' : '2rem'};
-`;
-
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT

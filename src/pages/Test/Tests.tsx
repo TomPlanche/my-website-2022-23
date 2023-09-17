@@ -8,6 +8,8 @@
 import styled from 'styled-components';
 
 import Header from "../../components/Header";
+import {AppContext} from "../../App";
+import {useContext} from "react";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -38,6 +40,10 @@ const StyledTests = styled.div(props => ({
  * @constructor
  **/
 const Tests = () => {
+  // Context(s)
+  const {
+    cursorRef,
+  } = useContext(AppContext);
   // State(s)
 
   // Ref(s)
@@ -50,6 +56,7 @@ const Tests = () => {
   return (
     <StyledTests>
       <Header />
+
 
     </StyledTests>
   )

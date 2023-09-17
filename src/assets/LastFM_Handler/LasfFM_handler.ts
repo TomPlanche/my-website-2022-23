@@ -237,7 +237,7 @@ type T_RecentTracksTrack = {
   image: T_Image[];
   mbid: string;
   name: string;
-  streamable: T_StreamableS
+  streamable: boolean | string;
   url: string;
 
   '@attr'?: {
@@ -250,7 +250,7 @@ type T_RecentTracksTrackExtended = T_RecentTracksTrack & {
   loved: boolean;
 }
 
-type T_RecentTracksTrackAll = T_RecentTracksTrack | T_RecentTracksTrackExtended;
+export type T_RecentTracksTrackAll = T_RecentTracksTrack | T_RecentTracksTrackExtended;
 
 type T_GoodParams =
   T_UserTopTracksParams
@@ -887,13 +887,13 @@ class LastFM_handler implements I_LastFM_handler {
    * @description Fetches data from the LastFM API.
    *
    * @param method {Method} The method to call.
-   * @param params
+   * @param params {Partial<T_GoodParams>} The params to use.
    */
   private fetchData: T_fetchData = async (method, params) => {
     const paramsString = Object.keys(params).map((key) => {
       const
         finalKey = key as keyof T_GoodParams,
-        finalValue = params[finalKey] as unknown as string;
+        finalValue = params[finalKey] as string;
 
       return `${encodeURIComponent(finalKey)}=${encodeURIComponent(finalValue)}`;
     }).join('&');

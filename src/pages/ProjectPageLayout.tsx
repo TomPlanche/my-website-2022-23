@@ -67,7 +67,10 @@ type T_ProjectPageLayout = (props: T_ProjectPageLayoutProps) => JSX.Element;
  **/
 const ProjectPageLayout: T_ProjectPageLayout = (props) => {
   // Context(s)
-  const {cursorRef} = useContext(AppContext);
+  const {
+    cursorRef,
+    support
+  } = useContext(AppContext);
 
   // State(s)
 
@@ -95,6 +98,8 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
       >
         <MagnetikContainer
           ref={magnetikContainersLeftRef}
+
+          fieldSize={support === "mobile-tablet" ? 1 : 2}
 
           style={{
             left: 0,
@@ -136,6 +141,7 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
       >
         <MagnetikContainer
           ref={magnetikContainersRightRef}
+          fieldSize={support === "mobile-tablet" ? 1 : 2}
           recentred={{
             verticalUp: true,
             horizontalLeft: false,

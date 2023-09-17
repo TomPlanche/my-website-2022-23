@@ -45,7 +45,7 @@ const Cursor = styled.div`
   background-color: ${cursorConsts.backgroundColor};
   opacity: .6;
 
-  z-index: 9999;
+  z-index: 999999999;
 
   pointer-events: none;
   

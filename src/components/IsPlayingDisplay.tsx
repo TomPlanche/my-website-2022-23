@@ -32,10 +32,9 @@ const playingDisplayVars = {
   marginFromRight: '2rem',
 }
 
-const StyledIsPlayingDisplay = styled.div(props => ({
-
+const StyledIsPlayingDisplay = styled.div<{$bottom?: string}>(props => ({
   position: 'fixed',
-  bottom: playingDisplayVars.marginFromBottom,
+  bottom: props.$bottom ?? playingDisplayVars.marginFromBottom,
   right: '2vmax',
 
   height: playingDisplayVars.height,
@@ -103,8 +102,8 @@ const StyledTrackInfo = styled.div(props => ({
 type T_compareTracks = (track1: T_RecentTracksTrackAll, track2: T_RecentTracksTrackAll | null) => boolean;
 
 type T_Position = {
-  top: boolean,
-  left: boolean,
+  top?: boolean,
+  left?: boolean,
 }
 
 type T_IsPlayingDisplayPropsNoPlayongSong = {
@@ -112,7 +111,9 @@ type T_IsPlayingDisplayPropsNoPlayongSong = {
   jsonSong?: T_RecentTracksTrackAll,
 }
 
-type T_IsPlayingDisplayProps = T_Position & (T_IsPlayingDisplayPropsNoPlayongSong | null);
+type T_IsPlayingDisplayProps = T_Position & (T_IsPlayingDisplayPropsNoPlayongSong | null) & {
+  raise?: number
+}
 
 type T_IsPlayingDisplay = (props: T_IsPlayingDisplayProps) => JSX.Element;
 
@@ -120,39 +121,39 @@ type T_IsPlayingDisplay = (props: T_IsPlayingDisplayProps) => JSX.Element;
 const emptyAlbumCover = 'https://lastfm.freetls.fastly.net/i/u/300x300/2a96cbd8b46e442fc41c2b86b821562f.png';
 
 const exampleTrack: T_RecentTracksTrackAll = {
-  "artist": {
-    "mbid": "",
+  artist: {
+    mbid: "",
     "#text": "Népal"
   },
-  "streamable": "0",
-  "image": [
+  streamable: false,
+  image: [
     {
-      "size": "small",
+      size: "small",
       "#text": "https://lastfm.freetls.fastly.net/i/u/34s/2ab9be86b67cad862c789b1261165c34.jpg"
     },
     {
-      "size": "medium",
+      size: "medium",
       "#text": "https://lastfm.freetls.fastly.net/i/u/64s/2ab9be86b67cad862c789b1261165c34.jpg"
     },
     {
-      "size": "large",
+      size: "large",
       "#text": "https://lastfm.freetls.fastly.net/i/u/174s/2ab9be86b67cad862c789b1261165c34.jpg"
     },
     {
-      "size": "extralarge",
+      size: "extralarge",
       "#text": "imgs/444nuits.webp"
     }
   ],
-  "mbid": "",
-  "album": {
-    "mbid": "",
+  mbid: "",
+  album: {
+    mbid: "",
     "#text": "444Nuits (Version Bleue)"
   },
-  "name": "04 444 Nuits",
+  name: "04 444 Nuits",
   "@attr": {
-    "nowplaying": "true"
+    nowplaying: "true"
   },
-  "url": "https://www.last.fm/music/N%C3%A9pal/_/04+444+Nuits"
+  url: "https://www.last.fm/music/N%C3%A9pal/_/04+444+Nuits"
 }
 // END VARIABLES ======================================================================================= END VARIABLES
 
@@ -174,7 +175,7 @@ const compareTracks: T_compareTracks = (track1: T_RecentTracksTrackAll, track2: 
  * @return {JSX.Element}
  * @constructor
  **/
-const IsPlayingDisplay: T_IsPlayingDisplay = (props) => {
+const IsPlayingDisplay: T_IsPlayingDisplay = (props): JSX.Element => {
   // Context(s)
   const {LastFM_HandlerInstance, cursorRef} = useContext(AppContext);
 
@@ -424,6 +425,8 @@ const IsPlayingDisplay: T_IsPlayingDisplay = (props) => {
   return (
     <StyledIsPlayingDisplay
       ref={isPlayingDisplayRef}
+
+      $bottom={props.raise ? `${props.raise}rem` : undefined}
 
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}

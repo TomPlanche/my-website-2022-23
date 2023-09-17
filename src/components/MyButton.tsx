@@ -133,11 +133,10 @@ const MyButton: T_MyButton = forwardRef((props, ref) => {
           const {
             options,
             addBaseStyles,
-            persist,
             verbose
           } = customCursor.onEnterOptions ?? {};
 
-          customCursor.cursorRef.current.onCursorEnter(options ?? {}, addBaseStyles, persist, verbose);
+          customCursor.cursorRef.current.onCursorEnter(options ?? {}, addBaseStyles, verbose);
         }
       }
     }
@@ -158,11 +157,10 @@ const MyButton: T_MyButton = forwardRef((props, ref) => {
           const {
             options,
             addBaseStyles,
-            persist,
             verbose
           } = customCursor.onLeaveOptions ?? {};
 
-          customCursor.cursorRef.current.onCursorLeave(options ?? {}, addBaseStyles, persist, verbose);
+          customCursor.cursorRef.current.onCursorLeave(options ?? {}, addBaseStyles, verbose);
         }
       }
     }

@@ -6,11 +6,21 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {CSSProperties, ForwardedRef, forwardRef, HTMLAttributes, ReactElement, useLayoutEffect, useRef} from "react";
+import {
+  CSSProperties,
+  ForwardedRef,
+  forwardRef,
+  HTMLAttributes,
+  ReactElement,
+  useContext,
+  useLayoutEffect,
+  useRef
+} from "react";
 
 import styled from 'styled-components';
 import {gsap} from "gsap";
 import {limitNumberInBounds} from "../../assets/utils";
+import {AppContext} from "../../App";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -67,6 +77,7 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
   // Other ref(s)
 
   // Variable(s)
+  const {support} = useContext(AppContext);
   const fieldSize = props.fieldSize ?? 2;
   const fieldForce = limitNumberInBounds(props.fieldForce ?? .5);
 
@@ -165,10 +176,12 @@ const MagnetikContainer = forwardRef(function MagnetikContainer(
       ? `translate(${widthTransform}, ${heightTransform})`
       : 'none';
 
+    const finalWidth = support === "mobile-tablet" ? width : width * fieldSize;
+    const finalHeight = support === "mobile-tablet" ? height : height * fieldSize;
     // Apply the field size
     gsap.set(mainContainerRef.current, {
-      width: width * fieldSize,
-      height: height * fieldSize,
+      width: finalWidth ,
+      height: finalHeight,
 
       transform: transform,
 
