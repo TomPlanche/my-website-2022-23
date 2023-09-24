@@ -14,7 +14,7 @@ import {gsap} from "gsap";
 
 import styled from "styled-components";
 
-import {AppContext, blurryBackground, noUserSelection} from "../App";
+import {AppContext, blurryBackground, commonTheme, noUserSelection} from "../App";
 
 import {NoCurrentlyPlayingTrackError, T_RecentTracksTrackAll} from "../assets/LastFM_Handler/LasfFM_handler";
 import {calcCssVar} from "../assets/utils";
@@ -27,15 +27,12 @@ const playingDisplayVars = {
   width: '6rem',
 
   maxWidth: '22rem',
-
-  marginFromBottom: '2rem',
-  marginFromRight: '2rem',
 }
 
 const StyledIsPlayingDisplay = styled.div<{$bottom?: string}>(props => ({
   position: 'fixed',
-  bottom: props.$bottom ?? playingDisplayVars.marginFromBottom,
-  right: '2vmax',
+  bottom: props.$bottom ?? commonTheme.sidePadding,
+  right: commonTheme.sidePadding,
 
   height: playingDisplayVars.height,
   width: playingDisplayVars.width,

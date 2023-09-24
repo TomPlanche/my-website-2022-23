@@ -112,6 +112,7 @@ const MenuItem: T_MenuItem = forwardRef((props, ref) => {
   // Render
   return (
     <StyledMenuItem
+      // @ts-ignore
       ref={ref}
 
       onClick={props.onClick}

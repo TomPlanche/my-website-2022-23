@@ -4,7 +4,7 @@
  */
 
 // IMPORTS ===================================================================================================  IMPORTS
-import {Context, createContext, FC, ReactElement, RefObject, useEffect, useRef, useState} from 'react'
+import {Context, createContext, FC, ReactElement, RefObject, useLayoutEffect, useRef, useState} from 'react'
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import styled, {ThemeProvider} from "styled-components";
 
@@ -16,6 +16,7 @@ import Tests from "./pages/Test/Tests";
 import CustomCursorPage from "./pages/CustomCursorPage";
 import LastFMHandlerPage from "./pages/LastFMHandlerPage";
 import IsPlayingDisplayPage from "./pages/IsPlayingDisplayPage";
+import ProjectsPage from "./pages/ProjectsPage";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLES
@@ -49,7 +50,7 @@ export const themeValues = {
 
   headerHeight: '8vmin',
 
-  mainPadding: '2vmax',
+  mainPadding: '2rem',
 
   // Colors
   dark: '#080a13',
@@ -98,7 +99,7 @@ export const commonTheme = {
   headerHeight: themeValues.headerHeight,
 
   mainBorderRadius: '8px',
-  firstPageHeight: `calc(100vh - ${themeValues.mainPadding})`,
+  firstPageHeight: `calc(100vh - ${calcCssVar(themeValues.mainPadding, variableWithoutUnit => variableWithoutUnit * 2)})`,
 
   boxShadowSize: '.5rem',
 
@@ -158,7 +159,7 @@ const App: FC = (): ReactElement => {
     return newTheme;
   }
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // TITLE
     let finalTitle = "Tom Planche's website - "
 
@@ -176,13 +177,8 @@ const App: FC = (): ReactElement => {
     const titleInterval = setInterval(changeTitle, 250);
 
     // PLATFORM
-    const userAgent = navigator.userAgent.toLowerCase();
-
-    if (/mobile|tablet/i.test(userAgent)) {
-      setPlatform('mobile-tablet');
-    } else {
-      setPlatform('desktop');
-    }
+    const screenWidth = window.innerWidth;
+    setPlatform(screenWidth > 1024 ? 'desktop' : 'mobile-tablet')
 
     return () => {
       clearInterval(titleInterval);
@@ -209,8 +205,9 @@ const App: FC = (): ReactElement => {
             <Routes>
               <Route index element={<Home />}/>
 
-              <Route path={'/my-music-player'} element={<IsPlayingDisplayPage />}/>
-              <Route path={'/my-custom-cursor'} element={<CustomCursorPage />}/>
+              <Route path={'/projects'} element={<ProjectsPage />}/>
+              <Route path={'/music-player'} element={<IsPlayingDisplayPage />}/>
+              <Route path={'/custom-cursor'} element={<CustomCursorPage />}/>
               <Route path={'/lastFM-middleware'} element={<LastFMHandlerPage />}/>
 
               <Route path={'/tests'} element={<Tests/>}/>

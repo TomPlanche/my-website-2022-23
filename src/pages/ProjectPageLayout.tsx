@@ -7,7 +7,7 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
 import {AppContext} from "../App";
-import {useContext, useRef} from "react";
+import {CSSProperties, useContext, useRef} from "react";
 import MagnetikContainer from "../components/Magnetik/MagnetikContainer";
 import MyButton from "../components/MyButton";
 // END IMPORTS ==========================================================================================   END IMPORTS
@@ -49,6 +49,7 @@ const StyledBottomLink = styled.div<{$left: boolean}>`
 type T_ProjectPageLayoutProps = {
   title: string;
   children: JSX.Element | JSX.Element[];
+  style?: CSSProperties;
 
   leftTitle?: string;
   leftLink?: string;
@@ -84,7 +85,9 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
 
   // Render
   return (
-    <StyledProjectPageLayout>
+    <StyledProjectPageLayout
+      style={props.style}
+    >
       <StyledTitle>
         {props.title}
       </StyledTitle>
@@ -132,7 +135,7 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
               }
             }}
           >
-            {props.leftTitle ?? "Tom Planche"}
+            {props.leftTitle ?? "Back to website"}
           </MyButton>
         </MagnetikContainer>
       </StyledBottomLink>

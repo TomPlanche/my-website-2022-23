@@ -43,7 +43,7 @@ const StyledHeader = styled.div(props => ({
 
   padding: `0 ${props.theme.sidePadding}`,
 
-  borderRadius: '1rem',
+  borderRadius: '1vmax',
 
   color: props.theme.blueFontColor,
   fontSize: props.theme['header-font-size'],
@@ -154,7 +154,7 @@ type T_changeEmoji = (theme?: 'light' | 'dark') => void;
  **/
 const Header: T_Header = forwardRef((_, ref) => {
   // Context(s)
-  const {theme, toggleTheme, cursorRef} = useContext(AppContext);
+  const {theme, toggleTheme, cursorRef, support} = useContext(AppContext);
 
   // State(s)
   const [emojiHovered, setEmojiHovered] = useState(false);
@@ -300,11 +300,14 @@ const Header: T_Header = forwardRef((_, ref) => {
         linkStyle={false}
       ></MyButton>
 
-      <StyledHeaderMiddle>
-        <Menu
-          items={menuItems}
-        />
-      </StyledHeaderMiddle>
+      {
+        support === 'desktop' &&
+        <StyledHeaderMiddle>
+          <Menu
+            items={menuItems}
+          />
+        </StyledHeaderMiddle>
+      }
 
       <StyledHeaderRight
       >
