@@ -57,10 +57,6 @@ const CustomCursorPage = () => {
     <ProjectPageLayout
       title={"Tom's custom cursor."}
     >
-      <StyledTitle>
-        Tom&apos;s custom cursor.
-      </StyledTitle>
-
       <StyledParagraph>
         I made this custom cursor for my <MyButton href={'https://tomplanche.fr'} customCursor={cursorRef}>portfolio website</MyButton>. It is a simple circle that follows the mouse cursor.
         I learned a lot about React and Typescript while making this project. I also learned basic animation tools

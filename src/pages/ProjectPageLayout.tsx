@@ -6,10 +6,11 @@
 
 // IMPORTS ===================================================================================================  IMPORTS
 import styled from 'styled-components';
-import {AppContext} from "../App";
+import {AppContext, commonTheme} from "../App";
 import {CSSProperties, useContext, useRef} from "react";
 import MagnetikContainer from "../components/Magnetik/MagnetikContainer";
 import MyButton from "../components/MyButton";
+import Header from "../components/Header";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -50,6 +51,7 @@ type T_ProjectPageLayoutProps = {
   title: string;
   children: JSX.Element | JSX.Element[];
   style?: CSSProperties;
+  header?: boolean;
 
   leftTitle?: string;
   leftLink?: string;
@@ -73,6 +75,11 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
     support
   } = useContext(AppContext);
 
+  // Variable(s)
+  const finalStyle = props.style && {
+    paddingTop: props.header ? commonTheme.minTopPadding : 'inherit',
+  }
+
   // State(s)
 
   // Ref(s)
@@ -86,8 +93,14 @@ const ProjectPageLayout: T_ProjectPageLayout = (props) => {
   // Render
   return (
     <StyledProjectPageLayout
-      style={props.style}
+      style={finalStyle}
     >
+      {
+        props.header && (
+          <Header />
+        )
+      }
+
       <StyledTitle>
         {props.title}
       </StyledTitle>

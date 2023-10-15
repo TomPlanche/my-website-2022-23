@@ -6,6 +6,7 @@
 // IMPORTS ===================================================================================================  IMPORTS
 import {Context, createContext, FC, ReactElement, RefObject, useLayoutEffect, useRef, useState} from 'react'
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
+
 import styled, {ThemeProvider} from "styled-components";
 
 import Home from "./pages/Home";
@@ -205,10 +206,13 @@ const App: FC = (): ReactElement => {
             <Routes>
               <Route index element={<Home />}/>
 
-              <Route path={'/projects'} element={<ProjectsPage />}/>
-              <Route path={'/music-player'} element={<IsPlayingDisplayPage />}/>
-              <Route path={'/custom-cursor'} element={<CustomCursorPage />}/>
-              <Route path={'/lastFM-middleware'} element={<LastFMHandlerPage />}/>
+              <Route path="/projects">
+                <Route index element={<ProjectsPage />} />
+                <Route path="music-player" element={<IsPlayingDisplayPage />} />
+                <Route path="custom-cursor" element={<CustomCursorPage />} />
+                <Route path="lastFM-middleware" element={<LastFMHandlerPage />} />
+              </Route>
+
 
               <Route path={'/tests'} element={<Tests/>}/>
 

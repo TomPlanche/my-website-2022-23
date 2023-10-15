@@ -17,8 +17,10 @@ import styled from 'styled-components'
 import Header from "../components/Header";
 import MyUglyFace, {MyUglyFaceImg} from "../components/MyUglyFace";
 import IsPlayingDisplay from "../components/IsPlayingDisplay";
+import {StyledParagraph} from "./LastFMHandlerPage";
 
 import {AppContext, commonTheme, noUserSelection} from "../App";
+import Article, {T_ArticleArg} from "../components/Article";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -45,10 +47,6 @@ const StyledHome = styled.div(props => ({
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-
-  'h3': {
-    fontSize: '4rem',
-  },
 
   ...noUserSelection,
 }));
@@ -93,11 +91,32 @@ const StyledSection = styled.section(props => ({
   alignItems: 'center',
   justifyContent: 'flex-start',
 
-  paddingTop: '15vh',
+  paddingTop: '10vh',
 
   fontFamily: "Fraktion Mono, sans-serif",
 
   position: 'relative',
+}));
+
+
+const StyledH2Title = styled.h2(props => ({
+  fontSize: '2.5rem',
+  fontFamily: "Mondwest, sans-serif !important",
+  textAlign: 'center',
+
+  alignSelf: 'flex-start',
+
+  "&:before": {
+    content: '"$ "',
+  }
+}));
+
+const StyledHomeParagraph = styled(StyledParagraph)(props => ({
+  fontSize: '1.5rem',
+  marginTop: '2rem',
+
+  padding: '2rem',
+  fontFamily: "Fraktion Mono, sans-serif !important",
 }));
 
 // Types
@@ -112,60 +131,83 @@ export const HomeContext = createContext<T_homeContext>({
 } as T_homeContext);
 
 // Other
-
-type T_Technology = {
-  name: string;
-  bio: string;
-
-  imgs: string[];
-}
-
-const technologies: T_Technology[] = [
+const languages: T_ArticleArg[] = [
   {
-    name: "React",
-    bio: "I learned and used React for this website. " +
-      "I used it with TypeScript and styled-components.",
-
-    imgs: []
-  },
-
+    name: 'JS / TS',
+    status: 'using',
+  } as T_ArticleArg,
   {
-    name: "TypeScript",
-    bio: "I learned and used TypeScript for this website.",
-
-    imgs: []
-  },
-
+    name: 'Python',
+    status: 'using',
+  } as T_ArticleArg,
   {
-    name: "Python",
-    bio: "I learned and used since 2017. Web scraping, data analysis, I love this language.",
-
-    imgs: []
-  },
-
+    name: 'Rust',
+    status: 'learning',
+  } as T_ArticleArg,
   {
-    name: "PHP",
-    bio: "I learned PHP at school and mastered it during my internship at the end of my second year of BUT.",
-
-    imgs: []
-  },
-
+    name: 'Shell',
+    status: 'using',
+  } as T_ArticleArg,
   {
-    "name": "DBs",
-    "bio": "I learned and used MySQL, MongoDB, PostgreSQL and SQLite.",
-
-    imgs: []
-  },
-
+    name: 'SQL',
+    status: 'using',
+  } as T_ArticleArg,
   {
-    name: "Others",
-    bio: "I also learned and used other languages and frameworks, such as Java, C, C++, Angular, Symphony " +
-      ", Laravel and more.",
-
-    imgs: []
+    name: 'PHP',
+    status: 'using',
+  } as T_ArticleArg,
+  {
+    name: 'C++',
+    status: 'using',
+  } as T_ArticleArg,
+  {
+    name: 'C',
+    status: 'learning',
+  } as T_ArticleArg,
+  {
+    name: 'Java',
+    status: 'learning',
   }
-];
+] as T_ArticleArg[];
 
+const frameworksTools: T_ArticleArg[] = [
+  {
+    name: 'React',
+    status: 'using',
+  } as T_ArticleArg,
+  {
+    name: 'Vue',
+    status: 'learning',
+  } as T_ArticleArg,
+  {
+    name: 'SCSS',
+    status: 'using',
+  } as T_ArticleArg,
+  {
+    name: 'Next',
+    status: 'toLearn',
+  } as T_ArticleArg,
+  {
+    name: 'Laravel',
+    status: 'using',
+  },
+  {
+    name: 'Symfony',
+    status: 'using',
+  },
+  {
+    name: 'Docker',
+    status: 'learning',
+  },
+  {
+    name: 'Git',
+    status: 'using',
+  },
+  {
+    name: 'Jupyter',
+    status: 'using',
+  }
+] as T_ArticleArg[];
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // COMPONENENT  ============================================================================================= COMPONENT
@@ -207,7 +249,7 @@ const Home = () => {
     if (support === "desktop") {
 
       console.log("desktop");
-      
+
       loadingAnimation
       .set(leftHalfRef.current, {
         opacity: 0,
@@ -272,7 +314,6 @@ const Home = () => {
           start: 'top top',
           end: "35%",
           scrub: 1,
-          markers: true,
         }
       });
 
@@ -299,7 +340,7 @@ const Home = () => {
 
       <Header key="header" ref={headerRef}/>
 
-      {/* @ts-ignore */}
+       {/*@ts-ignore */}
       {/*<MyModal*/}
       {/*  title="Warning ⚠️"*/}
       {/*  type="ok"*/}
@@ -354,7 +395,14 @@ const Home = () => {
               fontSize: "5vmax"
             }}
           >Tom Planche</h2>
-          <h3>Full Stack Developer</h3>
+          <h3
+            style={{
+              fontSize: "3vmax"
+            }}
+          >
+            Full Stack Developer <br/>
+            Programmer
+          </h3>
         </StyledHomeHalf>
         <StyledHomeHalf
           style={{
@@ -381,9 +429,29 @@ const Home = () => {
       <StyledSection
         ref={firstSectionRef}
       >
+        <StyledH2Title>whoami</StyledH2Title>
 
+        <StyledHomeParagraph
+          style={{
+            alignSelf: 'flex-start',
+          }}
+        >
+          I&apos;m a french student currently in Bayonne, France.
 
+          <br/>
+          <br/>
+          <span>- means I&apos;m using it and I&apos;m comfortable with it</span>
+          <br/>
+          <span>~ means I&apos;m learning it</span>
+          <br/>
+          <span>+ means I&apos;m planning to learn it</span>
+        </StyledHomeParagraph>
+
+        <Article title={'Languages'} args={languages} />
+        <Article title={'Frameworks / Tools'} args={frameworksTools} />
       </StyledSection>
+
+
 
       {/*{*/}
       {/*  !isPlayingLoadingAnimation && <Footer/>*/}

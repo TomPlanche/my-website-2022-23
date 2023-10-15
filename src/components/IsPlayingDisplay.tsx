@@ -138,7 +138,7 @@ const exampleTrack: T_RecentTracksTrackAll = {
     },
     {
       size: "extralarge",
-      "#text": "imgs/444nuits.webp"
+      "#text": "/imgs/444nuits.webp"
     }
   ],
   mbid: "",

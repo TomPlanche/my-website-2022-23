@@ -8,6 +8,7 @@
 import styled from 'styled-components';
 import ProjectPageLayout from "./ProjectPageLayout";
 import {StyledParagraph} from "./LastFMHandlerPage";
+import ProjectCard from "../components/ProjectCard";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 // VARIABLES ================================================================================================ VARIABLE
@@ -42,7 +43,7 @@ const StyledProjectCard = styled.div`
 `;
 
 // Type(s)
-type T_Tag = {
+export type T_Tag = {
   name: string;
   color: string;
   backgroundColor: string;
@@ -59,7 +60,19 @@ type T_Project = {
 const frontEndTag: T_Tag = {
   name: 'Front-end',
   color: '#1e1e1e',
-  backgroundColor: '#99b7db'
+  backgroundColor: '#f47067'
+};
+
+const backEndTag: T_Tag = {
+  name: 'Back-end',
+  color: '#1e1e1e',
+  backgroundColor: '#dcbdfb'
+};
+
+const APITag: T_Tag = {
+  name: 'API',
+  color: '#1e1e1e',
+  backgroundColor: '#e8ba35'
 };
 
 const projects: T_Project[] = [
@@ -67,6 +80,32 @@ const projects: T_Project[] = [
     title: 'Custom Cursor',
     description: 'Custom cursor for my portfolio website.',
     link: '/projects/custom-cursor',
+    tags: [
+      frontEndTag
+    ]
+  },
+  {
+    title: 'LastFM Middleware',
+    description: 'Middleware to get my LastFM data.',
+    link: '/projects/lastfm-middleware',
+    tags: [
+      backEndTag,
+      APITag
+    ]
+  },
+  {
+    title: 'Is Playing Display',
+    description: 'Display of the song I\'m currently listening to.',
+    link: '/projects/is-playing-display',
+    tags: [
+      frontEndTag,
+      APITag
+    ]
+  },
+  {
+    title: 'This website',
+    description: 'Made with React, TypeScript and styled-components.',
+    link: '/',
     tags: [
       frontEndTag
     ]
@@ -96,6 +135,7 @@ const ProjectsPage = () => {
       style={{
         gap: '2rem'
       }}
+      header={true}
     >
 
       <StyledParagraph>
@@ -106,12 +146,13 @@ const ProjectsPage = () => {
         {
           projects.map((project, index) => {
             return (
-              <StyledProjectCard
+              <ProjectCard
                 key={index}
-              >
-                <h1>{project.title}</h1>
-                <p>{project.description}</p>
-              </StyledProjectCard>
+                title={project.title}
+                description={project.description}
+                link={project.link}
+                tags={project.tags}
+              />
             )
           })
         }
