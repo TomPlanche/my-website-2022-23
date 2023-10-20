@@ -334,7 +334,7 @@ const Home = () => {
           trigger: homeRef.current,
           start: '50% top',
           end: "75%",
-          scrub: 1,
+          scrub: .5,
         }
       });
 
@@ -342,12 +342,14 @@ const Home = () => {
         .to(headerRef.current, {
           top: 0,
           width: "100%",
+
+          borderRadius: 0
         });
     } else {
       console.log("mobile");
     }
 
-  }, []);
+  }, [support]);
 
   // Render
   // @ts-ignore
