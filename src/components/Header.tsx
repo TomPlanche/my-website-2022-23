@@ -22,7 +22,6 @@ import ScrambleTextPlugin from "gsap/ScrambleTextPlugin";
 
 import {AppContext, blurryBackground, noUserSelection,} from "../App";
 import MyButton from "./MyButton";
-import Menu, {T_MenuItemProps} from "./Menu";
 // END IMPORTS ==========================================================================================   END IMPORTS
 
 gsap.registerPlugin(ScrambleTextPlugin);
@@ -120,24 +119,6 @@ const StyledHeaderThemeBtn = styled.button`
 const moonsArray = ["🌕", "🌖", "🌗", "🌘", "🌑", "🌒", "🌓", "🌔"];
 const darkIndex = moonsArray.indexOf("🌑");
 const lightIndex = moonsArray.indexOf("🌕");
-
-const menuItems: T_MenuItemProps[] = [
-  {
-    title: 'Home',
-    href: '/',
-    isActive: true,
-  },
-  {
-    title: 'Projects',
-    href: '/projects',
-    isActive: false,
-  },
-  {
-    title: 'About',
-    href: '/about',
-    isActive: false,
-  }
-]
 
 // Types
 type T_Header = ForwardRefExoticComponent<RefAttributes<HTMLDivElement>>;
@@ -299,15 +280,6 @@ const Header: T_Header = forwardRef((_, ref) => {
         href={'/'}
         linkStyle={false}
       ></MyButton>
-
-      {
-        support === 'desktop' &&
-        <StyledHeaderMiddle>
-          <Menu
-            items={menuItems}
-          />
-        </StyledHeaderMiddle>
-      }
 
       <StyledHeaderRight
       >

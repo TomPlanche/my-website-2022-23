@@ -117,6 +117,10 @@ const StyledHomeParagraph = styled(StyledParagraph)(props => ({
 
   padding: '2rem',
   fontFamily: "Fraktion Mono, sans-serif !important",
+
+  span: {
+    fontSize: '1rem',
+  }
 }));
 
 // Types
@@ -324,6 +328,21 @@ const Home = () => {
           ease: 'power2.out',
         });
 
+
+      const screllTriggerTimelineHeader = gsap.timeline({
+        scrollTrigger: {
+          trigger: homeRef.current,
+          start: '50% top',
+          end: "75%",
+          scrub: 1,
+        }
+      });
+
+      screllTriggerTimelineHeader
+        .to(headerRef.current, {
+          top: 0,
+          width: "100%",
+        });
     } else {
       console.log("mobile");
     }
@@ -447,8 +466,8 @@ const Home = () => {
           <span>+ means I&apos;m planning to learn it</span>
         </StyledHomeParagraph>
 
-        <Article title={'Languages'} args={languages} />
-        <Article title={'Frameworks / Tools'} args={frameworksTools} />
+        <Article title={'Languages'} args={languages} color={"#2077b2"} />
+        <Article title={'Tools'} args={frameworksTools} color={"#F78166"}/>
       </StyledSection>
 
 

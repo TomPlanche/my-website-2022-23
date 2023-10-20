@@ -10,7 +10,7 @@ import styled from 'styled-components';
 
 // VARIABLES ================================================================================================ VARIABLE
 const StyledArticle = styled.article<{
-  $outlineColor?: string,
+  $color?: string
 }>(props => ({
   width: '90%',
 
@@ -26,9 +26,13 @@ const StyledArticle = styled.article<{
   borderRadius: '1rem',
 
 
-  outline: `1px solid ${props.$outlineColor || props.theme.accent}`,
+  outline: `1px solid ${props.$color || props.theme.accent}`,
+  // make the $color transparent for the background.
+  background: props.$color ? `${props.$color}20` : 'transparent',
 
-  // if element is less than 300px
+  "@media (max-width: 576px)": {
+    justifyContent: 'center',
+  }
 }));
 
 export const StyledArticleTitle = styled.h3<{
@@ -44,6 +48,12 @@ export const StyledArticleTitle = styled.h3<{
 
   "&:before": {
     content: '"> "',
+  },
+
+  "@media (max-width: 576px)": {
+    "&:after": {
+      content: '" <"',
+    }
   }
 }));
 
@@ -58,6 +68,14 @@ const StyledArticleArgsContainer = styled.ul(props => ({
 
   alignSelf: 'flex-end',
   justifySelf: 'flex-end',
+
+  "@media (max-width: 768px)": {
+    gridTemplateColumns: 'repeat(3, minmax(0,1fr))',
+  },
+
+  "@media (max-width: 576px)": {
+    gridTemplateColumns: 'repeat(2, minmax(0,1fr))',
+  }
 }));
 
 const StyledArticleArgs = styled.p<{
@@ -83,7 +101,7 @@ export type T_ArticleProps = {
   title: string;
   args: T_ArticleArg[];
 
-  titleMaxWidth?: string;
+  color?: string;
 }
 
 type T_Article = (props: T_ArticleProps) => JSX.Element;
@@ -97,14 +115,14 @@ type T_Article = (props: T_ArticleProps) => JSX.Element;
  **/
 const Article: T_Article = (props: T_ArticleProps) => {
   // Variables
-  const { title, args } = props;
+  const { title, args, color } = props;
 
   // Render
   return (
-    <StyledArticle>
-      <StyledArticleTitle
-        $maxWidth={props.titleMaxWidth}
-      >{title}</StyledArticleTitle>
+    <StyledArticle
+      $color={color}
+    >
+      <StyledArticleTitle>{title}</StyledArticleTitle>
 
       <StyledArticleArgsContainer>
         {
