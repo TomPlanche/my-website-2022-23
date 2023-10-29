@@ -11,7 +11,7 @@ import {ReactNode, useState} from "react";
 
 // VARIABLES ================================================================================================ VARIABLE
 const StyledBackground = styled.div<{$blurred?: boolean, $bgColor?: string}>`
-  height: 100vh;
+  height: 100svh;
   width: 100vw;
   
   position: fixed;

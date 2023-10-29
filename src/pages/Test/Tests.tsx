@@ -15,7 +15,7 @@ import {useContext} from "react";
 // VARIABLES ================================================================================================ VARIABLE
 // Styled components
 const StyledTests = styled.div(props => ({
-  minHeight: "100vh",
+  minHeight: "100svh",
   width: '100vw',
 
   display: 'flex',

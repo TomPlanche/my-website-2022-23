@@ -91,7 +91,7 @@ export const commonTheme = {
   fontFamilyFraktionMono: 'Fraktion Mono, sans-serif',
 
 
-  minHeight: `calc(100vh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
+  minHeight: `calc(100svh - ${themeValues.headerHeight} - (${themeValues.mainPadding} * 2))`,
   sidePadding: themeValues.mainPadding,
   minTopPadding: calcCssVar(themeValues.headerHeight, variableWithoutUnit => variableWithoutUnit + stripCssVar(themeValues.mainPadding) * 2),
 
@@ -100,7 +100,7 @@ export const commonTheme = {
   headerHeight: themeValues.headerHeight,
 
   mainBorderRadius: '8px',
-  firstPageHeight: `calc(100vh - ${calcCssVar(themeValues.mainPadding, variableWithoutUnit => variableWithoutUnit * 2)})`,
+  firstPageHeight: `calc(100svh - ${calcCssVar(themeValues.mainPadding, variableWithoutUnit => variableWithoutUnit * 2)})`,
 
   boxShadowSize: '.5rem',
 

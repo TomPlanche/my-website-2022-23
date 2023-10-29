@@ -21,6 +21,7 @@ import {StyledParagraph} from "./LastFMHandlerPage";
 
 import {AppContext, commonTheme, noUserSelection} from "../App";
 import Article, {T_ArticleArg} from "../components/Article";
+import MyPill from "../components/MyPill";
 
 // END IMPORTS ==========================================================================================   END IMPORTS
 
@@ -91,7 +92,7 @@ const StyledSection = styled.section(props => ({
   alignItems: 'center',
   justifyContent: 'flex-start',
 
-  paddingTop: '10vh',
+  paddingTop: '10svh',
 
   fontFamily: "Fraktion Mono, sans-serif",
 
@@ -178,19 +179,19 @@ const frameworksTools: T_ArticleArg[] = [
   {
     name: 'React',
     status: 'using',
-  } as T_ArticleArg,
+  },
   {
     name: 'Vue',
     status: 'learning',
-  } as T_ArticleArg,
+  },
   {
     name: 'SCSS',
     status: 'using',
-  } as T_ArticleArg,
+  },
   {
     name: 'Next',
     status: 'toLearn',
-  } as T_ArticleArg,
+  },
   {
     name: 'Laravel',
     status: 'using',
@@ -323,27 +324,9 @@ const Home = () => {
 
       scrollTriggerTimeline
         .to(leftHalfRef.current, {
-          paddingTop: '35vh',
+          paddingTop: '35svh',
           duration: .25,
           ease: 'power2.out',
-        });
-
-
-      const screllTriggerTimelineHeader = gsap.timeline({
-        scrollTrigger: {
-          trigger: homeRef.current,
-          start: '50% top',
-          end: "75%",
-          scrub: .5,
-        }
-      });
-
-      screllTriggerTimelineHeader
-        .to(headerRef.current, {
-          top: 0,
-          width: "100%",
-
-          borderRadius: 0
         });
     } else {
       console.log("mobile");
@@ -458,15 +441,25 @@ const Home = () => {
           }}
         >
           I&apos;m a french student currently in Bayonne, France.
-
-          <br/>
-          <br/>
-          <span>- means I&apos;m using it and I&apos;m comfortable with it</span>
-          <br/>
-          <span>~ means I&apos;m learning it</span>
-          <br/>
-          <span>+ means I&apos;m planning to learn it</span>
         </StyledHomeParagraph>
+
+        <div style={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '1rem',
+        }}>
+          <MyPill
+            bgColor={"#2077b2"}
+          >- comfortable</MyPill>
+
+          <MyPill
+            bgColor={"#F78166"}
+          >~ learning</MyPill>
+
+          <MyPill>+ to learn</MyPill>
+        </div>
 
         <Article title={'Languages'} args={languages} color={"#2077b2"} />
         <Article title={'Tools'} args={frameworksTools} color={"#F78166"}/>
