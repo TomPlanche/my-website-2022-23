@@ -270,28 +270,6 @@ const Header: T_Header = forwardRef((_, ref) => {
     }
   }, [emojiHovered])
 
-  useEffect(() => {
-
-    const screllTriggerTimelineHeader = gsap.timeline({
-        scrollTrigger: {
-          start: '50% top',
-          end: "75%",
-          scrub: .5,
-        }
-      });
-
-      screllTriggerTimelineHeader
-        // @ts-ignore
-        .to(ref.current, {
-          top: 0,
-          width: "100%",
-
-          borderRadius: 0
-        });
-
-
-  }, []);
-
   // Render
   return (
     <StyledHeader

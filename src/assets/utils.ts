@@ -11,10 +11,21 @@
 // VARIABLES ================================================================================================ VARIABLES
 // Types
 // Arguments types
-type T_CalcCssVarCallback = (variableWithoutUnit: number) => number;
+type CSSVariable = string | string[];
+
+type CallbackFunction<V> = (arg: V) => number;
 type T_NoArgsCallbackNoReturn = () => void;
 // Function types
-type T_calcCssVar = (variable: string, func: T_CalcCssVarCallback) => string;
+
+type calcCSSVar<
+  T extends string | string[]
+> = (
+  variable: T,
+  callback: CallbackFunction<
+    T extends string ? number : number[]
+  >
+) => string;
+
 type T_calcWinSize = () => { width: number, height: number };
 
 type T_capitalize = (str: string, lower?: boolean) => string;
@@ -59,29 +70,47 @@ type T_limitNumberInBounds = (
 // END VARIABLES ======================================================================================= END VARIABLES
 
 // FUNCTIONS ================================================================================================ FUNCTIONS
+const parseVariable = (variable: string): [number, string] => {
+  const match = variable.match(/(\d+)(\w+)/);
+  if (match && match[1] && match[2]) {
+    const strippedVar = parseInt(match[1], 10);
+    const unit = match[2];
+    return [strippedVar, unit];
+  }
+  throw new Error('Invalid CSS variable format');
+};
+
 /**
- * @function calcCssVar
- * @description Allows to make calculations with css variables.
- * @example
- * const padding = '5rem';
- * const paddingCalc = calcCssVar(padding, (variableWithoutUnit) => variableWithoutUnit * 2);
- * console.log(paddingCalc); // 10rem
+ * @function calcCSSVar
+ * @param variable {string | string[]} The CSS variable(s).
+ * @param callback {CallbackFunction<number | number[]>} The callback function.
  *
- * @param variable
- * @param func
+ * @example
+ * calcCSSVar('1rem', (varWithoutUnit) => (varWithoutUnit as number) * 2); // 2rem
+ * calcCSSVar(
+ *   ['3rem', '4rem'],
+ *   (varsWithoutUnit) => {
+ *     return (varsWithoutUnit as number[]).reduce((acc, curr) => acc + curr);
+ *   }
+ * );
+ *
+ * @returns {string} The CSS variable(s) with the callback applied.
  */
-const calcCssVar: T_calcCssVar = (variable, func) => {
-  // if the variable starts with a point, add a zero before it.
-  variable = variable.startsWith('.') ? `0${variable}` : variable;
+const calcCssVar: calcCSSVar<CSSVariable> = (variable: string | string[], callback: CallbackFunction<number | number[]>): string => {
+  if (typeof variable === 'string') {
+    const [strippedVar, unit] = parseVariable(variable);
+    return `${callback(strippedVar)}${unit}`;
+  }
 
-  // get the variable without the unit, e.g. '5rem' => '5'.
-  // I don't want to list all the units, so I use a regex.
-  const variableWithoutUnit = variable.replace(/[^0-9.]/g, '');
-  // get the unit, e.g. '5rem' => 'rem'.
-  const unit = variable.replace(variableWithoutUnit, '');
+  if (Array.isArray(variable) && variable[0]) {
+    const [, unit] = parseVariable(variable[0]);
+    const mappedVars = variable.map((varString) => parseVariable(varString)[0]);
 
-  return `${func(+variableWithoutUnit)}${unit}`;
-}
+    return `${callback(mappedVars)}${unit}`;
+  }
+
+  throw new Error('Invalid CSS variable format');
+};
 
 /**
  * @function calcWinSize
@@ -96,7 +125,7 @@ const calcWinSize: T_calcWinSize = (): { width: number; height: number; } => {
 /**
  * Capitalizes first letters of words in string.
  * @param {string} str String to be modified
- * @param {boolean = true} lower Whether all other letters should be lowercased
+ * @param {boolean} lower Whether all other letters should be lowercased
  * @return {string}
  * @usage
  *   capitalize('fix this string');     // -> 'Fix This String'

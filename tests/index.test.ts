@@ -4,8 +4,6 @@
  */
 import {describe, expect, test} from '@jest/globals';
 
-import {calcCssVar} from "../src/assets/utils";
-
 describe("Test of 'calcCssValue' function", () => {
   test("Test 1 - 5rem * 2", () => {
     expect(calcCssVar("5rem", (v: number) => v * 2)).toBe("10rem");

@@ -19,7 +19,7 @@ const StyledMyPill = styled.span<{$bgColor?: string}>(props => ({
 
   fontSize: '1.5rem',
   fontFamily: "Fraktion Mono, sans-serif !important",
-  padding: '.25rem 1rem',
+  padding: '.2rem 1rem .25rem 1rem',
 
   borderRadius: '1rem',
 
